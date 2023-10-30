@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+</head>
+<body>
+    <main>
+        <ul class="menu">
+            <li class="menu_buttons" id="li_users">Users</li>
+            <li class="menu_buttons" id="li_rooms">Rooms</li>
+            <li class="menu_buttons" id="li_accesses">Accesses</li>
+        </ul>
+        <div class="container">
+            <div class="users_container">
+                <button id="create_user_button">Insert new user</button>
+        <table id="users_table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                <tr>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td class="action-icons">
+                        <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                        <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td class="action-icons">
+                        <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                        <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+    </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="new_user_form">
+        <span class="close-button" id="new_user_form_close_button">&times;</span>
+        <h2>Add a New User</h2>
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="new_user_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="new_user_email" required>
+            </div>
+
+                   
+            <div class="button-container">
+                <button type="submit" id="add_new_user_button">Add User</button>
+            </div>
+    </div>
+    
+    <script src="main.js"></script>
+</body>
+</html>
