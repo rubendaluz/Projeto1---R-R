@@ -17,34 +17,91 @@
         <div class="container">
             <div class="users_container">
                 <button id="create_user_button">Insert new user</button>
-        <table id="users_table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="table_body">
-                <tr>
-                    <td>John Doe</td>
-                    <td>john@example.com</td>
-                    <td class="action-icons">
-                        <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                        <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>jane@example.com</td>
-                    <td class="action-icons">
-                        <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                        <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
-                    </td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-    </table>
+                <table id="users_table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr>
+                            <td>John Doe</td>
+                            <td>john@example.com</td>
+                            <td class="action-icons">
+                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>jane@example.com</td>
+                            <td class="action-icons">
+                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="rooms_container">
+                <button id="create_room_button">Insert new room</button>
+                <table id="rooms_table">
+                    <thead>
+                        <tr>
+                            <th>Room_id</th>
+                            <th>Name</th>
+                            <th>Security Level</th>
+                            <td>Actions</td>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr>
+                            <td>01</td>
+                            <td>A2.9</td>
+                            <td>3/5</td>
+                            <td class="action-icons">
+                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="accesses_container">
+                <table id="accesses_table">
+                    <thead>
+                        <tr>
+                            <th>User id</th>
+                            <th>Name</th>
+                            <th>Room</th>
+                            <th>Data and Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <tr>
+                            
+                            <td>01</td>
+                            <td>John Doe</td>
+                            <td>A2.9</td>
+                            <td>20-10-2023/18:43</td>
+                            
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td>Jane Smith</td>
+                            <td>A2.9</td>
+                            <td>20-10-2023/17:31</td>
+                        
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>

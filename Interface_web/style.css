@@ -23,7 +23,7 @@ main{
     justify-content: center;
 }
 
-#create_user_button{
+#create_user_button, #create_room_button{
     padding: 5px;
     margin: 5px auto;
     cursor: pointer;
@@ -126,5 +126,13 @@ tr:hover {
     top: 10px;
     right: 10px;
     cursor: pointer;
+}
+
+.accesses_container{
+    display: none;
+}
+
+.rooms_container{
+    display: none;
 }
 

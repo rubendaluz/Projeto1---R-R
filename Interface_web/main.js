@@ -2,12 +2,16 @@ const li_users = document.querySelector("#li_users");
 const li_rooms = document.querySelector("#li_rooms");
 const li_accesses = document.querySelector("#li_accesses");
 const users_container = document.querySelector(".users_container");
+const rooms_container = document.querySelector(".rooms_container");
+const accesses_container = document.querySelector(".accesses_container");
 
 li_users.addEventListener("click", (e) => {
     li_users.style.background = "grey"; 
     li_rooms.style.background = "white";
     li_accesses.style.background = "white";
     users_container.style.display = "block";
+    accesses_container.style.display = "none";
+    rooms_container.style.display = "none"
 });
 
 li_rooms.addEventListener("click", (e) => {
@@ -15,13 +19,17 @@ li_rooms.addEventListener("click", (e) => {
     li_rooms.style.background = "grey";
     li_accesses.style.background = "white";
     users_container.style.display = "none"
+    accesses_container.style.display = "none";
+    rooms_container.style.display = "block"
 });
 
 li_accesses.addEventListener("click", (e) => {
     li_users.style.background = "white"; 
     li_rooms.style.background = "white";
     li_accesses.style.background = "grey";
-    users_container.style.display = "none"
+    users_container.style.display = "none";
+    accesses_container.style.display = "block";
+    rooms_container.style.display = "none"
 });
 
 const open_new_user_form_button = document.querySelector("#create_user_button");
