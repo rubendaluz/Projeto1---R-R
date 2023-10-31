@@ -22,13 +22,16 @@
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Permission Level</th>
                             <th>Actions</th>
+                        
                         </tr>
                     </thead>
                     <tbody id="table_body">
                         <tr>
                             <td>John Doe</td>
                             <td>john@example.com</td>
+                            <td>2/5</td>
                             <td class="action-icons">
                                 <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
@@ -37,6 +40,7 @@
                         <tr>
                             <td>Jane Smith</td>
                             <td>jane@example.com</td>
+                            <td>1/5</td>
                             <td class="action-icons">
                                 <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
@@ -48,14 +52,15 @@
             </div>
 
             <div class="rooms_container">
-                <button id="create_room_button">Insert new room</button>
+                <input type="button" value="Insert new room" id="create_room_button">
+                
                 <table id="rooms_table">
                     <thead>
                         <tr>
                             <th>Room_id</th>
                             <th>Name</th>
                             <th>Security Level</th>
-                            <td>Actions</td>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="table_body">
@@ -81,6 +86,8 @@
                             <th>Name</th>
                             <th>Room</th>
                             <th>Data and Time</th>
+                            <th>Access State</th>
+                            <th>Method used</th>
                         </tr>
                     </thead>
                     <tbody id="table_body">
@@ -90,6 +97,9 @@
                             <td>John Doe</td>
                             <td>A2.9</td>
                             <td>20-10-2023/18:43</td>
+                            <td style="background-color: green; 
+                            color:white;">Allowed</td>
+                            <td>Biometric</td>
                             
                         </tr>
                         <tr>
@@ -97,7 +107,8 @@
                             <td>Jane Smith</td>
                             <td>A2.9</td>
                             <td>20-10-2023/17:31</td>
-                        
+                            <td style="background-color: red; color:black;">Denied</td>
+                            <td>NFC</td> 
                         </tr>
                         <!-- Add more rows as needed -->
                     </tbody>
@@ -120,10 +131,35 @@
                 <input type="email" id="new_user_email" required>
             </div>
 
+            <div class="form-group">
+                <label for="permissions">Permission Level:</label>
+                <input type="number" id="new_user_permission_level"  placeholder="1-5" min="1" max="5" required>
+            </div>
+
                    
             <div class="button-container">
                 <button type="submit" id="add_new_user_button">Add User</button>
             </div>
+    </div>
+
+    <div class="new_room_form">
+        <span class="close-button" id="new_room_form_close_button">&times;</span>
+        <h2>Add a New Room</h2>
+        <form id="roomForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="new_room_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Security Level:</label>
+                <input type="email" id="new_room_security_level" required placeholder="1-5" min="1" max="5">
+            </div>
+                   
+            <div class="button-container">
+                <button type="submit" id="add_new_room_button">Add room</button>
+            </div>
+        </form>
     </div>
     
     <script src="main.js"></script>

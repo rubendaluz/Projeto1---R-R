@@ -88,7 +88,24 @@ tr:hover {
     transform: translate(-50%, -50%);
     background-color: #f5f5f5;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 99;
+}
 
+
+.new_room_form{
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f5f5f5;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 99;
 }
 
 .form-group {
