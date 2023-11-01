@@ -20,8 +20,10 @@
                 <table id="users_table">
                     <thead>
                         <tr>
+                            <th>Photo</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Phone Number</th>
                             <th>Permission Level</th>
                             <th>Actions</th>
                         
@@ -29,23 +31,18 @@
                     </thead>
                     <tbody id="table_body">
                         <tr>
+                            <td class="profile_pic"><img src="https://cultivatedculture.com/wp-content/uploads/2019/12/LinkedIn-Profile-Picture-Example-Sami-Viitama%CC%88ki-.jpeg"
+                                 alt="profile_pic"></td>
                             <td>John Doe</td>
                             <td>john@example.com</td>
+                            <td>94457337</td>
                             <td>2/5</td>
                             <td class="action-icons">
                                 <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Jane Smith</td>
-                            <td>jane@example.com</td>
-                            <td>1/5</td>
-                            <td class="action-icons">
-                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
+                    
                         <!-- Add more rows as needed -->
                     </tbody>
                 </table>
@@ -121,6 +118,11 @@
         <span class="close-button" id="new_user_form_close_button">&times;</span>
         <h2>Add a New User</h2>
         <form id="userForm" method="post">
+            <div class="form-group">
+                <label for="imagem">Select an image:</label>
+                <input type="file" name="imagem" id="new_user_profile_img" accept="image/*">
+            </div>
+
             <div class="form-group">
                 <label for="name">First name:</label>
                 <input type="text" id="new_user_first_name" required>
