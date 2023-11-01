@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", (e) => {
 
 
@@ -63,7 +64,8 @@ let close_new_user_form = () => {
 
     const add_new_user_button = document.querySelector("#add_new_user_button");
 
-    add_new_user_button.addEventListener("submit", (e) => {
+    add_new_user_button.addEventListener("click", (e) => {
+        const user_profile_img = document.querySelector("#new_user_profile_img").value
         const user_first_name = document.querySelector("#new_user_first_name").value;
         const user_last_name = document.querySelector("#new_user_last_name").value;
         const user_phone_number = document.querySelector("#new_user_phone_number").value;
@@ -79,6 +81,8 @@ let close_new_user_form = () => {
             console.log("Ultimo nome não introduzido")
         } else if (!user_phone_number) {
             console.log("Ultimo nome não introduzido")
+        } else if (!user_profile_img) {
+            console.log("Ultimo nome não introduzido")
         } else{
             // Adcicionar os dados a base de dados
             // URL para a qual você deseja fazer a solicitação POST
@@ -86,6 +90,7 @@ let close_new_user_form = () => {
 
             // Dados que você deseja enviar no corpo da solicitação
             const data = {
+                profilePic: user_profile_img,
                 firstName: user_first_name,
                 lastName: user_last_name,
                 email: user_email,
@@ -93,35 +98,35 @@ let close_new_user_form = () => {
                 accessLevel: user_permission_level,
             };
 
-            // console.log(data);
+            console.log(data);
 
-            // // Configuração da solicitação
-            // const options = {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
-            // },
-            //     body: JSON.stringify(data) // Converte os dados em JSON
-            // };
+            // Configuração da solicitação
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
+            },
+                body: JSON.stringify(data) // Converte os dados em JSON
+            };
 
-            // // Faz a solicitação usando o fetch
-            // fetch(url, options)
-            //     .then(response => {
-            //         if (response.ok) {
-            //             return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
-            //         } else {
-            //             throw new Error('Falha na solicitação POST');
-            //         }
-            // })
-            // .then(data => {
-            //     console.log(data); // Faça algo com os dados de resposta
-            // })
-            // .catch(error => {
-            //     console.error(error); // Trate erros de solicitação
-            // });
+            // Faz a solicitação usando o fetch
+            fetch(url, options)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
+                    } else {
+                        throw new Error('Falha na solicitação POST');
+                    }
+            })
+            .then(data => {
+                console.log(data); // Faça algo com os dados de resposta
+            })
+            .catch(error => {
+                console.error(error); // Trate erros de solicitação
+            });
 
             //Adicionar users a tabela
-            add_user_to_table(user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
+            add_user_to_table(user_profile_img,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
             close_new_user_form();
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
@@ -172,13 +177,16 @@ let generatePassword = () => {
     return Math.random().toString(36).slice(-8);
 }
 
-let add_user_to_table = (firstName,lastName,email,phone,accessLevel) => {
+let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) => {
     const table_body = document.querySelector("#table_body");
     const name = firstName + " " + lastName;
 
-
     table_body.innerHTML += `
         <tr>
+            <td class="profile_pic">
+            <img src="${profilePic}"
+                                 alt="profile_pic">
+                                 </td>
             <td>${name}</td>
             <td>${email}</td>
             <td>${phone}</td>
