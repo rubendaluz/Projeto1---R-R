@@ -76,7 +76,8 @@ tr:hover {
 }
 
 .new_user_form{
-    max-width: 400px;
+    min-width: 300px;
+    width: 500px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
