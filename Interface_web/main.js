@@ -161,11 +161,44 @@ let close_new_user_form = () => {
             console.log("Sem username");
         } else if (!room_security_level) {
             console.log("Sem email para o utilizador");
-        } else{
+        } else {
+            const url = 'https://localhost/api/rooms';
+
+            // Dados que você deseja enviar no corpo da solicitação
+            const data = {
+                name: room_name,
+                accessLevel: room_security_level
+            };
+
+            console.log(data);
+
+            // Configuração da solicitação
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
+            },
+                body: JSON.stringify(data) // Converte os dados em JSON
+            };
+
+            // Faz a solicitação usando o fetch
+            fetch(url, options)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
+                    } else {
+                        throw new Error('Falha na solicitação POST');
+                    }
+            })
+            .then(data => {
+                console.log(data); // Faça algo com os dados de resposta
+            })
+            .catch(error => {
+                console.error(error); // Trate erros de solicitação
+            });
             console.log(room_name,room_security_level)
             add_room_to_table(room_name,room_security_level)
-            //Adicionar users a tabela
-            // add_room_to_table(room_name, room_security_level);
+            
             close_new_room_form();
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
