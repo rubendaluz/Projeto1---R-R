@@ -86,7 +86,7 @@ let close_new_user_form = () => {
         } else{
             // Adcicionar os dados a base de dados
             // URL para a qual você deseja fazer a solicitação POST
-            const url = 'https://localhost/api/login';
+            const url = 'http://localhost:4242/api/user/register';
 
             // Dados que você deseja enviar no corpo da solicitação
             const data = {
