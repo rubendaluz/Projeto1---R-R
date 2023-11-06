@@ -5,7 +5,7 @@ const MultiAcces_DB = new Sequelize({
   port: 3306,
   username: "rubenluz",
   password: "123",
-  database: "MultiAcces",
+  database: "multiacces",
   dialect: "mysql",
 });
 

@@ -86,16 +86,19 @@ let close_new_user_form = () => {
         } else{
             // Adcicionar os dados a base de dados
             // URL para a qual você deseja fazer a solicitação POST
-            const url = 'http://localhost:4242/api/user/register';
+            const url = "http://localhost:4242/api/user/register/";
 
             // Dados que você deseja enviar no corpo da solicitação
             const data = {
-                profilePic: user_profile_img,
                 firstName: user_first_name,
                 lastName: user_last_name,
+                fingerPrint: null,
+                nfcTag: null,
                 email: user_email,
                 phone: user_phone_number,
                 accessLevel: user_permission_level,
+                active: true,
+                profilePic: user_profile_img,
             };
 
             console.log(data);
@@ -162,12 +165,13 @@ let close_new_user_form = () => {
         } else if (!room_security_level) {
             console.log("Sem email para o utilizador");
         } else {
-            const url = 'https://localhost/api/rooms';
+            const url = 'http://localhost:4242/api/room/';
 
             // Dados que você deseja enviar no corpo da solicitação
             const data = {
-                name: room_name,
-                accessLevel: room_security_level
+                roomName: room_name,
+                access_level_required: room_security_level,
+                description: "exemplo"
             };
 
             console.log(data);
@@ -203,6 +207,36 @@ let close_new_user_form = () => {
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
     });
+
+    const delete_user_button = document.querySelector(".delete_user_btn");
+    const confirmation_form = document.querySelector(".delete_user_form")
+
+    let openConfirmForm = () => {
+        confirmation_form.style.display = "flex";
+    }
+
+    let closeConfirmForm = () => {
+        confirmation_form.style.display = "none"
+    }
+
+    let deleteUser = () => {
+        const cancel_btn = document.querySelector("#cancel_btn")
+        const confirm_btn = document.querySelector("#confirm_btn")
+
+        openConfirmForm()
+        cancel_btn.addEventListener("click", (e) => {
+            closeConfirmForm()
+        })
+            
+        confirm_btn.addEventListener("click", (e) => {
+            console.log("deleted")
+            closeConfirmForm()
+        })
+    }
+
+    delete_user_button.addEventListener("click", () => {
+        deleteUser();
+    })
 
 })
 
