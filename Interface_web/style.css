@@ -29,7 +29,7 @@ main{
     cursor: pointer;
 }
 
-#li_users{
+#li_admins{
     background-color: grey;
 }
 .menu_buttons{
@@ -155,11 +155,7 @@ tr:hover {
     cursor: pointer;
 }
 
-.accesses_container{
-    display: none;
-}
-
-.rooms_container{
+.accesses_container, .rooms_container, .users_container{
     display: none;
 }
 

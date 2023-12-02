@@ -1,10 +1,14 @@
 
 document.addEventListener("DOMContentLoaded", (e) => {
 
+    getAllUsers() 
+    getAllRooms()
 
+const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
 const li_rooms = document.querySelector("#li_rooms");
 const li_accesses = document.querySelector("#li_accesses");
+const admins_container = document.querySelector(".admins_container");
 const users_container = document.querySelector(".users_container");
 const rooms_container = document.querySelector(".rooms_container");
 const accesses_container = document.querySelector(".accesses_container");
@@ -13,18 +17,34 @@ const new_user_form = document.querySelector(".new_user_form");
 const open_new_room_form_button = document.querySelector("#create_room_button");
 const new_room_form = document.querySelector(".new_room_form");    
 
+    
+li_admins.addEventListener("click", (e) => {
+    li_admins.style.background = "grey";
+    li_users.style.background = "white"; 
+    li_rooms.style.background = "white";
+    li_accesses.style.background = "white";
+    admins_container.style.display = "block"
+    users_container.style.display = "none";
+    accesses_container.style.display = "none";
+    rooms_container.style.display = "none"
+    new_room_form.style.display = "none"
+});
 
-li_users.addEventListener("click", (e) => {
+    li_users.addEventListener("click", (e) => {
+    li_admins.style.background = "white";
     li_users.style.background = "grey"; 
     li_rooms.style.background = "white";
     li_accesses.style.background = "white";
     users_container.style.display = "block";
     accesses_container.style.display = "none";
     rooms_container.style.display = "none"
+    admins_container.style.display = "none"
     new_room_form.style.display = "none"
 });
 
 li_rooms.addEventListener("click", (e) => {
+    
+    li_admins.style.background = "white"; 
     li_users.style.background = "white"; 
     li_rooms.style.background = "grey";
     li_accesses.style.background = "white";
@@ -32,15 +52,18 @@ li_rooms.addEventListener("click", (e) => {
     accesses_container.style.display = "none";
     rooms_container.style.display = "block"
     new_user_form.style.display = "none"
+    admins_container.style.display = "none"
 });
 
-li_accesses.addEventListener("click", (e) => {
+    li_accesses.addEventListener("click", (e) => {
+    li_admins.style.background = "white";
     li_users.style.background = "white"; 
     li_rooms.style.background = "white";
     li_accesses.style.background = "grey";
     users_container.style.display = "none";
     accesses_container.style.display = "block";
     rooms_container.style.display = "none"
+    admins_container.style.display = "none"
 });
 
 open_new_user_form_button.addEventListener("click", () => {
@@ -65,7 +88,7 @@ let close_new_user_form = () => {
     const add_new_user_button = document.querySelector("#add_new_user_button");
 
     add_new_user_button.addEventListener("click", (e) => {
-        const user_profile_img = document.querySelector("#new_user_profile_img").value
+        // const user_profile_img = document.querySelector("#new_user_profile_img").value
         const user_first_name = document.querySelector("#new_user_first_name").value;
         const user_last_name = document.querySelector("#new_user_last_name").value;
         const user_phone_number = document.querySelector("#new_user_phone_number").value;
@@ -80,8 +103,6 @@ let close_new_user_form = () => {
         } else if (!user_last_name) {
             console.log("Ultimo nome não introduzido")
         } else if (!user_phone_number) {
-            console.log("Ultimo nome não introduzido")
-        } else if (!user_profile_img) {
             console.log("Ultimo nome não introduzido")
         } else{
             // Adcicionar os dados a base de dados
@@ -98,7 +119,7 @@ let close_new_user_form = () => {
                 phone: user_phone_number,
                 accessLevel: user_permission_level,
                 active: true,
-                profilePic: user_profile_img,
+                profilePic: null,
             };
 
             console.log(data);
@@ -129,7 +150,7 @@ let close_new_user_form = () => {
             });
 
             //Adicionar users a tabela
-            add_user_to_table(user_profile_img,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
+            add_user_to_table(null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
             close_new_user_form();
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
@@ -201,9 +222,10 @@ let close_new_user_form = () => {
                 console.error(error); // Trate erros de solicitação
             });
             console.log(room_name,room_security_level)
-            add_room_to_table(room_name,room_security_level)
+            add_room_to_table(0,room_name,room_security_level)
             
             close_new_room_form();
+
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
     });
@@ -245,7 +267,7 @@ let generatePassword = () => {
 }
 
 let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) => {
-    const table_body = document.querySelector("#table_body");
+    const table_body = document.querySelector("#users_table_body");
     const name = firstName + " " + lastName;
 
     table_body.innerHTML += `
@@ -260,18 +282,18 @@ let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) 
             <td>${accessLevel}</td>
             <td class="action-icons">
                 <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
             </td>
         </tr>
     `
 }
 
-let add_room_to_table = (roomname, roomseclevel) => {
+let add_room_to_table = (id, roomname, roomseclevel) => {
     const table_body = document.querySelector("#rooms_table_body");
 
     table_body.innerHTML += `
         <tr>
-            <td>2</td>
+            <td>${id}</td>
             <td>${roomname}</td>
             <td>${roomseclevel}</td>
             <td class="action-icons">
@@ -281,3 +303,48 @@ let add_room_to_table = (roomname, roomseclevel) => {
         </tr>
     `
 }
+
+let getAllUsers = () => {
+    const url = 'http://localhost:4242/api/user/';
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+         
+        return response.json(); // or response.text() if the response is not JSON
+    })
+    .then(users => {
+        console.log(users);
+        users.forEach(user => {
+            add_user_to_table(null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+        });
+    })
+    .catch(error => {
+        console.error(`Error: ${error.message}`);
+    });
+}
+
+let getAllRooms = () => {
+    const url = 'http://localhost:4242/api/room/';
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+         
+        return response.json(); // or response.text() if the response is not JSON
+    })
+    .then(rooms => {
+        console.log(rooms);
+        rooms.forEach(room => {
+            add_room_to_table(room["id"],room["roomName"], room["access_level_required"]);
+        });
+    })
+    .catch(error => {
+        console.error(`Error: ${error.message}`);
+    });
+}
+

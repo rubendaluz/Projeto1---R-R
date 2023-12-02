@@ -10,11 +10,43 @@
 <body>
     <main>
         <ul class="menu">
+            <li class="menu_buttons" id="li_admins">Admins</li>
             <li class="menu_buttons" id="li_users">Users</li>
             <li class="menu_buttons" id="li_rooms">Rooms</li>
             <li class="menu_buttons" id="li_accesses">Accesses</li>
         </ul>
         <div class="container">
+            <div class="admins_container">
+                <!-- <button id="create_u_button">Insert new user</button> -->
+                <table id="admin_table">
+                    <thead>
+                        <tr>
+                            <!-- <th>Photo</th> -->
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Phone Number</th>
+                            <th>Permission Level</th>
+                            <!-- <th>Actions</th> -->
+                        
+                        </tr>
+                    </thead>
+                    <tbody id="admins_table_body">
+                        <tr>
+                            <td class="profile_pic"><img src="https://cultivatedculture.com/wp-content/uploads/2019/12/LinkedIn-Profile-Picture-Example-Sami-Viitama%CC%88ki-.jpeg" alt="profile_pic"></td>
+                            <td>John Doe</td>
+                            <td>john@example.com</td>
+                            <td>94457337</td>
+                            <td>2/5</td>
+                            <!-- <td class="action-icons">
+                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                                <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
+                            </td> -->
+                        </tr>
+                    
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
             <div class="users_container">
                 <button id="create_user_button">Insert new user</button>
                 <table id="users_table">
@@ -29,20 +61,8 @@
                         
                         </tr>
                     </thead>
-                    <tbody id="table_body">
-                        <tr>
-                            <td class="profile_pic"><img src="https://cultivatedculture.com/wp-content/uploads/2019/12/LinkedIn-Profile-Picture-Example-Sami-Viitama%CC%88ki-.jpeg"
-                                 alt="profile_pic"></td>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                            <td>94457337</td>
-                            <td>2/5</td>
-                            <td class="action-icons">
-                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
-                            </td>
-                        </tr>
-                    
+                    <tbody id="users_table_body">
+                                          
                         <!-- Add more rows as needed -->
                     </tbody>
                 </table>
@@ -61,15 +81,7 @@
                         </tr>
                     </thead>
                     <tbody id="rooms_table_body">
-                        <tr>
-                            <td>01</td>
-                            <td>A2.9</td>
-                            <td>3/5</td>
-                            <td class="action-icons">
-                                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
+                       
                         <!-- Add more rows as needed -->
                     </tbody>
                 </table>

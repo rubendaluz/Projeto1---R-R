@@ -28,7 +28,6 @@ const AdminModel = MultiAcces_DB.define("adminUser", {
     unique: true,
   
   },
-  
   active: {
     type: BOOLEAN,
     allowNull: true,
