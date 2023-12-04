@@ -10,9 +10,12 @@
     --sidebar-gradient-end: #34495E;
     --sidebar-shadow: rgba(0, 0, 0, 0.2);
     --menu-btn-bg: #2C3E50;
-    --menu-btn-hover:#3498db;
-    --settings-btn: #3498db;
-    --settings-btn-hover: #2980b9;
+    --borda_hover:#3498db;
+    --settings-btn-hover: #0f1d27;
+      --table_borda: var(--borda_hover);
+      --table_head:  var(--borda_hover) ;
+      --table_hover: #133347;
+    
 }
 
 * {
@@ -101,7 +104,7 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra no cabeçalho */
-border-bottom: 1px solid #3498db; /* Borda na parte inferior do cabeçalho */
+border-bottom: 1px solid var(--borda_hover); /* Borda na parte inferior do cabeçalho */
 }
 .logout-button {
 background-color: #e74c3c; /* Vermelho escuro para o botão de logout */
@@ -134,7 +137,7 @@ text-align: justify;
 
 
 box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
-border-right: 1px solid #3498db;
+border-right: 1px solid var(--borda_hover);
 display: flex;
 flex-direction: column;
 }
@@ -170,11 +173,11 @@ cursor: pointer;
 border-radius: 5px;
 transition: background-color 0.3s;
 background-color: var(--background-dark);
-border: 1px solid #3498db;
+border: 1px solid var(--borda_hover);
 }
 
 .menu_buttons:hover {
-background-color: var(--menu-btn-hover);
+background-color: var(--table_hover);
 }
 
 .sidebar-footer {
@@ -184,7 +187,7 @@ flex-direction: column;
 }
 
 .settings-button {
-background-color: #3498db;
+background-color: var(--borda_hover);
 color: white;
 border: none;
 padding: 10px 15px;
@@ -195,7 +198,7 @@ margin-bottom: 20px;
 }
 
 .settings-button:hover {
-background-color: #2980b9;
+background-color:var(--settings-btn-hover);
 }
 
 /* Ruben */
@@ -384,3 +387,278 @@ tr:hover {
 
 
 
+
+
+#users_table, #create_user_button, #create_room_button {
+    padding: 5px;
+    margin: 5px auto;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+/* Estilos gerais para tabelas */
+table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 20px;
+}
+
+th,
+td {
+   padding: 12px;
+   text-align: left;
+   border-bottom: 1px solid #34495E;
+}
+
+th {
+   background-color: #2C3E50;
+   color: #ffffff;
+}
+
+td.profile_pic img {
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   margin-right: 10px;
+}
+
+td[style*="background-color: green;"],
+td[style*="background-color: red;"] {
+   color: #ffffff;
+}
+
+/* Estilos específicos para botões em tabelas */
+table button {
+   background-color: #3498db;
+   color: white;
+   padding: 10px 15px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+}
+
+table button:hover {
+   background-color: #2980b9;
+}
+/* Efeito hover para linhas da tabela */
+tr:hover {
+    background-color: #34495E;
+}
+
+/* Efeito hover para botões nas tabelas */
+table button:hover {
+    background-color: #2980b9;
+}
+
+/* Altera o cursor para indicar interatividade nos botões */
+table button {
+    cursor: pointer;
+}
+
+
+
+.admins_container,
+.users_container,
+.rooms_container,
+.accesses_container,
+.new_user_form,
+.new_room_form,
+.edit_user_form,
+.delete_user_form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2C3E50;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#create_user_button, #create_admin_button, #create_room_button{
+   background-color: #3498db;
+   color: white;
+   padding: 10px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+
+
+
+.action-icons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.action-icons a {
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+
+
+
+.new_user_form,
+.new_room_form,
+.delete_user_form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 15px;
+    margin: 10px;
+    height: 90%;
+  width: 60%;
+    border-radius: 5px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #10b3db;
+
+    box-shadow: 0px 0px 10px rgba(0, 195, 255, 0.952);
+    z-index: 99;
+}
+
+
+.form_h2{
+   border-bottom: 1px solid var(--borda_hover);
+   margin: 10px;
+   padding: 10px;
+}
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    width: 100%;
+    max-width: 135px;
+    align-self: center;
+}
+
+.form-group input {
+   background-color: #0d2736;
+   color: white;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #10b3db;
+    border-radius: 5px;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+/* Style for the close button (cross) */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+/* Adicione o CSS para o formulário de exclusão de usuários */
+.delete_user_form_buttons {
+    justify-content: center;
+    align-content: center;
+    flex-direction: row;
+    margin: auto;
+}
+
+.delete_user_form_buttons > * {
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 8px auto;
+}
+
+#cancel_btn {
+    background: red;
+    color: white;
+    cursor: pointer;
+}
+
+#confirm_btn {
+    color: green;
+    cursor: pointer;
+}
+
+
+
+
+
+
+.image-upload-container {
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.hidden-input {
+   display: none;
+  
+}
+
+.upload-label {
+   display: inline-block;
+   background-color: #3498db;
+   color: white;
+   padding: 10px;
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s;
+   margin-bottom: 10px;
+}
+
+.upload-label:hover {
+   background-color: #2980b9;
+}
+
+.upload-label i {
+   margin-right: 8px;
+}
+
+.image-preview {
+   width: 100px;
+   height: 100px;
+   background-color: #ddd;
+   border-radius: 50%;
+   overflow: hidden;
+   margin-bottom: 10px;
+}
+
+.image-preview img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 50%;
+}
+
+
+.form-group.img_form-group{
+   display: block;
+align-items: center;
+  
+}
