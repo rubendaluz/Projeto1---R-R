@@ -1,32 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>MultiAccess Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
 <body>
-    <main>
-        <ul class="menu">
-            <li class="menu_buttons" id="li_admins">Admins</li>
-            <li class="menu_buttons" id="li_users">Users</li>
-            <li class="menu_buttons" id="li_rooms">Rooms</li>
-            <li class="menu_buttons" id="li_accesses">Accesses</li>
-        </ul>
-        <div class="container">
+    <div class="left_container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../Interface_web/auth_page/img/background.png" alt="Logo">
+                <span class="title">MultiAccess</span>
+            </div>
+            <ul class="menu">
+                <li class="menu_buttons" id="li_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+                <li class="menu_buttons btnClicado" id="li_admins"><i class="fas fa-users"></i> Admins</li>
+                <li class="menu_buttons" id="li_users"><i class="fas fa-user"></i> Users</li>
+                <li class="menu_buttons" id="li_rooms"><i class="fas fa-door-open"></i> Rooms</li>
+                <li class="menu_buttons" id="li_accesses"><i class="fas fa-fingerprint"></i> Accesses</li>
+            </ul>
+            <div class="sidebar-footer">
+                <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
+                <button class="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </aside>
+    </div>
+
+    
+    <div class="right_container">
+
+    <header>
+       
+        <div class="header">
+            <h1>Dashboard</h1>
+            <div class="user-profile">
+                <img class="user-avatar" src="../Interface_web/auth_page/img/background.png" alt="User Avatar">
+                <span class="user-name">John Doe</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
             <div class="admins_container">
-                <button id="create_admin_button">Insert new admin</button>
+                <button class="btns_topo_tabelas" id="create_admin_button">Insert new admin</button>
                 <table id="admin_table">
                     <thead>
                         <tr>
-                            <!-- <th>Photo</th> -->
+                            <th>Photo</th>
                             <th>Name</th>
+                            <th>Email</th>
                             <th>Type</th>
                             <th>Phone Number</th>
                             <th>Permission Level</th>
-                            <!-- <th>Actions</th> -->
+                            <th>Actions</th>
                         
                         </tr>
                     </thead>
@@ -35,12 +66,13 @@
                             <td class="profile_pic"><img src="https://cultivatedculture.com/wp-content/uploads/2019/12/LinkedIn-Profile-Picture-Example-Sami-Viitama%CC%88ki-.jpeg" alt="profile_pic"></td>
                             <td>John Doe</td>
                             <td>john@example.com</td>
+                            <td>Gestor</td>
                             <td>94457337</td>
                             <td>2/5</td>
-                            <!-- <td class="action-icons">
+                            <td class="action-icons">
                                 <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
                                 <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
-                            </td> -->
+                            </td>
                         </tr>
                     
                         <!-- Add more rows as needed -->
@@ -48,7 +80,7 @@
                 </table>
             </div>
             <div class="users_container">
-                <button id="create_user_button">Insert new user</button>
+                <button class="btns_topo_tabelas" id="create_user_button">Insert new user</button>
                 <table id="users_table">
                     <thead>
                         <tr>
@@ -69,7 +101,7 @@
             </div>
 
             <div class="rooms_container">
-                <input type="button" value="Insert new room" id="create_room_button">
+                <input class="btns_topo_tabelas" type="button" value="Insert new room" id="create_room_button">
                 
                 <table id="rooms_table">
                     <thead>
@@ -197,7 +229,11 @@
             <button id="confirm_btn">Confirm</button>
         </div>
     </div>
-    
+
+
+</div>
+  
     <script src="main.js"></script>
 </body>
+
 </html>

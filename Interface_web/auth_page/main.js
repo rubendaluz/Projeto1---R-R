@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("token", token);
     console.log(token);
     // Redirect to the restricted access page
-    window.location.href = "../index/index.html";
+  window.location.href = "../dashboard.html";
   })
   .catch((error) => {
     console.error(error.message);
