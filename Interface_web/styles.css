@@ -202,8 +202,6 @@ background-color:var(--settings-btn-hover);
 }
 
 /* Ruben */
-
-
 .btns_topo_tabelas{
     padding: 5px;
     margin: 5px auto;
@@ -382,27 +380,11 @@ tr:hover {
     color: green;
     cursor: pointer;
 }
-
-
-
-
-
-
-
 #users_table, #create_user_button, #create_room_button {
     padding: 5px;
     margin: 5px auto;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
-
 
 /* Estilos gerais para tabelas */
 table {
@@ -419,7 +401,7 @@ td {
 }
 
 th {
-   background-color: #2C3E50;
+   /* background-color: #2C3E50; */
    color: #ffffff;
 }
 
@@ -465,11 +447,6 @@ table button {
 }
 
 
-
-.admins_container,
-.users_container,
-.rooms_container,
-.accesses_container,
 .new_user_form,
 .new_room_form,
 .edit_user_form,
@@ -482,6 +459,21 @@ table button {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.admins_container,
+.users_container,
+.rooms_container,
+.accesses_container{
+    margin-top: 20px;
+    padding: 20px;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.edit_user_form{
+    display: none;
+}
+
 #create_user_button, #create_admin_button, #create_room_button{
    background-color: #3498db;
    color: white;
@@ -490,9 +482,6 @@ table button {
    border-radius: 5px;
    cursor: pointer;
 }
-
-
-
 
 .action-icons {
     display: flex;
@@ -503,9 +492,6 @@ table button {
     text-decoration: none;
     margin: 0 5px;
 }
-
-
-
 
 .new_user_form,
 .new_room_form,
@@ -523,7 +509,6 @@ table button {
     left: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid #10b3db;
-
     box-shadow: 0px 0px 10px rgba(0, 195, 255, 0.952);
     z-index: 99;
 }
@@ -603,7 +588,6 @@ table button {
     color: green;
     cursor: pointer;
 }
-
 
 
 
