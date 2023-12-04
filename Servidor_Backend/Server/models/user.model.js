@@ -49,5 +49,10 @@ const UserModel = MultiAcces_DB.define("user", {
     type: BOOLEAN,
     allowNull: true,
   },
+  password: {
+    type: STRING,
+    allowNull: false,
+    unique: false,
+  }
 });
 export { UserModel };

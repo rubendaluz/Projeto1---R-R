@@ -1,13 +1,11 @@
 import { UserModel } from "../models/user.model.js";
 import { createToken } from "../utils/jwt.js";
+import bcrypt from 'bcrypt';
 
 
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-
-   
-
     // Delete the user
     await UserModel.destroy({ where: { id } });
 
@@ -45,15 +43,18 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
   try {
-    const { firstName, lastName, fingerPrint, nfcTag,  email, phone ,accessLevel, active  } = req.body;
+    const { firstName, lastName, fingerPrint, nfcTag,  email, phone ,accessLevel, active, password  } = req.body;
 
     const existingUser = await UserModel.findOne({ where: { email } });
 
     if (existingUser) {
       return res.status(409).json({ message: 'Email already exists' });
     }
+    
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const user = await UserModel.create({  firstName, lastName, fingerPrint, nfcTag,  email, phone, accessLevel, active });
+    const user = await UserModel.create({  firstName, lastName, fingerPrint, nfcTag,  email, phone, accessLevel, active, password: hashedPassword });
 
     return res.json(user);
   } catch (error) {

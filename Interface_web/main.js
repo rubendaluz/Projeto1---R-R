@@ -122,6 +122,7 @@ let close_new_user_form = () => {
                 accessLevel: user_permission_level,
                 active: true,
                 profilePic: null,
+                password: password
             };
 
             console.log(data);
@@ -160,7 +161,6 @@ let close_new_user_form = () => {
     
 
    open_new_room_form_button.addEventListener("click", (e) => {
-        console.log("aaaa");
         e.preventDefault()
         new_room_form.style.display = "block";
     })
