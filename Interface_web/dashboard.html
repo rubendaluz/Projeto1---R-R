@@ -52,11 +52,160 @@
         </div>
     </header>
 
+    <main>
+  
+            <section class="cards-section">
+                <div class="card">
+                    <div class="card-icon gradient-bg">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-info">
+                        <h2>Total Users</h2>
+                        <p>1500</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon gradient-bg">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="card-info">
+                        <h2>Total Admins</h2>
+                        <p>50</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon gradient-bg">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="card-info">
+                        <h2>Total Rooms</h2>
+                        <p>100</p>
+                    </div>
+                </div>
+            </section>
+    
+            <section class="recent-access-section">
+                <h2>Recent Access</h2>
+               
+                <div class="accesses_container">
+                    <table id="accesses_table">
+                        <thead>
+                            <tr>
+                                <th>User id</th>
+                                <th>Name</th>
+                                <th>Room</th>
+                                <th>Data and Time</th>
+                                <th>Access State</th>
+                                <th>Method used</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accesses_table_body">
+                            <tr>
+    
+                                <td>01</td>
+                                <td>John Doe</td>
+                                <td>A2.9</td>
+                                <td>20-10-2023/18:43</td>
+                                <td style="background-color: green; 
+                    color:white;">Allowed</td>
+                                <td>Biometric</td>
+    
+                            </tr>
+                            <tr>
+                                <td>02</td>
+                                <td>Jane Smith</td>
+                                <td>A2.9</td>
+                                <td>20-10-2023/17:31</td>
+                                <td style="background-color: red; color:black;">Denied</td>
+                                <td>NFC</td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        
+    </main>
 
 </div>
   
     
-   
+<style>
+
+
+
+
+
+.cards-section {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.card {
+    flex: 1;
+    background-color: #1e272e;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    margin: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-icon {
+    font-size: 40px;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}
+
+.gradient-bg {
+    background: linear-gradient(to bottom right, #3498db, #2c3e50);
+}
+
+.card-info {
+    padding: 20px;
+}
+
+.card-info h2 {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.card-info p {
+    font-size: 24px;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.recent-access-section {
+    text-align: center;
+    border: 1px solid #157fea;
+    padding: 10px;
+}
+
+.recent-access-section h2 {
+    color: #3498db;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.recent-access-list {
+    list-style: none;
+    padding: 0;
+}
+
+.recent-access-list li {
+    margin: 10px 0;
+    color: #ffffff;
+}
+
+</style>
 
 
 

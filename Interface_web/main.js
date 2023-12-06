@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
     getAllUsers() 
     getAllRooms()
 
+ const usersTableBody = document.querySelector("#users_table_body");
+usersTableBody.addEventListener('click', handleUserClick);
+
 const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
 const li_rooms = document.querySelector("#li_rooms");
@@ -30,7 +33,7 @@ li_admins.addEventListener("click", (e) => {
     new_room_form.style.display = "none"
 });
 
-    li_users.addEventListener("click", (e) => {
+li_users.addEventListener("click", (e) => {
     li_admins.style.background = "white";
     li_users.style.background = "grey"; 
     li_rooms.style.background = "white";
@@ -150,7 +153,7 @@ let close_new_user_form = () => {
             });
 
             //Adicionar users a tabela
-            add_user_to_table(null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
+            add_user_to_table("000",null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
             close_new_user_form();
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
@@ -262,16 +265,34 @@ let close_new_user_form = () => {
 
 })
 
+const handleUserClick = (event) => {
+    const target = event.target;
+
+    // Verifica se o clique ocorreu em um ícone de ação
+    if (target.classList.contains("fas")) {
+        // Ignora cliques em ícones de ação
+        return;
+    }
+
+    const clickedRow = event.target.closest('tr');
+
+    // Obtém os dados do usuário da linha clicada
+    const id = clickedRow.querySelector('td:nth-child(1)').textContent;
+    window.location.href = `user_details.html?id=${id}`;
+    
+};
 let generatePassword = () => {
     return Math.random().toString(36).slice(-8);
 }
 
-let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) => {
+let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLevel) => {
     const table_body = document.querySelector("#users_table_body");
     const name = firstName + " " + lastName;
 
     table_body.innerHTML += `
         <tr>
+           
+            <td>${id}</td>
             <td class="profile_pic">
             <img src="${profilePic}"
                                  alt="profile_pic">
@@ -318,7 +339,7 @@ let getAllUsers = () => {
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table(null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(user["id"],null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {
