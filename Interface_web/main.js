@@ -159,7 +159,41 @@ let close_new_user_form = () => {
         }  
     });
     
+    const deleteButtons = document.querySelectorAll(".delete_user_btn");
+    const confirmation_form = document.querySelector(".delete_user_form")
 
+    let openConfirmForm = () => {
+        confirmation_form.style.display = "flex";
+    }
+
+    let closeConfirmForm = () => {
+        confirmation_form.style.display = "none"
+    }
+
+    let deleteUser = () => {
+        const cancel_btn = document.querySelector("#cancel_btn")
+        const confirm_btn = document.querySelector("#confirm_btn")
+
+        openConfirmForm()
+        cancel_btn.addEventListener("click", (e) => {
+            closeConfirmForm()
+        })
+            
+        confirm_btn.addEventListener("click", (e) => {
+            console.log("deleted")
+            closeConfirmForm()
+        })
+    }
+
+    // Adicione o evento de clique a cada botão
+    deleteButtons.forEach(deleteButton => {
+        deleteButton.addEventListener("click", () => {
+            deleteUser();
+        });
+    });
+
+
+    // FunçõEs para editar os Rooms
    open_new_room_form_button.addEventListener("click", (e) => {
         e.preventDefault()
         new_room_form.style.display = "block";
@@ -231,42 +265,9 @@ let close_new_user_form = () => {
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
     });
-
-    const delete_user_button = document.querySelector(".delete_user_btn");
-    const confirmation_form = document.querySelector(".delete_user_form")
-
-    let openConfirmForm = () => {
-        confirmation_form.style.display = "flex";
-    }
-
-    let closeConfirmForm = () => {
-        confirmation_form.style.display = "none"
-    }
-
-    let deleteUser = () => {
-        const cancel_btn = document.querySelector("#cancel_btn")
-        const confirm_btn = document.querySelector("#confirm_btn")
-
-        openConfirmForm()
-        cancel_btn.addEventListener("click", (e) => {
-            closeConfirmForm()
-        })
-            
-        confirm_btn.addEventListener("click", (e) => {
-            console.log("deleted")
-            closeConfirmForm()
-        })
-    }
-
-    delete_user_button.addEventListener("click", () => {
-        deleteUser();
-    })
-
 })
 
-let generatePassword = () => {
-    return Math.random().toString(36).slice(-8);
-}
+
 
 let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) => {
     const table_body = document.querySelector("#users_table_body");
@@ -283,7 +284,7 @@ let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) 
             <td>${phone}</td>
             <td>${accessLevel}</td>
             <td class="action-icons">
-                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                <a href="#" title="Edit"><i class="fas fa-edit edit_user_btn"></i></a>
                 <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
             </td>
         </tr>
@@ -299,8 +300,8 @@ let add_room_to_table = (id, roomname, roomseclevel) => {
             <td>${roomname}</td>
             <td>${roomseclevel}</td>
             <td class="action-icons">
-                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" title="Edit"><i class="fas fa-edit edit_room_btn"></i></a>
+                <a href="#" title="Delete"><i class="fas fa-trash-alt delete_room_button"></i></a>
             </td>
         </tr>
     `

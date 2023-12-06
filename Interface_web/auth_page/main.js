@@ -37,13 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
   .catch((error) => {
     console.error(error.message);
   });
-
-
-    const dataJSON = JSON.stringify(data);
-    console.log(dataJSON);
-
-    //Eliminar esta linha abaixo quando descomentar o codigo de ligação a api
-    // window.location.href = "../index.html";
   });
 
 });
