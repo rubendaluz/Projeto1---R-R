@@ -1,5 +1,6 @@
 import { AdminModel } from '../models/admin.model.js';
 import bcrypt from 'bcrypt';
+import { createToken } from '../utils/jwt.js';
 
 export const registerAdmin = async (req, res) => {
   try {
@@ -28,19 +29,20 @@ export const loginAdmin = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-const admin = await AdminModel.findOne({ where: { username } });
+    const admin = await AdminModel.findOne({ where: { username } });
 
     if (!admin) {
       return res.status(401).json({ message: 'Admin not found' });
     }
 
- const passwordMatch = await bcrypt.compare(password, admin.password);
+    const passwordMatch = await bcrypt.compare(password, admin.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-  const token = createToken({
+    const token = createToken
+      ({
       id: admin.id,
       username: admin.username,
       permission_level: admin.permission_level,

@@ -22,10 +22,10 @@ const new_room_form = document.querySelector(".new_room_form");
 
     
 li_admins.addEventListener("click", (e) => {
-    li_admins.style.background = "grey";
-    li_users.style.background = "white"; 
-    li_rooms.style.background = "white";
-    li_accesses.style.background = "white";
+    li_admins.classList.add("btnClicado")
+    li_users.classList.remove("btnClicado")
+    li_rooms.classList.remove("btnClicado")
+    li_accesses.classList.remove("btnClicado")
     admins_container.style.display = "block"
     users_container.style.display = "none";
     accesses_container.style.display = "none";
@@ -34,10 +34,10 @@ li_admins.addEventListener("click", (e) => {
 });
 
 li_users.addEventListener("click", (e) => {
-    li_admins.style.background = "white";
-    li_users.style.background = "grey"; 
-    li_rooms.style.background = "white";
-    li_accesses.style.background = "white";
+    li_admins.classList.remove("btnClicado")
+    li_users.classList.add("btnClicado")
+    li_rooms.classList.remove("btnClicado")
+    li_accesses.classList.remove("btnClicado")
     users_container.style.display = "block";
     accesses_container.style.display = "none";
     rooms_container.style.display = "none"
@@ -47,10 +47,10 @@ li_users.addEventListener("click", (e) => {
 
 li_rooms.addEventListener("click", (e) => {
     
-    li_admins.style.background = "white"; 
-    li_users.style.background = "white"; 
-    li_rooms.style.background = "grey";
-    li_accesses.style.background = "white";
+    li_admins.classList.remove("btnClicado") 
+    li_users.classList.remove("btnClicado")
+    li_rooms.classList.add("btnClicado")
+    li_accesses.classList.remove("btnClicado")
     users_container.style.display = "none"
     accesses_container.style.display = "none";
     rooms_container.style.display = "block"
@@ -59,10 +59,10 @@ li_rooms.addEventListener("click", (e) => {
 });
 
     li_accesses.addEventListener("click", (e) => {
-    li_admins.style.background = "white";
-    li_users.style.background = "white"; 
-    li_rooms.style.background = "white";
-    li_accesses.style.background = "grey";
+    li_admins.classList.remove("btnClicado")
+    li_users.classList.remove("btnClicado") 
+    li_rooms.classList.remove("btnClicado")
+    li_accesses.classList.add("btnClicado")
     users_container.style.display = "none";
     accesses_container.style.display = "block";
     rooms_container.style.display = "none"
@@ -97,6 +97,8 @@ let close_new_user_form = () => {
         const user_phone_number = document.querySelector("#new_user_phone_number").value;
         const user_email = document.querySelector("#new_user_email").value;
         const user_permission_level = document.querySelector("#new_user_permission_level").value;
+        const password = gerarSenhaForte();
+        console.log(password)
         if (!user_permission_level) {
             console.log("Permissiao dever estar entre 0-5");
         } else if (!user_first_name) {
@@ -123,6 +125,7 @@ let close_new_user_form = () => {
                 accessLevel: user_permission_level,
                 active: true,
                 profilePic: null,
+                password: password
             };
 
             console.log(data);
@@ -161,7 +164,6 @@ let close_new_user_form = () => {
     
 
    open_new_room_form_button.addEventListener("click", (e) => {
-        console.log("aaaa");
         e.preventDefault()
         new_room_form.style.display = "block";
     })
@@ -339,7 +341,7 @@ let getAllUsers = () => {
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table(user["id"],null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {
@@ -367,5 +369,21 @@ let getAllRooms = () => {
     .catch(error => {
         console.error(`Error: ${error.message}`);
     });
+}
+
+function gerarSenhaForte() {
+  // Definir os caracteres permitidos na senha
+  const caracteresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+    let senha = "";
+    let comprimento = 12;
+  
+  // Gerar a senha com base no comprimento fornecido
+  for (let i = 0; i < comprimento; i++) {
+    const indiceAleatorio = Math.floor(Math.random() * caracteresPermitidos.length);
+    senha += caracteresPermitidos.charAt(indiceAleatorio);
+  }
+
+  return senha;
 }
 

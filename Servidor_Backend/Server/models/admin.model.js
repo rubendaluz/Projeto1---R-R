@@ -24,9 +24,7 @@ const AdminModel = MultiAcces_DB.define("adminUser", {
   },
   permission_level: {
     type: INTEGER,
-    allowNull: false,
-    unique: true,
-  
+    allowNull: false,  
   },
   active: {
     type: BOOLEAN,
