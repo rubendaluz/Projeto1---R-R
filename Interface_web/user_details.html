@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiAccess User details</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="user_details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+<body>
+    <div class="left_container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../Interface_web/auth_page/img/background.png" alt="Logo">
+                <span class="title">MultiAccess</span>
+            </div>
+            <ul class="menu">
+                <li class="menu_buttons" id="li_dashboard"><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="menu_buttons" id="li_admins"><a href="admins.html"><i class="fas fa-users"></i> Admins</a></li>
+                <li class="menu_buttons" id="li_users"><a href="users.html"><i class="fas fa-user"></i> Users</a></li>
+                <li class="menu_buttons" id="li_rooms"><a href="rooms.html"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li class="menu_buttons" id="li_accesses"><a href="accesses.html"><i class="fas fa-fingerprint"></i> Accesses</a></li>
+            </ul>            
+            <div class="sidebar-footer">
+                <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
+                <button class="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </aside>
+    </div>
+
+    
+    <div class="right_container">
+
+    
+
+
+
+    <header>
+       
+        <div class="header">
+            <h1 class="title">Dashboard</h1>
+            <div class="user-profile">
+                <img class="user-avatar" src="../Interface_web/auth_page/img/background.png" alt="User Avatar">
+                <span class="user-name">John Doe</span>
+            </div>
+           
+            
+          
+        </div>
+    </header>
+
+
+    <main>
+        <div class="user-details-container">
+    
+            <div class="user-details">
+                <div class="profile-picture">
+                    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+        
+                    <img src="https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="User Profile">
+                </div>
+                <div class="details">
+                    <div class="detail">
+                        <label for="id">ID:</label>
+                        <span id="id">123</span>
+                    </div>
+                    <div class="detail">
+                        <label for="firstName">First Name:</label>
+                        <span id="firstName"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="lastName">Last Name:</label>
+                        <span id="lastName"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="nfctag">NFCTag:</label>
+                        <span id="nfctag"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="fingerprint">Fingerprint:</label>
+                        <span id="fingerprint"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="email">Email:</label>
+                        <span id="email"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="phone">Phone:</label>
+                        <span id="phone">1</span>
+                    </div>
+                    <div class="detail">
+                        <label for="accessLevel">Access Level:</label>
+                        <span id="accessLevel"></span>
+                    </div>
+                    <div class="detail">
+                        <label for="active">Active:</label>
+                        <span id="active"></span>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+</div>
+  
+
+
+
+
+
+
+<script src="user-details.js"></script>
+
+</body>
+

@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
     getAllUsers() 
     getAllRooms()
 
+ const usersTableBody = document.querySelector("#users_table_body");
+usersTableBody.addEventListener('click', handleUserClick);
+
 const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
 const li_rooms = document.querySelector("#li_rooms");
@@ -153,7 +156,7 @@ let close_new_user_form = () => {
             });
 
             //Adicionar users a tabela
-            add_user_to_table(null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
+            add_user_to_table("000",null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
             close_new_user_form();
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
@@ -265,16 +268,28 @@ let close_new_user_form = () => {
             // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
         }  
     });
+
+    const delete_user_button = document.querySelector(".delete_user_btn");
+
+
+    delete_user_button.addEventListener("click", () => {
+        deleteUser();
+    })
+
 })
 
+let generatePassword = () => {
+    return Math.random().toString(36).slice(-8);
+}
 
-
-let add_user_to_table = (profilePic,firstName,lastName,email,phone,accessLevel) => {
+let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLevel) => {
     const table_body = document.querySelector("#users_table_body");
     const name = firstName + " " + lastName;
 
     table_body.innerHTML += `
         <tr>
+           
+            <td>${id}</td>
             <td class="profile_pic">
             <img src="${profilePic}"
                                  alt="profile_pic">
@@ -321,7 +336,7 @@ let getAllUsers = () => {
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(id,"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {

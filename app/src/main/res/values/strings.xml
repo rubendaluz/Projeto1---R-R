@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AplicacaoMovel</string>
+    <string name="aid_group_description">Descrição do Grupo AID</string>
 </resources>
