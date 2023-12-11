@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
     createAccess, getAccessesByUser,
     getAccessesByDate, getAccessesByArea,
-    getAccessesByHour
+    getAccessesByHour, getAllAccesses
 } from '../controllers/acesses.controller.js';
 
 const accessesRoutes = Router();
@@ -11,16 +11,19 @@ const accessesRoutes = Router();
 accessesRoutes.post('/create', createAccess);
 
 // Rota para buscar acessos por usuário
-router.get('/acesses/:userId', getAccessesByUser);
+router.get('/:userId', getAccessesByUser);
 
 // Rota para buscar acessos por data
-router.get('/acesses/:date', getAccessesByDate);
+router.get('/:date', getAccessesByDate);
 
 // Rota para buscar acessos por hora
-router.get('/acesses/:hour', getAccessesByHour);
+router.get('/:hour', getAccessesByHour);
 
 // Rota para buscar acessos por área
-router.get('/acesses/:areaId', getAccessesByArea);
+router.get('/:areaId', getAccessesByArea);
+
+// Rota para buscar todos os acessos
+router.get('/', getAllAccesses);
 
 
 export { accessesRoutes };

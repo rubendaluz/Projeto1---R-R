@@ -73,3 +73,14 @@ export const getAccessesByArea = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch accesses by area" });
   }
 };
+
+export const getAllAccesses = async (req, res) => {
+  try {
+    const accesses = await AcessesModel.findAll();
+
+    return res.json(accesses);
+  } catch (error) {
+    console.error("Error fetching all accesses:", error);
+    return res.status(500).json({ message: "Failed to fetch all accesses" });
+  }
+};
