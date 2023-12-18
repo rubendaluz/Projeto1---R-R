@@ -37,11 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
   .catch((error) => {
     console.error(error.message);
   });
-
-
-    const dataJSON = JSON.stringify(data);
-    console.log(dataJSON);
-
   });
 
 });

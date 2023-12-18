@@ -162,7 +162,41 @@ let close_new_user_form = () => {
         }  
     });
     
+    const deleteButtons = document.querySelectorAll(".delete_user_btn");
+    const confirmation_form = document.querySelector(".delete_user_form")
 
+    let openConfirmForm = () => {
+        confirmation_form.style.display = "flex";
+    }
+
+    let closeConfirmForm = () => {
+        confirmation_form.style.display = "none"
+    }
+
+    let deleteUser = () => {
+        const cancel_btn = document.querySelector("#cancel_btn")
+        const confirm_btn = document.querySelector("#confirm_btn")
+
+        openConfirmForm()
+        cancel_btn.addEventListener("click", (e) => {
+            closeConfirmForm()
+        })
+            
+        confirm_btn.addEventListener("click", (e) => {
+            console.log("deleted")
+            closeConfirmForm()
+        })
+    }
+
+    // Adicione o evento de clique a cada botão
+    deleteButtons.forEach(deleteButton => {
+        deleteButton.addEventListener("click", () => {
+            deleteUser();
+        });
+    });
+
+
+    // FunçõEs para editar os Rooms
    open_new_room_form_button.addEventListener("click", (e) => {
         e.preventDefault()
         new_room_form.style.display = "block";
@@ -236,30 +270,7 @@ let close_new_user_form = () => {
     });
 
     const delete_user_button = document.querySelector(".delete_user_btn");
-    const confirmation_form = document.querySelector(".delete_user_form")
 
-    let openConfirmForm = () => {
-        confirmation_form.style.display = "flex";
-    }
-
-    let closeConfirmForm = () => {
-        confirmation_form.style.display = "none"
-    }
-
-    let deleteUser = () => {
-        const cancel_btn = document.querySelector("#cancel_btn")
-        const confirm_btn = document.querySelector("#confirm_btn")
-
-        openConfirmForm()
-        cancel_btn.addEventListener("click", (e) => {
-            closeConfirmForm()
-        })
-            
-        confirm_btn.addEventListener("click", (e) => {
-            console.log("deleted")
-            closeConfirmForm()
-        })
-    }
 
     delete_user_button.addEventListener("click", () => {
         deleteUser();
@@ -267,22 +278,6 @@ let close_new_user_form = () => {
 
 })
 
-const handleUserClick = (event) => {
-    const target = event.target;
-
-    // Verifica se o clique ocorreu em um ícone de ação
-    if (target.classList.contains("fas")) {
-        // Ignora cliques em ícones de ação
-        return;
-    }
-
-    const clickedRow = event.target.closest('tr');
-
-    // Obtém os dados do usuário da linha clicada
-    const id = clickedRow.querySelector('td:nth-child(1)').textContent;
-    window.location.href = `user_details.html?id=${id}`;
-    
-};
 let generatePassword = () => {
     return Math.random().toString(36).slice(-8);
 }
@@ -304,7 +299,7 @@ let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLev
             <td>${phone}</td>
             <td>${accessLevel}</td>
             <td class="action-icons">
-                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
+                <a href="#" title="Edit"><i class="fas fa-edit edit_user_btn"></i></a>
                 <a href="#" title="Delete"><i class="fas fa-trash-alt delete_user_btn"></i></a>
             </td>
         </tr>
@@ -320,8 +315,8 @@ let add_room_to_table = (id, roomname, roomseclevel) => {
             <td>${roomname}</td>
             <td>${roomseclevel}</td>
             <td class="action-icons">
-                <a href="#" title="Edit"><i class="fas fa-edit"></i></a>
-                <a href="#" title="Delete"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" title="Edit"><i class="fas fa-edit edit_room_btn"></i></a>
+                <a href="#" title="Delete"><i class="fas fa-trash-alt delete_room_button"></i></a>
             </td>
         </tr>
     `
@@ -340,7 +335,7 @@ let getAllUsers = () => {
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table( user["id"], "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(id,"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {

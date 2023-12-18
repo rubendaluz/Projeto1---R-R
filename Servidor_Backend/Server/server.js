@@ -32,7 +32,6 @@ server.use("/api", api);
 //Fazer ligação à Base de Dados
 // npm install --save mysql2
 try {
-
   MultiAcces_DB.sync({ force: false, alter: true });
 } catch (error) {
   console.info(error);
