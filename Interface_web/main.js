@@ -335,13 +335,12 @@ let getAllUsers = () => {
         if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
         }
-         
         return response.json(); // or response.text() if the response is not JSON
     })
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table(null, user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table( user["id"], "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {

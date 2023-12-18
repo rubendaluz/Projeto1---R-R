@@ -216,190 +216,25 @@ margin-bottom: 20px;
 background-color:var(--settings-btn-hover);
 }
 
-/* Ruben */
-.btns_topo_tabelas{
-    padding: 5px;
-    margin: 5px auto;
-    cursor: pointer;
-}
-
-.btnClicado{
-   background-color: #515151;
-}
-.menu_buttons{
-    padding: 10px;
-    cursor: pointer;
-}
-
-.menu_buttons:hover{
-    background-color: grey;
-}
-
-table {
-   width: 80%;
-   border-collapse: collapse;
-   margin: 50px auto;
-}
-
-table, td {
-   border: 1px solid #ccc;
-}
-
-th, td {
-   padding: 10px;
-   text-align: center;
-}
-
-#users_table  td{
-    height:100px;
-}
-
-th {
-   border: 1px solid #3498db;
-}
-
-tr:hover {
-   background-color: grey;
-}
-
-.fas{
-   color: white;
-}
-
-.profile_pic > img{
-    height: 90%;
-    border-radius: 50%;
-}
-
-.action-icons a {
-    text-decoration: none;
-    margin: 0 5px;
-}
-
-.new_user_form{
-    min-width: 300px;
-    width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--menu-btn-bg);
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    z-index: 99;
-}
 
 
-.new_room_form{
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid var(--menu-btn-bg);
-    border-radius: 5px;
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #f5f5f5;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    z-index: 99;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.button-container {
-    text-align: center;
-}
-
-.button-container button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Style for the close button (cross) */
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-}
-
-.accesses_container, .rooms_container, .users_container{
-    display: none;
-}
 
 
-/* Formulario de eliminação de utilizadores */
 
-.delete_user_form{
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    display:none;
-    flex-direction: column;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--menu-btn-bg);
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    z-index: 99;
-}
-
-.delete_user_form_buttons{
-    justify-content: center;
-    align-content: center;
-    flex-direction: row;
-    margin: auto;
-}
-
-.delete_user_form_buttons > *{
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px 8px auto;
-    
-}
-
-#cancel_btn{
-    background: red;
-    color: white;
-    cursor: pointer;
-}
-
-#confirm_btn{
-    color: green;
-    cursor: pointer;
-}
 #users_table, #create_user_button, #create_room_button {
     padding: 5px;
     margin: 5px auto;
     cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
 
 /* Estilos gerais para tabelas */
 table {
@@ -416,7 +251,7 @@ td {
 }
 
 th {
-   /* background-color: #2C3E50; */
+   background-color: #2C3E50;
    color: #ffffff;
 }
 
@@ -462,6 +297,11 @@ table button {
 }
 
 
+
+.admins_container,
+.users_container,
+.rooms_container,
+.accesses_container,
 .new_user_form,
 .new_room_form,
 .edit_user_form,
@@ -474,21 +314,6 @@ table button {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.admins_container,
-.users_container,
-.rooms_container,
-.accesses_container{
-    margin-top: 20px;
-    padding: 20px;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.edit_user_form{
-    display: none;
-}
-
 #create_user_button, #create_admin_button, #create_room_button{
    background-color: #3498db;
    color: white;
@@ -497,6 +322,9 @@ table button {
    border-radius: 5px;
    cursor: pointer;
 }
+
+
+
 
 .action-icons {
     display: flex;
@@ -507,6 +335,9 @@ table button {
     text-decoration: none;
     margin: 0 5px;
 }
+
+
+
 
 .new_user_form,
 .new_room_form,
@@ -524,6 +355,7 @@ table button {
     left: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid #10b3db;
+
     box-shadow: 0px 0px 10px rgba(0, 195, 255, 0.952);
     z-index: 99;
 }
@@ -603,6 +435,7 @@ table button {
     color: green;
     cursor: pointer;
 }
+
 
 
 
