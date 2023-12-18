@@ -1,4 +1,5 @@
 import { AcessesModel } from "../models/access.model.js";
+import { Op } from "sequelize";
 
 
 export const createAccess = async (req, res) => {
