@@ -4,8 +4,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
     getAllUsers() 
     getAllRooms()
 
+
  const usersTableBody = document.querySelector("#users_table_body");
 usersTableBody.addEventListener('click', handleUserClick);
+usersTableBody.innerHTML = "";
 
 const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
@@ -88,112 +90,73 @@ let close_new_user_form = () => {
     new_user_form.style.display = "none";
 }
 
-    const add_new_user_button = document.querySelector("#add_new_user_button");
+const add_new_user_button = document.querySelector("#add_new_user_button");
+const edit_user_form = document.querySelector(".new_user_form");
 
-    add_new_user_button.addEventListener("click", (e) => {
-        // const user_profile_img = document.querySelector("#new_user_profile_img").value
-        const user_first_name = document.querySelector("#new_user_first_name").value;
-        const user_last_name = document.querySelector("#new_user_last_name").value;
-        const user_phone_number = document.querySelector("#new_user_phone_number").value;
-        const user_email = document.querySelector("#new_user_email").value;
-        const user_permission_level = document.querySelector("#new_user_permission_level").value;
-        const password = gerarSenhaForte();
-        console.log(password)
-        if (!user_permission_level) {
-            console.log("Permissiao dever estar entre 0-5");
-        } else if (!user_first_name) {
-            console.log("Sem username");
-        } else if (!user_email) {
-            console.log("Sem email para o utilizador");
-        } else if (!user_last_name) {
-            console.log("Ultimo nome não introduzido")
-        } else if (!user_phone_number) {
-            console.log("Ultimo nome não introduzido")
-        } else{
-            // Adcicionar os dados a base de dados
-            // URL para a qual você deseja fazer a solicitação POST
-            const url = "http://localhost:4242/api/user/register/";
+add_new_user_button.addEventListener("click", (e) => {
+    e.preventDefault()
+    const user_first_name = document.querySelector("#new_user_first_name").value;
+    const user_last_name = document.querySelector("#new_user_last_name").value;
+    const user_phone_number = document.querySelector("#new_user_phone_number").value;
+    const user_email = document.querySelector("#new_user_email").value;
+    const user_permission_level = document.querySelector("#new_user_permission_level").value;
+    const password = gerarSenhaForte();
+ 
+    // Check if you are in edit mode or add mode
+    const isEditMode = edit_user_form.getAttribute("data-edit-mode") === "true";
+    userId = edit_user_form.getAttribute("userId");
+    // Build data object
+    const data = {
+        firstName: user_first_name,
+        lastName: user_last_name,
+        fingerPrint: null,
+        nfcTag: null,
+        email: user_email,
+        phone: user_phone_number,
+        accessLevel: user_permission_level,
+        active: true,
+        profilePic: null,
+        password: password
+    };
 
-            // Dados que você deseja enviar no corpo da solicitação
-            const data = {
-                firstName: user_first_name,
-                lastName: user_last_name,
-                fingerPrint: null,
-                nfcTag: null,
-                email: user_email,
-                phone: user_phone_number,
-                accessLevel: user_permission_level,
-                active: true,
-                profilePic: null,
-                password: password
-            };
+    // URL for API endpoint
+    const url = isEditMode ? `http://localhost:4242/api/user/${userId}` : "http://localhost:4242/api/user/register/";
 
-            console.log(data);
+    // HTTP method for API request
+    const method = isEditMode ? "PUT" : "POST";
 
-            // Configuração da solicitação
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
-            },
-                body: JSON.stringify(data) // Converte os dados em JSON
-            };
+    // Configuration for the fetch request
+    const options = {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
 
-            // Faz a solicitação usando o fetch
-            fetch(url, options)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
-                    } else {
-                        throw new Error('Falha na solicitação POST');
-                    }
-            })
-            .then(data => {
-                console.log(data); // Faça algo com os dados de resposta
-            })
-            .catch(error => {
-                console.error(error); // Trate erros de solicitação
-            });
-
-            //Adicionar users a tabela
-            add_user_to_table("000",null,user_first_name,user_last_name,user_email,user_phone_number,user_permission_level);
+    // Make the API request
+    fetch(url, options)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to make the API request');
+            }
+        })
+        .then(data => {
+            console.log(data); // Handle the response data
             close_new_user_form();
-            // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
-        }  
-    });
-    
-    const deleteButtons = document.querySelectorAll(".delete_user_btn");
-    const confirmation_form = document.querySelector(".delete_user_form")
-
-    let openConfirmForm = () => {
-        confirmation_form.style.display = "flex";
-    }
-
-    let closeConfirmForm = () => {
-        confirmation_form.style.display = "none"
-    }
-
-    let deleteUser = () => {
-        const cancel_btn = document.querySelector("#cancel_btn")
-        const confirm_btn = document.querySelector("#confirm_btn")
-
-        openConfirmForm()
-        cancel_btn.addEventListener("click", (e) => {
-            closeConfirmForm()
         })
-            
-        confirm_btn.addEventListener("click", (e) => {
-            console.log("deleted")
-            closeConfirmForm()
-        })
-    }
-
-    // Adicione o evento de clique a cada botão
-    deleteButtons.forEach(deleteButton => {
-        deleteButton.addEventListener("click", () => {
-            deleteUser();
+        .catch(error => {
+            console.error(error);
         });
-    });
+
+    // Additional code for updating the table, closing the form, etc.
+});
+
+
+
+  
 
 
     // FunçõEs para editar os Rooms
@@ -269,15 +232,35 @@ let close_new_user_form = () => {
         }  
     });
 
-    const delete_user_button = document.querySelector(".delete_user_btn");
-
-
-    delete_user_button.addEventListener("click", () => {
-        deleteUser();
-    })
-
+  
 })
 
+const handleUserClick = (event) => {
+    const target = event.target;
+    
+    const clickedRow = event.target.closest('tr');
+
+    const id = clickedRow.querySelector('td:nth-child(1)').textContent;
+    
+
+    // Verifica se o clique ocorreu em um ícone de ação
+    if (target.classList.contains("delete_user_btn")) {
+        
+        deleteUser(id);
+    } else if (target.classList.contains("edit_user_btn")) {
+        const new_user_form = document.querySelector(".new_user_form");
+     
+        new_user_form.setAttribute("data-edit-mode", "true");
+        new_user_form.setAttribute("userId", id);
+        setEditFormData(id);
+        new_user_form.style.display = "block";
+        
+    } else {
+       
+        window.location.href = `user_details.html?id=${id}`;
+    }
+    
+};
 let generatePassword = () => {
     return Math.random().toString(36).slice(-8);
 }
@@ -323,6 +306,8 @@ let add_room_to_table = (id, roomname, roomseclevel) => {
 }
 
 let getAllUsers = () => {
+
+
     const url = 'http://localhost:4242/api/user/';
 
     fetch(url)
@@ -330,13 +315,12 @@ let getAllUsers = () => {
         if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
         }
-         
-        return response.json(); // or response.text() if the response is not JSON
+        return response.json(); 
     })
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table(id,"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(user["id"],"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {
@@ -382,3 +366,72 @@ function gerarSenhaForte() {
   return senha;
 }
 
+
+
+
+
+function deleteUser (userId) {
+    const cancel_btn = document.querySelector("#cancel_btn")
+    const confirm_btn = document.querySelector("#confirm_btn")
+    const confirmation_form = document.querySelector(".delete_user_form")
+    confirmation_form.style.display = "flex";
+
+   
+    cancel_btn.addEventListener("click", (e) => {
+        confirmation_form.style.display = "none";
+
+    })
+        
+    confirm_btn.addEventListener("click", (e) => {
+const apiUrl = `http://localhost:4242/api/user/${userId}`;
+
+fetch(apiUrl, {
+  method: 'DELETE',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    console.log('User deleted successfully');
+  confirmation_form.style.display = "none";
+
+  })
+  .catch(error => {
+    console.error('Error during user deletion:', error);
+  });
+
+    })
+}
+
+function setEditFormData(id) {
+
+    
+    const url = `http://localhost:4242/api/user/${id}`;
+  
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+  
+            return response.json();
+        })
+        .then(user => {
+            // Preenche os detalhes do usuário na página
+
+           document.querySelector("#new_user_first_name").value = user.firstName;
+      document.querySelector("#new_user_last_name").value = user.lastName;
+      document.querySelector("#new_user_phone_number").value = user.phone;
+      document.querySelector("#new_user_email").value = user.email;
+      document.querySelector("#new_user_permission_level").value = user.accessLevel;
+          
+        })
+        .catch(error => {
+            console.error(`Error: ${error.message}`);
+        });
+      // Set the form data based on the user object
+     
+  }

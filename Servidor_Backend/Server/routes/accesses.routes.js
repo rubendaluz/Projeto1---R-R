@@ -11,16 +11,16 @@ const accessesRoutes = Router();
 accessesRoutes.post('/create', createAccess);
 
 // Rota para buscar acessos por usuário
-accessesRoutes.get('/user/:userId', getAccessesByUser);
+router.get('/:userId', getAccessesByUser);
 
 // Rota para buscar acessos por data
-accessesRoutes.get('/date/:date', getAccessesByDate);
+router.get('/:date', getAccessesByDate);
 
 // Rota para buscar acessos por hora
-accessesRoutes.get('/hour/:hour', getAccessesByHour);
+router.get('/:hour', getAccessesByHour);
 
 // Rota para buscar acessos por área
-accessesRoutes.get('/area/:areaId', getAccessesByArea);
+router.get('/:areaId', getAccessesByArea);
 
 // Rota para buscar todos os acessos
 accessesRoutes.get('/', getAllAccesses);
