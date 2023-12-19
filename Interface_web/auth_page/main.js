@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const username = document.querySelector("#username").value;
     const password = document.querySelector("#password").value;
+    const error_message = document.querySelector(".form-error");
 
     console.log(username, password)
     // Replace with the URL of the login endpoint
@@ -31,11 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = data.token;
     localStorage.setItem("token", token);
     console.log(token);
+    error_message.style.display = "none";
     // Redirect to the restricted access page
   window.location.href = "../dashboard.html";
   })
   .catch((error) => {
     console.error(error.message);
+    error_message.innerHTML += `<p color="red"> Credenciais inválidas. Tente novamente</p>`
   });
   });
 

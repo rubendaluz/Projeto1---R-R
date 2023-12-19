@@ -17,7 +17,7 @@ export const createAccess = async (req, res) => {
 
 export const getAccessesByUser = async (req, res) => {
   try {
-    const userId = req.params.userId; // Assumindo que você está passando o ID do usuário como parâmetro
+    const userId = req.params.userId; // Assumindo que você está passando o ID do utilizador como parâmetro
 
     const accesses = await AcessesModel.findAll({
       where: { id_user: userId },
@@ -42,6 +42,26 @@ export const getAccessesByDate = async (req, res) => {
   } catch (error) {
     console.error("Error fetching accesses by date:", error);
     return res.status(500).json({ message: "Failed to fetch accesses by date" });
+  }
+};
+
+export const getAccessesByDateRange = async (req, res) => {
+  try {
+    const startDate = req.params.startDate; // Assumindo que você está passando a data de início como parâmetro
+    const endDate = req.params.endDate; // Assumindo que você está passando a data de término como parâmetro
+
+    const accesses = await AcessesModel.findAll({
+      where: {
+        data_hora_entrada: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    return res.json(accesses);
+  } catch (error) {
+    console.error("Error fetching accesses by date range:", error);
+    return res.status(500).json({ message: "Failed to fetch accesses by date range" });
   }
 };
 
@@ -83,5 +103,19 @@ export const getAllAccesses = async (req, res) => {
   } catch (error) {
     console.error("Error fetching all accesses:", error);
     return res.status(500).json({ message: "Failed to fetch all accesses" });
+  }
+};
+
+export const getRecentAccesses = async (req, res) => {
+  try {
+    const recentAccesses = await AcessesModel.findAll({
+      order: [['data_hora_entrada', 'DESC']], // Ordena pela coluna 'data_hora_entrada' em ordem decrescente
+      limit: 10, // Retorna apenas os 10 últimos registros
+    });
+
+    return res.json(recentAccesses);
+  } catch (error) {
+    console.error("Error fetching recent accesses:", error);
+    return res.status(500).json({ message: "Failed to fetch recent accesses" });
   }
 };
