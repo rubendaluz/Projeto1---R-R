@@ -69,7 +69,7 @@
                     
                     </tr>
                 </thead>
-                <tbody id="users_table_body">
+                <tbody id="users_table_body" onclick="handleUserClick()">
                                       
                     <!-- Add more rows as needed -->
                 </tbody>
@@ -87,7 +87,7 @@
 
 <div class="new_user_form" userId="" data-edit-mode="false">
     <span class="close-button" id="new_user_form_close_button">&times;</span>
-    <h2 class="form_h2">Add a New User</h2>
+    <h2 class="form_h2" id="title_add_edit_form">Add a New User</h2>
    
     <form  method="post">
         <div class="form-group img_form-group">
@@ -138,11 +138,7 @@
 </div>
 
 
-<div class="edit_user_form">
-    <form action="">
-        
-    </form>
-</div>
+
 
 <div class="delete_user_form">
     <p>Are you sure you want to delete this user?</p>

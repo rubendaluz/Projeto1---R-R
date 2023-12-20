@@ -262,25 +262,20 @@ td.profile_pic img {
  margin-right: 10px;
 }
 
-td[style*="background-color: green;"],
-td[style*="background-color: red;"] {
- color: #ffffff;
+.action-icons a {
+  margin-right: 10px; /* Add some spacing between the action icons */
+  color: var(--borda_hover); /* Set the color of the icons */
+  text-decoration: none; /* Remove the default underline for links */
+  font-size: 18px; /* Adjust the font size of the icons */
+  transition: color 0.3s ease; /* Add a smooth color transition on hover */
 }
 
-/* Estilos específicos para botões em tabelas */
-table button {
- background-color: #3498db;
- color: white;
- padding: 10px 15px;
- border: none;
- border-radius: 5px;
- cursor: pointer;
- transition: background-color 0.3s;
+.action-icons a:hover {
+  color: #e74c3c;
 }
 
-table button:hover {
- background-color: #2980b9;
-}
+
+
 /* Efeito hover para linhas da tabela */
 tr:hover {
   background-color: #34495E;
@@ -289,11 +284,6 @@ tr:hover {
 /* Efeito hover para botões nas tabelas */
 table button:hover {
   background-color: #2980b9;
-}
-
-/* Altera o cursor para indicar interatividade nos botões */
-table button {
-  cursor: pointer;
 }
 
 
@@ -326,22 +316,12 @@ table button {
 
 
 
-.action-icons {
-  display: flex;
-  justify-content: space-around;
-}
-
-.action-icons a {
-  text-decoration: none;
-  margin: 0 5px;
-}
 
 
 
 
 .new_user_form,
-.new_room_form,
-.delete_user_form {
+.new_room_form {
   max-width: 500px;
   margin: 0 auto;
   padding: 15px;
@@ -359,6 +339,21 @@ width: 60%;
   box-shadow: 0px 0px 10px rgba(0, 195, 255, 0.952);
   z-index: 99;
 }
+
+.delete_user_form{
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  width: 300px;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #10b3db;
+  z-index: 99;
+
+  }
 
 
 .form_h2{
@@ -494,3 +489,28 @@ width: 60%;
 align-items: center;
 
 }
+
+
+
+
+/* Styles for the new room form */
+.new_room_form {
+ 
+  height: 30%;
+}
+#roomForm {
+  margin: 40px auto;
+}
+
+.close-button:hover {
+  color: #e74c3c;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ffffff;
+}
+
+
+
+

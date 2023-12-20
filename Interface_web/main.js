@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     getAllRecentAccesses()
 
 
- const usersTableBody = document.querySelector("#users_table_body");
-usersTableBody.addEventListener('click', handleUserClick);
-usersTableBody.innerHTML = "";
+
 
 const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
@@ -20,8 +18,6 @@ const rooms_container = document.querySelector(".rooms_container");
 const accesses_container = document.querySelector(".accesses_container");
 const open_new_user_form_button = document.querySelector("#create_user_button");
 const new_user_form = document.querySelector(".new_user_form");
-const open_new_room_form_button = document.querySelector("#create_room_button");
-const new_room_form = document.querySelector(".new_room_form");    
 
     
 li_admins.addEventListener("click", (e) => {
@@ -73,7 +69,11 @@ li_rooms.addEventListener("click", (e) => {
 });
 
 open_new_user_form_button.addEventListener("click", () => {
+    document.querySelector("#add_new_user_button").textContent= "Add new User";
+    document.querySelector("#title_add_edit_form").textContent= "Add User";
     new_user_form.style.display = "block";
+    
+
 });
 
 const new_user_form_close_button = document.querySelector("#new_user_form_close_button");
@@ -157,86 +157,23 @@ add_new_user_button.addEventListener("click", (e) => {
 
 
 
-  
+const new_room_form_close_button = document.querySelector("#new_room_form_close_button");
 
-
-    // FunçõEs para editar os Rooms
-   open_new_room_form_button.addEventListener("click", (e) => {
-        e.preventDefault()
-        new_room_form.style.display = "block";
-    })
-
-    const new_room_form_close_button = document.querySelector("#new_room_form_close_button");
-
-    new_room_form_close_button.addEventListener("click", (e) => {      
+new_room_form_close_button.addEventListener("click", (e) => {      
         close_new_room_form();
-    });
+});
 
-    let close_new_room_form = () => { 
+let close_new_room_form = () => { 
         document.getElementById('new_room_name').value = '';
         document.getElementById('new_room_security_level').value = '';
         new_room_form.style.display = "none";
-    }
+}
 
-    const add_new_room_button = document.querySelector("#add_new_room_button");
-
-    add_new_room_button.addEventListener("click", (e) => {
-        const room_name = document.querySelector("#new_room_name").value;
-        const room_security_level = document.querySelector("#new_room_security_level").value;
-        
-        if (!room_name) {
-            console.log("Sem username");
-        } else if (!room_security_level) {
-            console.log("Sem email para o utilizador");
-        } else {
-            const url = 'http://localhost:4242/api/room/';
-
-            // Dados que você deseja enviar no corpo da solicitação
-            const data = {
-                roomName: room_name,
-                access_level_required: room_security_level,
-                description: "exemplo"
-            };
-
-            console.log(data);
-
-            // Configuração da solicitação
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
-            },
-                body: JSON.stringify(data) // Converte os dados em JSON
-            };
-
-            // Faz a solicitação usando o fetch
-            fetch(url, options)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
-                    } else {
-                        throw new Error('Falha na solicitação POST');
-                    }
-            })
-            .then(data => {
-                console.log(data); // Faça algo com os dados de resposta
-            })
-            .catch(error => {
-                console.error(error); // Trate erros de solicitação
-            });
-            console.log(room_name,room_security_level)
-            add_room_to_table(0,room_name,room_security_level)
-            
-            close_new_room_form();
-
-            // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
-        }  
-    });
 
   
 })
 
-const handleUserClick = (event) => {
+function handleUserClick  () {
     const target = event.target;
     
     const clickedRow = event.target.closest('tr');
@@ -474,9 +411,11 @@ fetch(apiUrl, {
 }
 
 function setEditFormData(id) {
-
+    document.querySelector("#add_new_user_button").textContent= "Update User";
+    document.querySelector("#title_add_edit_form").textContent= "Edit User";
     
     const url = `http://localhost:4242/api/user/${id}`;
+    
   
     fetch(url)
         .then(response => {
@@ -487,18 +426,90 @@ function setEditFormData(id) {
             return response.json();
         })
         .then(user => {
-            // Preenche os detalhes do usuário na página
-
-           document.querySelector("#new_user_first_name").value = user.firstName;
-      document.querySelector("#new_user_last_name").value = user.lastName;
-      document.querySelector("#new_user_phone_number").value = user.phone;
-      document.querySelector("#new_user_email").value = user.email;
-      document.querySelector("#new_user_permission_level").value = user.accessLevel;
+            console.log(user);
+            document.querySelector("#new_user_first_name").value = user.firstName;
+            document.querySelector("#new_user_last_name").value = user.lastName;
+            document.querySelector("#new_user_phone_number").value = user.phone;
+            document.querySelector("#new_user_email").value = user.email;
+            document.querySelector("#new_user_permission_level").value = user.accessLevel;
+            
           
         })
         .catch(error => {
             console.error(`Error: ${error.message}`);
         });
-      // Set the form data based on the user object
+
      
   }
+
+
+  // FunçõEs para editar os Rooms
+function open_new_room_form ()  {
+    console.log("click");
+const new_room_form = document.querySelector(".new_room_form");    
+        
+        new_room_form.style.display = "block";
+    console.log("click");
+
+}
+
+function toggleNewRoomForm() {
+    const newRoomForm = document.querySelector(".new_room_form");
+    const isFormVisible = window.getComputedStyle(newRoomForm).display !== "none";
+    newRoomForm.style.display = isFormVisible ? "none" : "block";
+}
+
+
+function add_new_room ()  {
+
+    const room_name = document.querySelector("#new_room_name").value;
+    const room_security_level = document.querySelector("#new_room_security_level").value;
+    
+    if (!room_name) {
+        console.log("Sem username");
+    } else if (!room_security_level) {
+        console.log("Sem email para o utilizador");
+    } else {
+        const url = 'http://localhost:4242/api/room/';
+
+        // Dados que você deseja enviar no corpo da solicitação
+        const data = {
+            roomName: room_name,
+            access_level_required: room_security_level,
+            description: "exemplo"
+        };
+
+        console.log(data);
+
+        // Configuração da solicitação
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Tipo de conteúdo do corpo da solicitação
+        },
+            body: JSON.stringify(data) // Converte os dados em JSON
+        };
+
+        // Faz a solicitação usando o fetch
+        fetch(url, options)
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Se a resposta for bem-sucedida, analise a resposta JSON
+                } else {
+                    throw new Error('Falha na solicitação POST');
+                }
+        })
+        .then(data => {
+            console.log(data); // Faça algo com os dados de resposta
+        })
+        .catch(error => {
+            console.error(error); // Trate erros de solicitação
+        });
+        console.log(room_name,room_security_level)
+        add_room_to_table(0,room_name,room_security_level)
+        
+        close_new_room_form();
+
+        // Adicionar codigo que faz refresh a pagina para atualizar os novos dados introduzidos
+    }  
+}
