@@ -8,7 +8,7 @@ import {
 
 const accessesRoutes = Router();
 
-// http://localhost:4242/api/acesses/register
+// http://localhost:4242/api/acesses/create
 accessesRoutes.post('/create', createAccess);
 
 // Rota para buscar acessos por usuário
