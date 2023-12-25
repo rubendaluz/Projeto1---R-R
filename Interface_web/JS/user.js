@@ -17,6 +17,16 @@ const add_new_user_button = document.querySelector("#add_new_user_button");
 // ****************************************************************************************************
 document.addEventListener("DOMContentLoaded", (e) => {
     getAllUsers()    
+
+    var currentPage = window.location.pathname.split('/').pop();
+
+    document.querySelectorAll('.menu_buttons').forEach(function(button) {
+        var buttonHref = button.querySelector('a').getAttribute('href');
+        
+        if (currentPage === buttonHref) {
+            button.classList.add('active');
+        }
+    });
 })
 usersTableBody.addEventListener("click", handleUserClick);
 open_new_user_form_button.addEventListener("click", toggleNewUserForm);

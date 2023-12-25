@@ -17,6 +17,16 @@ const add_new_admin_button = document.querySelector("#add_new_admin_button");
 // ****************************************************************************************************
 document.addEventListener("DOMContentLoaded", (e) => {
     getAllAdmins()    
+
+    var currentPage = window.location.pathname.split('/').pop();
+
+    document.querySelectorAll('.menu_buttons').forEach(function(button) {
+        var buttonHref = button.querySelector('a').getAttribute('href');
+        
+        if (currentPage === buttonHref) {
+            button.classList.add('active');
+        }
+    });
 })
 adminsTableBody.addEventListener("click", handleAdminClick);
 open_new_admin_form_button.addEventListener("click", toggleNewAdminForm);
