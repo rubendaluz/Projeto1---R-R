@@ -293,9 +293,10 @@ table button:hover {
 .rooms_container,
 .accesses_container,
 .new_user_form,
+.new_admin_form,
 .new_room_form,
 .edit_user_form,
-.delete_user_form {
+.delete_form {
   margin-top: 20px;
   padding: 20px;
   background-color: #2C3E50;
@@ -321,6 +322,7 @@ table button:hover {
 
 
 .new_user_form,
+.new_admin_form,
 .new_room_form {
   max-width: 500px;
   margin: 0 auto;
@@ -340,7 +342,7 @@ width: 60%;
   z-index: 99;
 }
 
-.delete_user_form{
+.delete_form{
   display: flex;
   flex-direction: column;
   height: 150px;
@@ -407,14 +409,14 @@ width: 60%;
 }
 
 /* Adicione o CSS para o formulário de exclusão de usuários */
-.delete_user_form_buttons {
+.delete_form_buttons {
   justify-content: center;
   align-content: center;
   flex-direction: row;
   margin: auto;
 }
 
-.delete_user_form_buttons > * {
+.delete_form_buttons > * {
   padding: 10px;
   border-radius: 10px;
   margin: 10px 8px auto;
@@ -496,7 +498,11 @@ align-items: center;
 /* Styles for the new room form */
 .new_room_form {
  
-  height: 30%;
+  max-height: 350px;
+}
+.new_admin_form{
+ 
+  max-height: 250px;
 }
 #roomForm {
   margin: 40px auto;
