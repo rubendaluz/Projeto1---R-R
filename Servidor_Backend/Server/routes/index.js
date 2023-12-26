@@ -3,7 +3,7 @@ import { usersRoutes } from "./user.routes.js";
 import { adminRoutes } from "./admin.routes.js";
 import { roomRoutes } from "./room.routes.js";
 import { accessesRoutes } from "./accesses.routes.js";
-
+import { countEntities } from "../controllers/Statistics.controller.js";
 
 const api = Router();
 
@@ -13,8 +13,11 @@ api.use("/user", usersRoutes);
 api.use("/admin", adminRoutes);
 // Mount room routes
 api.use("/room", roomRoutes);
-// Mount accesses rountes
+// Mount accesses routes
 api.use("/acesses", accessesRoutes);
 
+// Mount Statistics route http://localhost:4242/api/statistics/
+
+api.get("/statistics", countEntities);
 
 export { api };
