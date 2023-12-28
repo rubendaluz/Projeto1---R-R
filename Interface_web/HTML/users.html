@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiAccess Users</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../CSS/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
@@ -14,7 +14,7 @@
     <div class="left_container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="../Interface_web/auth_page/img/background.png" alt="Logo">
+                <img src="../img/logo.png" alt="Logo">
                 <span class="title">MultiAccess</span>
             </div>
             <ul class="menu">
@@ -43,7 +43,7 @@
         <div class="header">
             <h1 class="title"> Users</h1>
             <div class="user-profile">
-                <img class="user-avatar" src="../Interface_web/auth_page/img/background.png" alt="User Avatar">
+                <img class="user-avatar" src="../img/perfil.jpg" alt="User Avatar">
                 <span class="user-name">John Doe</span>
             </div>
            
@@ -69,7 +69,7 @@
                     
                     </tr>
                 </thead>
-                <tbody id="users_table_body" onclick="handleUserClick()">
+                <tbody id="users_table_body" >
                                       
                     <!-- Add more rows as needed -->
                 </tbody>
@@ -82,14 +82,14 @@
 </div>
   
     
-   
+
 
 
 <div class="new_user_form" userId="" data-edit-mode="false">
-    <span class="close-button" id="new_user_form_close_button">&times;</span>
-    <h2 class="form_h2" id="title_add_edit_form">Add a New User</h2>
+    <span class="close-button" id="new_user_form_close_button" >&times;</span>
+    <h2 class="form_h2" id="title_add_edit_user_form">Add a New User</h2>
    
-    <form  method="post">
+    <form  >
         <div class="form-group img_form-group">
             <div class="image-upload-container">
                 <input type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*" class="hidden-input">
@@ -131,18 +131,19 @@
         </div>
 
                
-        <div class="button-container">
+        
+    </form>
+    <div class="button-container">
             <button  id="add_new_user_button">Add User</button>
         </div>
-    </form>
 </div>
 
 
 
 
-<div class="delete_user_form">
+<div class="delete_user_form delete_form">
     <p>Are you sure you want to delete this user?</p>
-    <div class="delete_user_form_buttons">
+    <div class="delete_form_buttons">
         <button id="cancel_btn">Cancel</button>
         <button id="confirm_btn">Confirm</button>
     </div>
@@ -152,6 +153,6 @@
     
 
 </body>
-<script src="main.js"></script>
+<script src="../JS/user.js"></script>
 
 </html>

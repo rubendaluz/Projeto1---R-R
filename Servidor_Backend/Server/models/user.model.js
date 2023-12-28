@@ -39,10 +39,13 @@ const UserModel = MultiAcces_DB.define("user", {
   accessLevel: {
     type: INTEGER,
     allowNull: false,
+    unique: false,
   },
   active: {
     type: BOOLEAN,
     allowNull: true,
+    unique: false,
+
   },
   password: {
     type: STRING,

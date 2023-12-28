@@ -5,6 +5,7 @@ import {
   updateAdmin,
   getAdminProfile,
   deleteAdmin,
+  getAllAdmins,
 }  from '../controllers/admin.controller.js';
 
 const adminRoutes = Router();
@@ -19,4 +20,8 @@ adminRoutes.post('/login', loginAdmin);
 adminRoutes.get('/:id', getAdminProfile);
 adminRoutes.put('/:id', updateAdmin);
 adminRoutes.delete('/:id', deleteAdmin);
+
+// http://localhost:4242/api/admin/
+adminRoutes.get("/", getAllAdmins);
+
 export { adminRoutes };

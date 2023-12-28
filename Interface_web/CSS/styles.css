@@ -82,7 +82,7 @@ display: flex;
 }
 .right_container {
 width: 84vw;
-margin-left: 16vw;
+margin-left: 18vw;
 height: 100vh;
 display: flex;
 flex-direction: column;
@@ -95,13 +95,18 @@ padding: 20px; ;
 }
 
 .header .title {
- color: #3498db;
- font-size: 36px;
- font-family: 'Roboto', sans-serif;
- text-transform: uppercase;
- letter-spacing: 2px;
- text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-size: 36px;
+  color: rgb(255, 255, 255);
+  
 }
+
+.title {
+  color: #3498db;
+  font-size: 23px;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+ }
 
 .header {
 padding: 15px;
@@ -138,7 +143,7 @@ position: fixed;
 background-color: #000000;
 padding: 20px;
 color: white;
-width: 16vw;
+width: 18vw;
 
 height: 100vh;
 margin: 0;
@@ -160,14 +165,12 @@ align-items: center;
 }
 
 .sidebar-header img {
-width: 50px;
-height: 50px;
+  width: 80px;
+  height: 80px;
 margin-bottom: 10px;
 }
 
-.title {
-font-size: 25px;
-}
+
 
 .menu {
 list-style-type: none;
@@ -180,6 +183,8 @@ text-decoration: none;
 color: #ffffff;
 
 }
+
+
 
 .menu_buttons {
 padding: 10px;
@@ -195,11 +200,18 @@ border: 1px solid var(--borda_hover);
 background-color: var(--table_hover);
 }
 
+.menu_buttons.active {
+  background-color:var(--borda_hover);
+}
+
 .sidebar-footer {
 margin-top: auto;
 display: flex;
 flex-direction: column;
 }
+
+
+
 
 .settings-button {
 background-color: var(--borda_hover);
@@ -293,9 +305,10 @@ table button:hover {
 .rooms_container,
 .accesses_container,
 .new_user_form,
+.new_admin_form,
 .new_room_form,
 .edit_user_form,
-.delete_user_form {
+.delete_form {
   margin-top: 20px;
   padding: 20px;
   background-color: #2C3E50;
@@ -321,6 +334,7 @@ table button:hover {
 
 
 .new_user_form,
+.new_admin_form,
 .new_room_form {
   max-width: 500px;
   margin: 0 auto;
@@ -340,7 +354,7 @@ width: 60%;
   z-index: 99;
 }
 
-.delete_user_form{
+.delete_form{
   display: flex;
   flex-direction: column;
   height: 150px;
@@ -407,14 +421,14 @@ width: 60%;
 }
 
 /* Adicione o CSS para o formulário de exclusão de usuários */
-.delete_user_form_buttons {
+.delete_form_buttons {
   justify-content: center;
   align-content: center;
   flex-direction: row;
   margin: auto;
 }
 
-.delete_user_form_buttons > * {
+.delete_form_buttons > * {
   padding: 10px;
   border-radius: 10px;
   margin: 10px 8px auto;
@@ -496,7 +510,11 @@ align-items: center;
 /* Styles for the new room form */
 .new_room_form {
  
-  height: 30%;
+  max-height: 350px;
+}
+.new_admin_form{
+ 
+  max-height: 250px;
 }
 #roomForm {
   margin: 40px auto;

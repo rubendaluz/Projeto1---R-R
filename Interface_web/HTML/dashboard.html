@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiAccess Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../CSS/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
 
@@ -14,7 +14,7 @@
     <div class="left_container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="../Interface_web/auth_page/img/background.png" alt="Logo">
+                <img src="../img/logo.png" alt="Logo">
                 <span class="title">MultiAccess</span>
             </div>
             <ul class="menu">
@@ -23,7 +23,7 @@
                 <li class="menu_buttons" id="li_users"><a href="users.html"><i class="fas fa-user"></i> Users</a></li>
                 <li class="menu_buttons" id="li_rooms"><a href="rooms.html"><i class="fas fa-door-open"></i> Rooms</a></li>
                 <li class="menu_buttons" id="li_accesses"><a href="accesses.html"><i class="fas fa-fingerprint"></i> Accesses</a></li>
-            </ul>   
+            </ul>            
             <div class="sidebar-footer">
                 <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
                 <button class="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
@@ -34,48 +34,56 @@
     
     <div class="right_container">
 
+    
+
+
+
     <header>
        
         <div class="header">
-            <h1>Dashboard</h1>
+            <h1 class="title"> Dashboard</h1>
             <div class="user-profile">
-                <img class="user-avatar" src="../Interface_web/auth_page/img/background.png" alt="User Avatar">
+                <img class="user-avatar" src="../img/perfil.jpg" alt="User Avatar">
                 <span class="user-name">John Doe</span>
             </div>
+           
+            
+          
         </div>
     </header>
 
     <main>
   
-            <section class="cards-section">
-                <div class="card">
-                    <div class="card-icon gradient-bg">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="card-info">
-                        <h2>Total Users</h2>
-                        <p>1500</p>
-                    </div>
+        <section class="cards-section">
+            <div class="card" id="totalUsersCard">
+                <div class="card-icon gradient-bg">
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="card">
-                    <div class="card-icon gradient-bg">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="card-info">
-                        <h2>Total Admins</h2>
-                        <p>50</p>
-                    </div>
+                <div class="card-info">
+                    <h2>Total Users</h2>
+                    <p id="totalUsersCount">Loading...</p>
                 </div>
-                <div class="card">
-                    <div class="card-icon gradient-bg">
-                        <i class="fas fa-door-open"></i>
-                    </div>
-                    <div class="card-info">
-                        <h2>Total Rooms</h2>
-                        <p>100</p>
-                    </div>
+            </div>
+            <div class="card" id="totalAdminsCard">
+                <div class="card-icon gradient-bg">
+                    <i class="fas fa-user-shield"></i>
                 </div>
-            </section>
+                <div class="card-info">
+                    <h2>Total Admins</h2>
+                    <p id="totalAdminsCount">Loading...</p>
+                </div>
+            </div>
+            <div class="card" id="totalRoomsCard">
+                <div class="card-icon gradient-bg">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="card-info">
+                    <h2>Total Rooms</h2>
+                    <p id="totalRoomsCount">Loading...</p>
+                </div>
+            </div>
+        </section>
+        
     
             <section class="recent-access-section">
                 <h2>Recent Access</h2>
@@ -83,35 +91,15 @@
                 <div class="accesses_container">
                     <table id="accesses_table">
                         <thead>
-                            <tr>
-                                <th>User id</th>
-                                <th>Name</th>
-                                <th>Room</th>
-                                <th>Data and Time</th>
-                                <th>Access State</th>
-                                <th>Method used</th>
-                            </tr>
+                            <th>Id</th>
+                            <th>User</th>
+                            <th>Room</th>
+                            <th>Data and Time</th>
+                            <th>Access State</th>
+                            <th>Method used</th>
                         </thead>
                         <tbody id="accesses_table_body">
-                            <tr>
-    
-                                <td>01</td>
-                                <td>John Doe</td>
-                                <td>A2.9</td>
-                                <td>20-10-2023/18:43</td>
-                                <td style="background-color: green; 
-                    color:white;">Allowed</td>
-                                <td>Biometric</td>
-    
-                            </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>Jane Smith</td>
-                                <td>A2.9</td>
-                                <td>20-10-2023/17:31</td>
-                                <td style="background-color: red; color:black;">Denied</td>
-                                <td>NFC</td>
-                            </tr>
+                         
                         </tbody>
                     </table>
                 </div>
@@ -203,7 +191,8 @@
 
 
 
-<script src="main.js"></script>
+<script src="../JS/accesses.js"></script>
+<script src="../JS/dash.js"></script>
 
 </body>
 

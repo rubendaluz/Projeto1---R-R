@@ -3,9 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pagina_regi"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    >
+    android:layout_height="match_parent">
+
+    <!-- Fundo gradiente -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fundo_gradiente"
+        android:scaleType="centerCrop"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -13,128 +18,144 @@
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="380dp"
-        >
+        android:layout_marginHorizontal="40dp">
+
+        <!-- Texto de boas-vindas -->
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login Form"
             android:id="@+id/loginFormText"
-            android:layout_marginBottom="10dp"
-            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/white"
-
-            />
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:text="Welcome to MultiAccess"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="299dp"
-            android:layout_height="43dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:id="@+id/field1"
             android:layout_below="@id/loginFormText"
-            android:layout_marginBottom="19dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/cartao_formato"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@android:color/white"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             >
-            <ImageView
-                android:layout_width="wrap_content"
-                android:text="imagem"
-                android:background="@drawable/email_icon"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
 
-                />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/email_icon"
+                android:layout_marginEnd="8dp"
+                android:tint="@android:color/black"/>
+
             <EditText
                 android:id="@+id/input_email"
                 android:layout_width="0dp"
-                android:layout_weight="9"
-                android:layout_height="43dp"
-                android:padding="10dp"
-                android:textColorHint="@color/black"
-                android:hint="Insira o seu email"
-                android:textColor="@color/black"
-                style="@style/EditTextNoUnderline"
-                />
-
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColorHint="@android:color/black"
+                android:hint="Enter your email"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:textSize="18sp"/>
         </LinearLayout>
 
-
+        <!-- Campo de senha -->
         <LinearLayout
-            android:layout_width="299dp"
-            android:layout_height="43dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:id="@+id/field2"
             android:layout_below="@id/field1"
-            android:layout_marginBottom="19dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/cartao_formato"
-            android:backgroundTint="@color/white"
-            >
-            <ImageView
-                android:layout_width="wrap_content"
-                android:text="imagem"
-                android:background="@drawable/lock_icon"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
+            android:backgroundTint="@android:color/white"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+           >
 
-                />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/lock_icon"
+                android:layout_marginEnd="8dp"
+                android:tint="@android:color/black"/>
 
             <EditText
                 android:id="@+id/input_password"
                 android:layout_width="0dp"
-                android:layout_weight="9"
-                android:layout_height="43dp"
-                android:padding="10dp"
-                android:textColorHint="@color/black"
-                android:hint="Insira a sua password"
-                android:textColor="@color/black"
-                style="@style/EditTextNoUnderline"
-
-                />
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColorHint="@android:color/black"
+                android:hint="Enter your password"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:textSize="18sp"/>
         </LinearLayout>
 
+        <!-- Botão de login com efeito de elevação e animação de escala -->
         <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
             android:layout_below="@id/field2"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
             android:text="Login"
             android:id="@+id/btnLogin"
-            android:textColor="@color/black"
-            android:backgroundTint="@color/white"
-            android:background="@drawable/cartao_formato"
-            android:textSize="16dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:textSize="20sp"
             android:layout_gravity="center"
-            android:elevation="4dp" />
+
+            />
 
     </RelativeLayout>
 
+    <!-- Logotipo e nome do aplicativo -->
     <RelativeLayout
         android:id="@+id/app_logo"
         android:layout_width="184dp"
         android:layout_height="210dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="120dp"
-        >
+        android:layout_marginTop="80dp">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:layout_centerInParent="true"
-             />
+            android:src="@drawable/logo"
+            android:layout_centerInParent="true" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Multi-Access"
-            android:textSize="25dp"
-            android:textColor="@color/white"
+            android:text="MultiAccess"
+            android:textSize="28sp"
+            android:textColor="@android:color/holo_blue_light"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"
-            android:layout_below="@id/logo"/>
+            android:textAllCaps="true"
+            android:layout_below="@id/logo"
+            android:textStyle="bold"/>
     </RelativeLayout>
-
-
-
 </RelativeLayout>

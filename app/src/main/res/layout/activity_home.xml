@@ -7,13 +7,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Home"
-    android:background="@color/background">
+    android:background="@drawable/fundo_gradiente">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/barraSuperior">
+        android:id="@+id/barraSuperior"
+
+       >
         <TextView
             android:id="@+id/home"
             android:layout_width="125dp"
@@ -25,26 +27,26 @@
             android:text="Home"
             android:textSize="20sp"
             android:textColor="@color/white"
-            android:gravity="top"
+           android:layout_centerVertical="true"
+
+
         />
 
         <ImageButton
             android:id="@+id/Perfil"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/perfil_placeholder"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Perfil"
+android:layout_centerVertical="true"
             android:onClick="onPerfilClick"
-        />
+            android:src="@drawable/perfil_placeholder" />
 
     </RelativeLayout>
 
-    <!-- res/layout/activity_cartao_virtual.xml -->
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="320dp"
         android:layout_height="185dp"
         android:layout_below="@id/barraSuperior"
@@ -53,73 +55,89 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/cartao_formato"
-        android:padding="16dp"
-        android:radius="20dp"
-        android:elevation="8dp">
-
-        <TextView
-            android:id="@+id/textoTopo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:text="Cartão de Acesso"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/imageViewPerfil"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_below="@id/textoTopo"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/perfil_placeholder" />
+        app:cardCornerRadius="18dp"
+        app:cardElevation="8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textoTopo"
-            android:layout_toEndOf="@id/imageViewPerfil">
+            android:layout_height="match_parent"
+           >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/img_4"
+                android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/textViewNome"
+                android:id="@+id/textoTopo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Nome do Utilizador"
-                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:text="Cartão de Acesso"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textViewEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewNome"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="utilizador@email.com"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/imageViewPerfil"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_below="@id/textoTopo"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/perfil_placeholder" />
 
-            <TextView
-                android:id="@+id/textViewClasse"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textViewEmail"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Classe: A"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:layout_below="@id/textoTopo"
+                android:layout_toEndOf="@id/imageViewPerfil"
+                android:layout_marginHorizontal="10dp">
+
+                <TextView
+                    android:id="@+id/textViewNome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Nome do Utilizador"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewNome"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="utilizador@email.com"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textViewClasse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewEmail"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Classe: A"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
 </RelativeLayout>
