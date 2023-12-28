@@ -4,10 +4,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
     getAllUsers() 
     getAllRooms()
     getAllRecentAccesses()
-
-
-
-
 const li_admins = document.querySelector("#li_admins");
 const li_users = document.querySelector("#li_users");
 const li_rooms = document.querySelector("#li_rooms");
