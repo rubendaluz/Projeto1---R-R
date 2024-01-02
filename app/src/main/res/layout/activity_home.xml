@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/barraSuperior"
-
        >
         <TextView
             android:id="@+id/home"
@@ -28,27 +27,25 @@
             android:textSize="20sp"
             android:textColor="@color/white"
            android:layout_centerVertical="true"
-
-
         />
 
         <ImageButton
             android:id="@+id/Perfil"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="visible"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="Perfil"
-android:layout_centerVertical="true"
-            android:onClick="onPerfilClick"
-            android:src="@drawable/perfil_placeholder" />
-
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_launcher_background" />
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="320dp"
         android:layout_height="185dp"
+        android:id="@+id/cartao"
         android:layout_below="@id/barraSuperior"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
@@ -135,7 +132,14 @@ android:layout_centerVertical="true"
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aproxime do leitor"
+        android:layout_below="@+id/cartao"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        />
 
 
 

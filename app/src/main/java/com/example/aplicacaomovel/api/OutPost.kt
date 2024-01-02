@@ -1,4 +1,4 @@
-package com.example.retrofit.api
+package com.example.aplicacaomovel.api
 
 data class OutputPost(
     val id: Int,
