@@ -94,6 +94,7 @@ bool nfc_auth(){
   }
 }
 
+// Função que verifica se algum utilizador com aquele id exite na base de dados
 String checkUserExistenceNFC(String uid) {
   HTTPClient http;
 
