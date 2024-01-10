@@ -38,6 +38,9 @@ class Home : ComponentActivity() {
         val accessList = ArrayList<AccessItem>()
         accessList.add(AccessItem("NFC", "Room 1", "2024-01-08 20:08:13", true))
         accessList.add(AccessItem("Fingerprint", "Room 2", "2024-01-08 21:08:13", false))
+
+        accessList.add(AccessItem("NFC", "Room 1", "2024-01-08 20:08:13", false))
+        accessList.add(AccessItem("Fingerprint", "Room 2", "2024-01-08 21:08:13", true))
         // Add mo
         val adapter = AccessListAdapter(accessList)
         val recyclerView = findViewById<RecyclerView>(R.id.recView)
