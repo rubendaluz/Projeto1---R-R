@@ -24,6 +24,7 @@
         <!-- Texto de boas-vindas -->
 
         <TextView
+            android:background="#0a1f2f"
             android:id="@+id/loginFormText"
             android:layout_width="wrap_content"
             android:layout_height="42dp"

@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/barraSuperior"
+        android:background="#002E4D"
        >
         <TextView
             android:id="@+id/home"
@@ -53,7 +54,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
         app:cardCornerRadius="18dp"
         app:cardElevation="8dp">
 
@@ -134,14 +135,77 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
+    <ImageView
+        android:id="@+id/iconnfc"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/cartao"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_nfc"
+        android:tint="@color/white"
+
+        />
     <TextView
+        android:id="@+id/nfttxt"
+        android:layout_below="@+id/iconnfc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Aproxime do leitor"
-        android:layout_below="@+id/cartao"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"
+        android:layout_marginBottom="20dp"
         />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nfttxt"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/recentaces"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/latestAccessHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Latest Access"
+            android:textColor="#FFF"
+            android:textSize="22sp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/latestAccessHeader"
+            android:layout_marginTop="8dp"/>
+
+
+        <TextView
+            android:id="@+id/viewMoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="See more >>"
+            android:textColor="#03A9F4"
+            android:textSize="20dp"
+            android:layout_marginBottom="20dp"/>
+    </RelativeLayout>
+
+
+
 
 
 

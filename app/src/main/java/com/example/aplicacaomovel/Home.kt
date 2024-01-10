@@ -19,6 +19,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.aplicacaomovel.Adapters.AccessListAdapter
+import com.example.aplicacaomovel.Dataclasses.AccessItem
 
 
 class Home : ComponentActivity() {
@@ -29,6 +33,18 @@ class Home : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        // Assuming you have a list of AccessItem
+        val accessList = ArrayList<AccessItem>()
+        accessList.add(AccessItem("NFC", "Room 1", "2024-01-08 20:08:13", true))
+        accessList.add(AccessItem("Fingerprint", "Room 2", "2024-01-08 21:08:13", false))
+        // Add mo
+        val adapter = AccessListAdapter(accessList)
+        val recyclerView = findViewById<RecyclerView>(R.id.recView)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+
 
         val btnPerfil = findViewById<ImageButton>(R.id.Perfil)
 
