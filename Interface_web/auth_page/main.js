@@ -31,10 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
   .then((data) => {
     const token = data.token;
     localStorage.setItem("token", token);
-    console.log(token);
+    console.log(token);  
     error_message.style.display = "none";
     // Redirect to the restricted access page
-  window.location.href = "../dashboard.html";
+  window.location.href = "../HTML/dashboard.html";
   })
   .catch((error) => {
     console.error(error.message);
