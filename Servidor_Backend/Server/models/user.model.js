@@ -16,10 +16,10 @@ const UserModel = MultiAcces_DB.define("user", {
     allowNull: false,
     unique: false,
   },
-  fingerPrint: {
-    type: STRING,
+  fingerPrintId: {
+    type: INTEGER,
     allowNull: true,
-    unique: false,
+    unique: true,
   },
   nfcTag: {
     type: STRING,
@@ -31,8 +31,18 @@ const UserModel = MultiAcces_DB.define("user", {
     allowNull: false,
     unique: false,
   },
+  photopath: {
+    type: STRING,
+    allowNull: true,
+    unique: false,
+  },
   phone: {
     type: INTEGER,
+    allowNull: true,
+    unique: false,
+  },
+  lastName: {
+    type: STRING,
     allowNull: false,
     unique: false,
   },

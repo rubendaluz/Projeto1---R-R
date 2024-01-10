@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/barraSuperior"
+        android:background="@color/fundo_cartao"
 
        >
         <TextView
@@ -40,9 +41,11 @@
             android:layout_marginEnd="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Perfil"
-android:layout_centerVertical="true"
+            android:layout_centerVertical="true"
             android:onClick="onPerfilClick"
-            android:src="@drawable/perfil_placeholder" />
+            android:src="@drawable/perfil_placeholder"
+
+            />
 
     </RelativeLayout>
 

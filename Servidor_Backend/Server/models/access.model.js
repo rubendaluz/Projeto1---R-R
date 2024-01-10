@@ -13,7 +13,7 @@ const AcessesModel = MultiAcces_DB.define('Acessos', {
   },
   id_user: {
     type: INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   data_hora_entrada: {
     type: DATE,

@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 
+
 // SERVER ROUTES
 import { api } from "./routes/index.js";
 import { MultiAcces_DB } from "./config/context/database.js";
@@ -11,7 +12,7 @@ import { MultiAcces_DB } from "./config/context/database.js";
 //--REST SERVER--//
 const server = express();
 
-// client can be postman | react website | react localhost link | etc
+// client can be postman | react website | react  192.168.1.189 link | etc
 const clientURL = "*";
 
 // CORS options
@@ -23,10 +24,26 @@ server.use(cors(corsOptions));
 // output dados de pedido HTTP - logger
 server.use(morgan("short"));
 
+
+
+
+
+// Adicione o middleware do multer para processar multipart/form-data
+
+
+
+
+// Add this line to serve our index.html page
+server.use(express.static('public'));
+
+
 // parse dados dos pedidos no content-type - application/json
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
-// http://localhost:4242/api ......
+
+
+// http:// 192.168.1.189:4242/api ......
 server.use("/api", api);
 
 //Fazer ligação à Base de Dados

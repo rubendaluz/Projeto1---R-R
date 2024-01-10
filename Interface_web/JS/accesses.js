@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
 
 let getAllRecentAccesses = () => {
-    const url = 'http://localhost:4242/api/acesses/';
+    const url = 'http://192.168.1.189:4242/api/acesses/';
 
     fetch(url)
     .then(response => {

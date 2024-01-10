@@ -89,18 +89,20 @@
     <span class="close-button" id="new_user_form_close_button" >&times;</span>
     <h2 class="form_h2" id="title_add_edit_user_form">Add a New User</h2>
    
-    <form  >
+    <form enctype="multipart/form-data" >
         <div class="form-group img_form-group">
             <div class="image-upload-container">
-                <input type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*" class="hidden-input">
-             
-                <div class="image-preview" id="image-preview"> <img src="./auth_page/img/background.png" alt=""></div>
+                <div class="image-preview" id="image-preview">
+                    <img src="../img/perfil.jpg" alt="" id="preview-image">
+                </div>
+            
+                <input hidden type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*" onchange="previewImage(this)">
                 <label for="new_user_profile_img" class="upload-label">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    Upload 
+                    Upload
                 </label>
             </div>
-        </div>
+         </div>
         
         
 

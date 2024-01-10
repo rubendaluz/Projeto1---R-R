@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Função para buscar os detalhes do usuário por ID usando fetch
 const getUserDetails = (userId) => {
-  const url = `http://localhost:4242/api/user/${userId}`;
+  const url = `http://192.168.1.189:4242/api/user/${userId}`;
 
   fetch(url)
       .then(response => {
