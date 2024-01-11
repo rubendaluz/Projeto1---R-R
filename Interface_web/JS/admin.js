@@ -61,7 +61,7 @@ function add_or_edit_admin() {
     };
 
     // URL for API endpoint
-    const url = isEditMode ? `http://localhost:4242/api/admin/${adminId}` : "http://localhost:4242/api/admin/register/";
+    const url = isEditMode ? `http://192.168.1.189:4242/api/admin/${adminId}` : "http://192.168.1.189:4242/api/admin/register/";
 
     // HTTP method for API request
     const method = isEditMode ? "PUT" : "POST";
@@ -141,7 +141,7 @@ let add_admin_to_table = (id,username,type) => {
 let getAllAdmins = () => {
 
 
-    const url = 'http://localhost:4242/api/admin/';
+    const url = 'http://192.168.1.189:4242/api/admin/';
 
     fetch(url)
     .then(response => {
@@ -174,7 +174,7 @@ function deleteAdmin (adminId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://localhost:4242/api/admin/${adminId}`;
+const apiUrl = `http://192.168.1.189:4242/api/admin/${adminId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -201,7 +201,7 @@ function setEditAdminFormData(id) {
     document.querySelector("#add_new_admin_button").textContent= "Update Admin";
     document.querySelector("#title_add_edit_admin_form").textContent= "Edit Admin";
     
-    const url = `http://localhost:4242/api/admin/${id}`;
+    const url = `http://192.168.1.189:4242/api/admin/${id}`;
     
   
     fetch(url)

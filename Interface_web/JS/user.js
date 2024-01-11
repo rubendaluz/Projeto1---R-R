@@ -55,22 +55,32 @@ function add_or_edit_user() {
     // Check if you are in edit mode or add mode
     const isEditMode = add_edit_user_form.getAttribute("data-edit-mode") === "true";
     userId = add_edit_user_form.getAttribute("userId");
-    // Build data object
-    const data = {
-        firstName: user_first_name,
-        lastName: user_last_name,
-        fingerPrint: null,
-        nfcTag: null,
-        email: user_email,
-        phone: user_phone_number,
-        accessLevel: user_permission_level,
-        active: true,
-        profilePic: null,
-        password: password
-    };
+    const formData = new FormData();
+    const profileImgInput = document.getElementById('new_user_profile_img');
+    console.log(profileImgInput.files[0]);
+    // Adicione o arquivo ao FormData apenas se um arquivo foi selecionado
+  formData.append('photo', profileImgInput.files[0]);
+   
+
+    formData.append('firstName', user_first_name);
+    formData.append('lastName', user_last_name);
+    formData.append('phone', user_phone_number);
+    formData.append('email', user_email);
+    formData.append('accessLevel', user_permission_level);
+    formData.append('password', password);
+    formData.append('active', 1);
+    formData.append('fingerPrint', null);
+    formData.append('nfcTag', null);
+    
+
+    
+
+   
+
+     
 
     // URL for API endpoint
-    const url = isEditMode ? `http://localhost:4242/api/user/${userId}` : "http://localhost:4242/api/user/register/";
+    const url = isEditMode ? `http://192.168.1.189:4242/api/user/update/${userId}` : "http://192.168.1.189:4242/api/user/register/";
 
     // HTTP method for API request
     const method = isEditMode ? "PUT" : "POST";
@@ -78,10 +88,8 @@ function add_or_edit_user() {
     // Configuration for the fetch request
     const options = {
         method: method,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+       
+        body: formData,
     };
 
     // Make the API request
@@ -136,7 +144,7 @@ let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLev
            
             <td>${id}</td>
             <td class="profile_pic">
-            <img src="${profilePic}"
+            <img src="../img/User/${profilePic}"
                                  alt="profile_pic">
                                  </td>
             <td>${name}</td>
@@ -154,7 +162,7 @@ let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLev
 let getAllUsers = () => {
 
 
-    const url = 'http://localhost:4242/api/user/';
+    const url = 'http://192.168.1.189:4242/api/user/';
 
     fetch(url)
     .then(response => {
@@ -166,7 +174,7 @@ let getAllUsers = () => {
     .then(users => {
         console.log(users);
         users.forEach(user => {
-            add_user_to_table(user["id"],"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png", user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
+            add_user_to_table(user["id"], user["photopath"], user["firstName"], user["lastName"], user["email"], user["phone"], user["accessLevel"]);
         });
     })
     .catch(error => {
@@ -187,7 +195,7 @@ function deleteUser (userId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://localhost:4242/api/user/${userId}`;
+const apiUrl = `http://192.168.1.189:4242/api/user/${userId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -214,7 +222,7 @@ function setEditUserFormData(id) {
     document.querySelector("#add_new_user_button").textContent= "Update User";
     document.querySelector("#title_add_edit_user_form").textContent= "Edit User";
     
-    const url = `http://localhost:4242/api/user/${id}`;
+    const url = `http://192.168.1.189:4242/api/user/${id}`;
     
   
     fetch(url)
@@ -284,3 +292,34 @@ function gerarSenhaForte() {
   
     return senha;
   }
+
+
+   function previewImage() {
+        var preview = document.getElementById('preview-image');
+        var fileInput = document.getElementById('new_user_profile_img');
+        var file = fileInput.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }function previewImage(input) {
+        var preview = document.getElementById('preview-image');
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "../img/perfil.jpg"; // Default image when no file is selected
+        }
+    }

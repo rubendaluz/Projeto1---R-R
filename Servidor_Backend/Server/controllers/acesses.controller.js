@@ -4,8 +4,14 @@ import { Op } from "sequelize";
 
 export const createAccess = async (req, res) => {
     try {
-        const { id_area, id_user, data_hora_entrada, metodo_auth, acesso_permitido } = req.body;
-        const access = await AcessesModel.create({ id_area, id_user, data_hora_entrada, metodo_auth, acesso_permitido })    
+      console.log(req.body);
+        const { id_area, id_user,  metodo_auth, acesso_permitido } = JSON.parse(Object.keys(req.body)[0]);
+      
+      const entryTimestamp = new Date();
+      const data_hora_entrada = entryTimestamp;
+
+        const access = await AcessesModel.create({ id_area, id_user, data_hora_entrada, metodo_auth, acesso_permitido })
+        
     return res.json(access);
   } catch (error) {
     console.error("Error registering access:", error);

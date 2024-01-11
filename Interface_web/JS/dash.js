@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalRoomsCountElement = document.getElementById("totalRoomsCount");
 
     // Use a rota configurada no seu servidor
-    const apiUrl = "http://localhost:4242/api/statistics";
+    const apiUrl = "http://192.168.1.189:4242/api/statistics";
 
     fetch(apiUrl)
         .then(response => response.json())
