@@ -10,6 +10,7 @@ import {
   authenticateUser,
   updateUserFingerprint,
   updateAllUsersFingerprints,
+  changePassword,
 } from "../controllers/user.controller.js";
 
 const usersRoutes = Router();
@@ -48,5 +49,8 @@ usersRoutes.put("/updateFingerprint", updateUserFingerprint);
 
 // http://localhost:4242/api/user/updateAllFingerprints
 usersRoutes.put("/updateAllFingerprints", updateAllUsersFingerprints);
+
+// http://localhost:4242/api/user/updateAllFingerprints
+usersRoutes.post('/change-password', changePassword);
 
 export { usersRoutes };
