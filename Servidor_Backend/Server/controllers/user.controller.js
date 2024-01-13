@@ -7,6 +7,106 @@ import path from 'path';
 import bcrypt from 'bcrypt';
 import fs from 'fs';
 
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import PDFDocument from 'pdfkit';
+
+const transporter  = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "aadcda0b95dfd3",
+    pass: "f09446adaeee9f"
+  }
+});
+
+const sendWelcomeEmail = async (user, resetLink) => {
+  const emailBody = `
+  <html>
+  <head>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; background-color: #f4f4f4; }
+      .container { width: 80%; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: white; }
+      .header { text-align: center; background-color: #004d99; color: white; padding: 10px; }
+      .content { margin-top: 20px; }
+      .footer { margin-top: 40px; font-size: 0.8em; text-align: center; color: #666; }
+      .button { background-color: #007bff; color: white; padding: 10px 20px; text-align: center; border-radius: 5px; display: inline-block; text-decoration: none; }
+      .user-info { background-color: #f9f9f9; padding: 10px; margin-top: 20px; }
+      img { max-width: 100px; margin-bottom: 20px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+    <div class="header">
+    <h1>Bem-vindo ao Multi-Acess</h1>
+  </div>
+  <div class="content">
+    <p>Olá ${user.firstName} ${user.lastName},</p>
+    <p>Seu registro no nosso sistema de controle de acesso e presença multimodal foi criado com sucesso. Abaixo estão os detalhes da sua conta:</p>
+    
+    <div class="user-info">
+      <p><strong>Nome:</strong> ${user.firstName} ${user.lastName}</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Telefone:</strong> ${user.phone}</p>
+      <!-- Outras informações relevantes do usuário podem ser adicionadas aqui -->
+    </div>
+
+    <p>Se algum destes dados estiver incorreto, por favor entre em contato conosco pelo e-mail <a href="mailto:suporte@multacess.pt">suporte@multacess.pt</a>.</p>
+
+    <p>Para ativar sua conta e definir sua senha, por favor clique no link abaixo:</p>
+    <p><a href="${resetLink}">Definir Senha</a></p>
+    
+    <p>Após configurar sua senha, você poderá usar todas as funcionalidades do sistema, incluindo controle de acesso via NFC e impressão digital.</p>
+    <p>Baixe nosso aplicativo para gerenciar suas presenças e acessos facilmente:</p>
+    <p><a href="LINK_PARA_BAIXAR_APP">Baixar Aplicativo</a></p>
+  </div>
+  <div class="footer">
+    <p>Este é um e-mail automático, por favor não responda.</p>
+    <p>Se você tem alguma dúvida ou precisa de suporte, entre em contato conosco.</p>
+  </div>
+</div>
+</body>
+    </html>
+  `;
+
+await transporter.sendMail({
+    from: 'not-reply@multacess.com',
+    to: user.email,
+    subject: 'Bem-vindo ao Sistema de Controle de Acesso e Presença',
+    html: emailBody
+  });
+};
+// Funções Auxiliares
+
+
+
+const createResetToken = (userId) => {
+  return jwt.sign({ userId }, 'seu', { expiresIn: '1h' });
+};
+
+
+
+export const changePassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+console.log("token: ", token);
+  try {
+      const decoded = jwt.verify(token, 'seu'); // Use o mesmo segredo usado na criação do token
+      console.log("decoded: ", decoded);
+      const user = await UserModel.findOne({ where: { id: decoded.userId } });
+
+      if (!user) {
+          return res.status(404).send('Usuário não encontrado.');
+      }
+console.log("user: ", user);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await UserModel.update({ password: hashedPassword }, { where: { id: user.id } });
+
+      res.send('Senha atualizada com sucesso.');
+  } catch (error) {
+      res.status(500).send('Erro ao mudar a senha.');
+  }
+};
+
 
 export const deleteUser = async (req, res) => {
   try {
@@ -60,11 +160,9 @@ export const register = async (req, res) => {
       return res.status(409).json({ message: 'Email already exists' });
     }
 
-    // Hash da senha
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Criação inicial do usuário sem a imagem
+    // Criação do usuário
     const user = await UserModel.create({
       firstName,
       lastName,
@@ -77,6 +175,14 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
+    // Geração e envio do link temporário para mudança de senha
+    const resetToken = createResetToken(user.id);
+    const resetLink = `http://127.0.0.1:5500/Interface_web/HTML/changePWD.html?token=${resetToken}`;
+    await sendWelcomeEmail(user, resetLink);
+   
+    
+  
+
     // Update the filename using the username and user ID
     const username = user.firstName.toLowerCase();
     const newFilename = `${username}_${user.id}${path.extname(req.file.originalname)}`;
@@ -87,8 +193,10 @@ export const register = async (req, res) => {
     fs.renameSync(oldPath, newPath);
 
     // Update the user's photopath in the database
-    await user.update({ photopath: newFilename });
+    await user.update({ photopath: newFilename }); 
 
+
+    
     return res.json({ message: "User created successfully" });
   } catch (error) {
     console.error('Error creating user:', error);
