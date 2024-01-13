@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
@@ -48,20 +49,24 @@ class Home : ComponentActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
+        val moreAcess = findViewById<TextView>(R.id.viewMoreText)
+        moreAcess.setOnClickListener {
+            val intent = Intent(this, Accesses::class.java)
+            startActivity(intent)
+        }
 
         val btnPerfil = findViewById<ImageButton>(R.id.Perfil)
-
+        btnPerfil.setOnClickListener {
+            val intent = Intent(this, Perfil::class.java)
+            startActivity(intent)
+        }
         // Check and request NFC permissions
         checkNfcPermissions()
 
         // Set up NFC HCE service
         startNfcService()
 
-        // Navigate to the profile page when the button is clicked
-//        btnPerfil.setOnClickListener {
-//            val intent = Intent(this, Perfil::class.java)
-//            startActivity(intent)
-//        }
+
     }
 
     private fun checkNfcPermissions() {

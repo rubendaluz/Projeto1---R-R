@@ -80,7 +80,7 @@ function add_or_edit_user() {
      
 
     // URL for API endpoint
-    const url = isEditMode ? `http://192.168.1.189:4242/api/user/update/${userId}` : "http://192.168.1.189:4242/api/user/register/";
+    const url = isEditMode ? `http://172.16.210.2:4242/api/user/update/${userId}` : "http://172.16.210.2:4242/api/user/register/";
 
     // HTTP method for API request
     const method = isEditMode ? "PUT" : "POST";
@@ -162,7 +162,7 @@ let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLev
 let getAllUsers = () => {
 
 
-    const url = 'http://192.168.1.189:4242/api/user/';
+    const url = 'http://172.16.210.2:4242/api/user/';
 
     fetch(url)
     .then(response => {
@@ -195,7 +195,7 @@ function deleteUser (userId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://192.168.1.189:4242/api/user/${userId}`;
+const apiUrl = `http://172.16.210.2:4242/api/user/${userId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -222,7 +222,7 @@ function setEditUserFormData(id) {
     document.querySelector("#add_new_user_button").textContent= "Update User";
     document.querySelector("#title_add_edit_user_form").textContent= "Edit User";
     
-    const url = `http://192.168.1.189:4242/api/user/${id}`;
+    const url = `http://172.16.210.2:4242/api/user/${id}`;
     
   
     fetch(url)

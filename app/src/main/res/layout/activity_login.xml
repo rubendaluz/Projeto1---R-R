@@ -39,13 +39,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:id="@+id/field1"
             android:layout_below="@id/loginFormText"
             android:layout_marginBottom="20dp"
             android:background="@drawable/cartao_formato"
-            android:backgroundTint="@android:color/white"
-            android:padding="8dp"
+
+            android:padding="15dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:clipToPadding="false"
@@ -53,11 +53,11 @@
             >
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/email_icon"
                 android:layout_marginEnd="8dp"
-                app:tint="@android:color/black" />
+                android:tint="@color/fundo_cartao"/>
 
             <EditText
                 android:id="@+id/input_email"
@@ -66,9 +66,9 @@
                 android:layout_height="match_parent"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:textColorHint="@android:color/black"
+                android:textColorHint="@color/white"
                 android:hint="Enter your email"
-                android:textColor="@android:color/black"
+                    android:textColor="@color/white"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
@@ -78,13 +78,13 @@
         <!-- Campo de senha -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:id="@+id/field2"
             android:layout_below="@id/field1"
             android:layout_marginBottom="20dp"
             android:background="@drawable/cartao_formato"
-            android:backgroundTint="@android:color/white"
-            android:padding="8dp"
+
+            android:padding="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:clipToPadding="false"
@@ -92,11 +92,12 @@
            >
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/lock_icon"
                 android:layout_marginEnd="8dp"
-                app:tint="@android:color/black" />
+                app:tint="@android:color/black"
+                android:tint="@color/fundo_cartao"/>
 
             <EditText
                 android:id="@+id/input_password"
@@ -105,9 +106,9 @@
                 android:layout_height="match_parent"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:textColorHint="@android:color/black"
+                android:textColorHint="@color/white"
                 android:hint="Enter your password"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"

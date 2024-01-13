@@ -168,40 +168,47 @@
         android:background="@drawable/recentaces"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/latestAccessHeader"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/latestAccessHead"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
 
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Latest Access"
-            android:textColor="#FFF"
-            android:textSize="22sp" />
+            <TextView
+                android:id="@+id/latestAccessHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Latest Access"
+                android:textColor="#FFF"
+                android:textSize="22sp" />
 
+            <TextView
+                android:id="@+id/viewMoreText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="ALL>>"
+                android:textColor="#03A9F4"
+                android:textSize="20dp" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/latestAccessHeader"
+            android:layout_below="@id/latestAccessHead"
             />
 
 
-        <TextView
-            android:id="@+id/viewMoreText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/recView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="See more >>"
-            android:textColor="#03A9F4"
-            android:textSize="20dp"
-            />
+
     </RelativeLayout>
 
 

@@ -40,6 +40,7 @@ const sendWelcomeEmail = async (user, resetLink) => {
     <div class="header">
     <h1>Bem-vindo ao Multi-Acess</h1>
   </div>
+  
   <div class="content">
     <p>Olá ${user.firstName} ${user.lastName},</p>
     <p>Seu registro no nosso sistema de controle de acesso e presença multimodal foi criado com sucesso. Abaixo estão os detalhes da sua conta:</p>
