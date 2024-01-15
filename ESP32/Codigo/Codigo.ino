@@ -17,12 +17,16 @@
 #define LCD_ROWS 2
 
 // WiFi Connection
-const char *ssid = "SEU_SSID";
-const char *password = "SUA_SENHA";
+const char* ssid = "MEO-564B00";      // name of your WiFi network
+const char* password = "6ad9ca442b";
+
+const char* serverAddress = "http://192.168.1.189:4242";
 
 
 
 Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
+// bool Adafruit_PN532::inDataExchange(uint8_t *send, uint8_t sendLength, uint8_t *response, uint8_t *responseLength)
+
 
 int lcdAddress = 0x27;
 LiquidCrystal_I2C lcd(I2C_ADDR, LCD_COLUMNS, LCD_ROWS);
@@ -37,12 +41,26 @@ void setup() {
 }
 
 void loop() {
-    String uid = readNFCUID();
-  if (!uid.isEmpty()) {
-    // Handle the received data
-    
-    // nfcAuth(uid);
-  }
+  // uint8_t success;
+  // uint8_t sendBuffer[] = { 0x00 }; // Buffer para enviar dados (ajuste conforme necessário)
+  // uint8_t sendLength = sizeof(sendBuffer);
+  // uint8_t responseBuffer[255];
+  // uint8_t responseLength = sizeof(responseBuffer);
+
+  // success = nfc.inListPassiveTarget(); // Procurar por cartões NFC
+
+  // if (success) {
+  //       success = nfc.inDataExchange(sendBuffer, sendLength, responseBuffer, &responseLength); // Trocar dados com o cartão
+  //       if (success) {
+  //           processNfcData(responseBuffer, responseLength);
+  //       } else {
+  //         Serial.println("Falha na troca de dados com o cartão NFC");
+  //       }
+  //     }
+
+  String uid = readNFCUID();
+  
+  delay(1000);
 }
 
 void setupWiFi() {
@@ -88,6 +106,29 @@ String readNFCUID() {
 
   }
   return "";
+}
+
+void processNfcData(uint8_t* data, uint8_t length) {
+        Serial.print("Dados em HEX: ");
+    for (int i = 0; i < length; i++) {
+        Serial.print(data[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.println("");
+
+    String payload;
+    for (int i = 0; i < length; i++) {
+        if (isPrintable(data[i])) {
+            payload += (char)data[i];
+        } else {
+            payload += String("[0x") + String(data[i], HEX) + "]";
+        }
+    }
+    Serial.println("Payload: " + payload);
+}
+
+bool isPrintable(uint8_t c) {
+    return c >= 32 && c <= 126;
 }
 
 void handleNfcData(uint8_t *uid, uint8_t uidLength) {
@@ -136,7 +177,7 @@ void nfcAuth(const String &uid) {
 String checkUserExistenceNFC(const String &uid) {
   HTTPClient http;
 
-  String apiUrl = "https://sua-api.com/checkuser?uid=" + uid;
+  String apiUrl = String(serverAddress) + "/api/user/" + uid;
 
   if (http.begin(apiUrl)) {
     int httpCode = http.GET();

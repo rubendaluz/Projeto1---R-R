@@ -95,8 +95,9 @@ class Home : ComponentActivity() {
             if (!nfcAdapter.isEnabled) {
                 // NFC is not enabled, prompt user to enable it
                 // You can show a dialog or navigate to NFC settings
+                Toast.makeText(this, " not work", Toast.LENGTH_SHORT).show()
             } else {
-                // NFC is enabled, set up your HCE service
+                Toast.makeText(this, "work", Toast.LENGTH_SHORT).show()
                 startNfcService()
             }
         }
