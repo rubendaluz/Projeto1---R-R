@@ -18,10 +18,8 @@ import retrofit2.Response
 
 class MainActivity :  ComponentActivity() {
     private lateinit var  btnLogin: Button
-//    private val emailTextEdit: EditText =findViewById(R.id.input_email)
-//    private val email = emailTextEdit.text.toString()
-//    private val passwordTextEdit: EditText = findViewById(R.id.input_password)
-//    private val password = passwordTextEdit.text.toString()
+    private lateinit var emailTextEdit: EditText
+    private lateinit var passwordTextEdit: EditText
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +28,15 @@ class MainActivity :  ComponentActivity() {
 
 
         btnLogin = findViewById(R.id.btnLogin)
+        emailTextEdit = findViewById(R.id.input_email)
+        val email = emailTextEdit.text.toString()
+        passwordTextEdit = findViewById(R.id.input_password)
+        // Configura o tipo de entrada como senha
+        passwordTextEdit.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        val password = passwordTextEdit.text.toString()
+
+
 //        Função de Login
         btnLogin.setOnClickListener {
 //            val request = ServiceBuilder.buildService(EndPoints::class.java)

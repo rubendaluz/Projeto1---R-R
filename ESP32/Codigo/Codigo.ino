@@ -3,135 +3,166 @@
 #include <Adafruit_PN532.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <ArduinoJson.h>  // Biblioteca para trabalhar com dados JSON
+#include <ArduinoJson.h>
 
-//Pins for NFC board
-#define SDA_PIN 4  // Define the SDA pin
-#define SCL_PIN 5  // Define the SCL pin
+// Pins for NFC board
+#define SDA_PIN 21
+#define SCL_PIN 22
 
-//Wifi Conection
+// Endereço I2C padrão para o módulo GeeekPi I2C 1602
+#define I2C_ADDR 0x27
+
+// Definir o número de colunas e linhas do LCD
+#define LCD_COLUMNS 16
+#define LCD_ROWS 2
+
+// WiFi Connection
 const char *ssid = "SEU_SSID";
 const char *password = "SUA_SENHA";
 
+
+
 Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
 
-// Set the I2C address (use the value printed on your LCD module)
 int lcdAddress = 0x27;
-
-// Set the LCD dimensions (columns x rows)
-LiquidCrystal_I2C lcd(lcdAddress, 16, 2);
+LiquidCrystal_I2C lcd(I2C_ADDR, LCD_COLUMNS, LCD_ROWS);
 
 void setup() {
   Serial.begin(115200);
-  connect_wifi();
-  setup_nfc_board();
-  setup_display_lcd();
+  // Inicializar a comunicação I2C
+  Wire.begin();
+  // setupWiFi();
+  setupNFC();
+  // setupLCD();
 }
 
 void loop() {
-  // Your main code goes here
-}
-
-void setup_nfc_board(){
-  nfc.begin();
-
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (!versiondata) {
-    Serial.print("Didn't find PN53x board");
-    while (1);
+    String uid = readNFCUID();
+  if (!uid.isEmpty()) {
+    // Handle the received data
+    
+    // nfcAuth(uid);
   }
-
-  nfc.SAMConfig();
-  Serial.println("Waiting for an NFC card ...");
 }
 
-bool nfc_auth(){
-  uint8_t success;
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };
+void setupWiFi() {
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+}
+
+void setupNFC() {
+  nfc.begin();
+  nfc.SAMConfig();
+  Serial.println("Waiting for an NFC card...");
+}
+
+
+
+String readNFCUID() {
   uint8_t uidLength;
+  uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
+  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
 
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-
-  if (success) {
-     Serial.println("Found an NFC card!");
-
-    Serial.print("UID Length: "); Serial.print(uidLength, DEC); Serial.println(" bytes");
+  if(card){
+    Serial.println("Found an NFC card!");
     Serial.print("UID Value: ");
-    for (uint8_t i = 0; i < uidLength; i++) {
-      Serial.print(" 0x"); Serial.print(uid[i], HEX);
+    for (uint8_t i=0; i < uidLength; i++) {
+      Serial.print(" 0x");Serial.print(uid[i], HEX);
     }
     Serial.println("");
 
-    // Convert UID to a string
     String uidString = "";
     for (uint8_t i = 0; i < uidLength; i++) {
       uidString += String(uid[i], HEX);
     }
+    
+    
+    Serial.print("UID Value: ");
+    Serial.println(uidString);
+    handleNfcData(uid, uidLength);
+    return uidString;
 
-    // Call API to check user existence and get user data
-    String apiResponse = checkUserExistenceNFC(uidString);
+  }
+  return "";
+}
 
-    // Parse JSON response
-    DynamicJsonDocument jsonDoc(1024);  // Adjust the size based on your expected JSON response size
-    deserializeJson(jsonDoc, apiResponse);
+void handleNfcData(uint8_t *uid, uint8_t uidLength) {
+  // Your logic to handle the received NFC data goes here
+  // Extract the UID, USER_ID, and USERNAME from the received data
 
-    // Get user data from JSON
-    String userName = jsonDoc["name"].as<String>();
-    bool accessGranted = jsonDoc["accessGranted"];
+  // Assuming the received data is formatted as "UID;USER_ID;USERNAME"
+  String receivedData = "UID;";
+  for (int i = 0; i < uidLength; i++) {
+    receivedData += String(uid[i], HEX);
+  }
+  receivedData += ";";
 
-    // Display user information on Serial Monitor
-    Serial.print("User Name: "); Serial.println(userName);
-    Serial.print("Access Granted: "); Serial.println(accessGranted ? "Yes" : "No");
+  // Read the rest of the message until a newline character
+  while (Serial.available() && Serial.peek() != '\n') {
+    receivedData += char(Serial.read());
+  }
 
-    // Act based on access status
-    if (accessGranted) {
-      Serial.println("Access Granted!");
-    } else {
-      Serial.println("Access Denied!");
-    }
+  // Print the received data
+  Serial.println("Received Data: " + receivedData);
+}
 
-    delay(5000);  // Wait for 5 seconds before checking the next card
+void nfcAuth(const String &uid) {
+  String apiResponse = checkUserExistenceNFC(uid);
+
+  DynamicJsonDocument jsonDoc(1024);
+  deserializeJson(jsonDoc, apiResponse);
+
+  String userName = jsonDoc["name"].as<String>();
+  bool accessGranted = jsonDoc["accessGranted"];
+
+  Serial.print("User Name: ");
+  Serial.println(userName);
+  Serial.print("Access Granted: ");
+  Serial.println(accessGranted ? "Yes" : "No");
+
+  if (accessGranted) {
+    Serial.println("Access Granted!");
+    // Imprimir no Display
+  } else {
+    Serial.println("Access Denied!");
+    //Imprimir no display
   }
 }
 
-// Função que verifica se algum utilizador com aquele id exite na base de dados
-String checkUserExistenceNFC(String uid) {
+String checkUserExistenceNFC(const String &uid) {
   HTTPClient http;
 
-  // Substitua o URL com o endpoint real da sua API
   String apiUrl = "https://sua-api.com/checkuser?uid=" + uid;
 
-  // Iniciar solicitação HTTP
-  http.begin(apiUrl);
-
-  // Obter o código de resposta
-  int httpCode = http.GET();
-
-  String response = "{}";  // Por padrão, retorna um objeto JSON vazio
-
-  if (httpCode > 0) {
-    Serial.printf("[HTTP] Código de resposta: %d\n", httpCode);
+  if (http.begin(apiUrl)) {
+    int httpCode = http.GET();
 
     if (httpCode == HTTP_CODE_OK) {
-      // Resposta bem-sucedida, armazenar o corpo da resposta
-      response = http.getString();
+      return http.getString();
+    } else {
+      Serial.printf("[HTTP] Request failed, error code: %s\n", http.errorToString(httpCode).c_str());
     }
+
+    http.end();
   } else {
-    Serial.printf("[HTTP] Falha na solicitação, código de erro: %s\n", http.errorToString(httpCode).c_str());
+    Serial.println("Failed to connect to API");
   }
 
-  // Liberar recursos
-  http.end();
-
-  return response;
+  return "{}";
 }
 
-void setup_display_lcd(){
-  // Initialize the LCD
-  lcd.begin(16, 2);
-  // Display a welcome message
+void setupLCD() {
+  // Inicializar o LCD
+  lcd.begin(LCD_COLUMNS, LCD_ROWS);
+  // Limpar o LCD
+  lcd.clear();
   lcd.print("Multiaccess");
 }
+
 
 void displayMessage(const char* message, int duration) {
   // Clear the LCD

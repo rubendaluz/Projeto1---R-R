@@ -5,7 +5,6 @@ import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
 
 class MyHostApduService : HostApduService() {
-
     override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray {
         val command = commandApdu?.toString(Charsets.UTF_8) ?: ""
         return handleCommand(command)
@@ -20,7 +19,7 @@ class MyHostApduService : HostApduService() {
 
                 // Agora você pode usar o ID e o nome de usuário conforme necessário
                 // Por exemplo, envie uma mensagem, salve no banco de dados, etc.
-                sendMessage(userId, username)
+                sendMessage("000", "Ruben")
 
                 // Responda com uma mensagem de confirmação
                 return "Mensagem Recebida".toByteArray(Charsets.UTF_8)
