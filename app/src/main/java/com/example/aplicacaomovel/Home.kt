@@ -102,6 +102,10 @@ class Home : ComponentActivity() {
             }
         }
     }
+    override fun onResume() {
+        super.onResume()
+        startNfcService()
+    }
 
     private fun startNfcService() {
         // Start your HCE service

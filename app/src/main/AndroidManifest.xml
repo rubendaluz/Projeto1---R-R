@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permissões para NFC -->
+
     <uses-permission android:name="android.permission.NFC" />
 
     <uses-feature
@@ -46,6 +46,7 @@
             android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>
                 <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
+
             </intent-filter>
 
             <meta-data
