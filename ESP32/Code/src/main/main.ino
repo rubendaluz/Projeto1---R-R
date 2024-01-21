@@ -416,7 +416,7 @@ void verifyFingerprint() {
   // Procura por uma impressão digital correspondente
   if (finger.fingerFastSearch() != FINGERPRINT_OK) {
     Serial.println("Impressão digital não encontrada");
- String payload = "{\"id_area\":\"" + String(roomId) + "\",\"metodo_auth\":\"fingerprint\",\"acesso_permitido\":\"false\"}";
+    String payload = "{\"id_area\":\"" + String(roomId) + "\",\"metodo_auth\":\"fingerprint\",\"acesso_permitido\":\"false\"}";
 
 
     HTTPClient http;
@@ -425,7 +425,7 @@ void verifyFingerprint() {
     int httpResponseCode = http.POST(payload);
  
 if (httpResponseCode != 200) {
-      Serial.println("Erroe to save access");
+      Serial.println("Error to save access");
     }
 
      http.end();

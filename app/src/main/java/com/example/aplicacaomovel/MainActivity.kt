@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.aplicacaomovel.api.EndPoints
+import com.example.aplicacaomovel.api.LoginRequest
+import com.example.aplicacaomovel.api.LoginResponse
 import com.example.aplicacaomovel.api.OutputPost
 import com.example.aplicacaomovel.api.ServiceBuilder
 import retrofit2.Call
@@ -39,21 +41,28 @@ class MainActivity :  ComponentActivity() {
 
 //        Função de Login
         btnLogin.setOnClickListener {
-//            val request = ServiceBuilder.buildService(EndPoints::class.java)
-//            val call = request.userLogin(email,password)
+            val loginRequest = LoginRequest("email@example.com", "senha123")
+            val request = ServiceBuilder.buildService(EndPoints::class.java)
+            val call = request.loginUser(loginRequest)
+            call.enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    if (response.isSuccessful) {
+                        // Faça algo com a resposta
+                        val loginResponse = response.body()
+                        // ...
+                    } else {
+                        // Tratar erro
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    // Tratar falha na chamada
+                }
+            })
+
             val intent = Intent(this, Home::class.java)
             startActivity(intent)
-//            call.enqueue(object:Callback<OutputPost>{
-//                override fun onResponse(call: Call<OutputPost>, response: Response<OutputPost>) {
-//                    if (response.isSuccessful){
-//                        val c: OutputPost = response.body()!!
 
-//                    }
-//                }
-//                override fun onFailure(call: Call<OutputPost>, t: Throwable) {
-//                    Toast.makeText(this@MainActivity, "${t.message}", Toast.LENGTH_SHORT).show()
-//                }
-//            })
         }
     }
 }

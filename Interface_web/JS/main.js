@@ -2,7 +2,7 @@
 // *******************************************************
 // Declaracoes de variaveis globais
 // *******************************************************
-
+const ip = "192.168.170.94"
 // Variaveis para os Users
 const usersTableBody = document.getElementById("users_table_body");
 const li_users = document.querySelector("#li_users");
@@ -183,7 +183,7 @@ let add_access_table = (id, user_id, room_id, datetime, allowed, method) => {
 let getAllUsers = () => {
 
 
-    const url = 'http://192.168.1.189:4242/api/user/';
+    const url = `http://${ip}:4242/api/user/`;
 
     fetch(url)
     .then(response => {
@@ -204,7 +204,7 @@ let getAllUsers = () => {
 }
 
 let getAllRooms = () => {
-    const url = 'http://192.168.1.189:4242/api/room/';
+    const url = `http://${ip}:4242/api/room/`;
 
     fetch(url)
     .then(response => {
@@ -232,7 +232,7 @@ usersTableBody.addEventListener("click", handleUserClick);
 
     
 let getAllRecentAccesses = () => {
-    const url = 'http://192.168.1.189:4242/api/acesses/';
+    const url = `http://${ip}:4242/api/acesses/`;
 
     fetch(url)
     .then(response => {
@@ -306,7 +306,7 @@ function deleteUser (userId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://192.168.1.189:4242/api/user/${userId}`;
+const apiUrl = `http://${ip}:4242/api/user/${userId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -333,7 +333,7 @@ function setEditFormData(id) {
     document.querySelector("#add_new_user_button").textContent= "Update User";
     document.querySelector("#title_add_edit_form").textContent= "Edit User";
     
-    const url = `http://192.168.1.189:4242/api/user/${id}`;
+    const url = `http://${ip}:4242/api/user/${id}`;
     
   
     fetch(url)
@@ -388,7 +388,7 @@ function add_new_room ()  {
     } else if (!room_security_level) {
         console.log("Sem email para o utilizador");
     } else {
-        const url = 'http://192.168.1.189:4242/api/room/';
+        const url = `http://${ip}:4242/api/room/`;
 
         // Dados que você deseja enviar no corpo da solicitação
         const data = {

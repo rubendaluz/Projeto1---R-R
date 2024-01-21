@@ -177,7 +177,7 @@ export const register = async (req, res) => {
 
     // Geração e envio do link temporário para mudança de senha
     const resetToken = createResetToken(user.id);
-    const resetLink = `http://127.0.0.1:5500/Interface_web/HTML/changePWD.html?token=${resetToken}`;
+    const resetLink = `http://${process.env.SERVER_HOST}:5500/Interface_web/HTML/changePWD.html?token=${resetToken}`;
     await sendWelcomeEmail(user, resetLink);
    
     
@@ -248,10 +248,6 @@ export const register = async (req, res) => {
     }
   };
 
-
-
-  
-  
   export const authenticateUser = async (req, res) => {
     try {
     
@@ -337,3 +333,47 @@ export const updateAllUsersFingerprints = async (req, res) => {
     return res.status(500).json({ message: 'Failed to update all users fingerPrintId' });
   }
 };
+
+export const authenticateUserNFC = async (req, res) => {
+    try {
+      // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
+      const { roomId, nfcTag } = req.body;
+  
+      
+      // Encontrar a sala pelo ID
+      const room = await RoomModel.findByPk(roomId);
+  
+      if (!room) {
+        return res.status(404).json({ message: 'Room not found' });
+      }
+  
+      // Encontrar o usuário pelo fingerPrintId
+      const user = await UserModel.findOne({ where: { nfcTag } });
+      console.log("User: ", user);
+  
+      // Obter o timestamp atual
+      const entryTimestamp = new Date();
+  
+      // Criar um registro de acesso
+      const access = await AcessesModel.create({
+        id_user: user ? user.id : null,
+        id_area: roomId,
+        metodo_auth: 'nfc',
+        acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
+        data_hora_entrada: entryTimestamp,
+      });
+  
+      // Check authorization status and respond accordingly
+      if (!user) {
+        return res.status(401).json({ message: 'Unknown' });
+      }
+  
+      if (user.accessLevel < room.access_level_required) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      return res.json({authorized: true, name: user.firstName + " " + user.lastName });
+    } catch (error) {
+      console.error('Error authenticating user:', error);
+      return res.status(500).json({ message: 'Failed to authenticate user' });
+    }
+  };

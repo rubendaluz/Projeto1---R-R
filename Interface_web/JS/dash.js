@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalUsersCountElement = document.getElementById("totalUsersCount");
     const totalAdminsCountElement = document.getElementById("totalAdminsCount");
     const totalRoomsCountElement = document.getElementById("totalRoomsCount");
+    const ip = "192.168.170.94"
 
     // Use a rota configurada no seu servidor
-    const apiUrl = "http://192.168.1.189:4242/api/statistics";
+    const apiUrl = `http://${ip}:4242/api/statistics`;
 
     fetch(apiUrl)
         .then(response => response.json())

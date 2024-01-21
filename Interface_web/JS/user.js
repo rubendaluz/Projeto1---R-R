@@ -8,6 +8,7 @@ const open_new_user_form_button = document.querySelector("#create_user_button");
 const add_edit_user_form = document.querySelector(".new_user_form");
 const new_user_form_close_button = document.querySelector("#new_user_form_close_button");
 const add_new_user_button = document.querySelector("#add_new_user_button");
+const ip = "192.168.170.94"
 
 
 
@@ -80,7 +81,7 @@ function add_or_edit_user() {
      
 
     // URL for API endpoint
-    const url = isEditMode ? `http://192.168.1.189:4242/api/user/update/${userId}` : "http://192.168.1.189:4242/api/user/register/";
+    const url = isEditMode ? `http://${ip}:4242/api/user/update/${userId}` : `http://${ip}:4242/api/user/register/`;
 
     // HTTP method for API request
     const method = isEditMode ? "PUT" : "POST";
@@ -162,7 +163,7 @@ let add_user_to_table = (id, profilePic,firstName,lastName,email,phone,accessLev
 let getAllUsers = () => {
 
 
-    const url = 'http://192.168.1.189:4242/api/user/';
+    const url = `http://${ip}:4242/api/user/`;
 
     fetch(url)
     .then(response => {
@@ -195,7 +196,7 @@ function deleteUser (userId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://192.168.1.189:4242/api/user/${userId}`;
+const apiUrl = `http://${ip}:4242/api/user/${userId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -222,7 +223,7 @@ function setEditUserFormData(id) {
     document.querySelector("#add_new_user_button").textContent= "Update User";
     document.querySelector("#title_add_edit_user_form").textContent= "Edit User";
     
-    const url = `http://192.168.1.189:4242/api/user/${id}`;
+    const url = `http://${ip}:4242/api/user/${id}`;
     
   
     fetch(url)
@@ -295,12 +296,12 @@ function gerarSenhaForte() {
 
 
    function previewImage() {
-        var preview = document.getElementById('preview-image');
-        var fileInput = document.getElementById('new_user_profile_img');
-        var file = fileInput.files[0];
+        let preview = document.getElementById('preview-image');
+        let fileInput = document.getElementById('new_user_profile_img');
+        let file = fileInput.files[0];
 
         if (file) {
-            var reader = new FileReader();
+            let reader = new FileReader();
 
             reader.onload = function (e) {
                 preview.src = e.target.result;
@@ -309,9 +310,9 @@ function gerarSenhaForte() {
             reader.readAsDataURL(file);
         }
     }function previewImage(input) {
-        var preview = document.getElementById('preview-image');
-        var file = input.files[0];
-        var reader = new FileReader();
+        let preview = document.getElementById('preview-image');
+        let file = input.files[0];
+        let reader = new FileReader();
 
         reader.onloadend = function () {
             preview.src = reader.result;

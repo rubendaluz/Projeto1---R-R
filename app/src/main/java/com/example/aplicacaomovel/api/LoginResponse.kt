@@ -1,4 +1,3 @@
 package com.example.aplicacaomovel.api
 
-class LoginResponse {
-}
+data class LoginResponse(val user: User, val token: String)

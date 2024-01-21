@@ -2,7 +2,7 @@
 // *******************************************************
 // Declaracoes de variaveis globais
 // *******************************************************
-
+const ip = "192.168.170.94"
 
 // Variaveis para os Rooms
 const li_rooms = document.querySelector("#li_rooms");
@@ -57,7 +57,7 @@ function add_or_edit_room() {
     roomId = add_edit_room_form.getAttribute("roomId");
 
     // URL for API endpoint
-    const url = isEditMode ? `http://192.168.1.189:4242/api/room/${roomId}` : "http://192.168.1.189:4242/api/room/";
+    const url = isEditMode ? `http://${ip}:4242/api/room/${roomId}` : `http://${ip}:4242/api/room/`;
 
     // HTTP method for API request
     const method = isEditMode ? "PUT" : "POST";
@@ -134,7 +134,7 @@ let add_room_to_table = (id, roomname, roomseclevel) => {
 
 
 let getAllRooms = () => {
-    const url = 'http://192.168.1.189:4242/api/room/';
+    const url = `http://${ip}:4242/api/room/`;
 
     fetch(url)
     .then(response => {
@@ -180,7 +180,7 @@ function add_new_room ()  {
     } else if (!room_security_level) {
         console.log("Sem email para o utilizador");
     } else {
-        const url = 'http://192.168.1.189:4242/api/room/';
+        const url = `http://${ip}:4242/api/room/`;
 
         // Dados que você deseja enviar no corpo da solicitação
         const data = {
@@ -266,7 +266,7 @@ function deleteRoom (roomId) {
     })
         
     confirm_btn.addEventListener("click", (e) => {
-const apiUrl = `http://192.168.1.189:4242/api/room/${roomId}`;
+const apiUrl = `http://${ip}:4242/api/room/${roomId}`;
 
 fetch(apiUrl, {
   method: 'DELETE',
@@ -294,7 +294,7 @@ function setEditRoomFormData(id) {
     document.querySelector("#add_new_room_button").textContent= "Update Room";
     document.querySelector("#title_add_edit_room_form").textContent= "Edit Room";
     
-    const url = `http://192.168.1.189:4242/api/room/${id}`;
+    const url = `http://${ip}:4242/api/room/${id}`;
     
   
     fetch(url)

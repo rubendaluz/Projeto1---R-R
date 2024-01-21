@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // Obtém o ID do usuário dos parâmetros da URL
-  const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
+    const ip = "192.168.170.94"
   
 
   const userId = urlParams.get('id');
