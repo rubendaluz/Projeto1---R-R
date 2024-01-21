@@ -111,3 +111,18 @@ export const getRecentAccesses = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch recent accesses" });
   }
 };
+
+export const getAccessesByAuthenticationMethod = async (req, res) => {
+  try {
+    const authenticationMethod = req.params.authenticationMethod; // Assuming you pass the authentication method as a parameter
+
+    const accesses = await AcessesModel.findAll({
+      where: { metodo_auth: authenticationMethod },
+    });
+
+    return res.json(accesses);
+  } catch (error) {
+    console.error("Error fetching accesses by authentication method:", error);
+    return res.status(500).json({ message: "Failed to fetch accesses by authentication method" });
+  }
+};

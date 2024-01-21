@@ -3,7 +3,8 @@ import {
     createAccess, getAccessesByUser,
     getAccessesByDate, getAccessesByArea,
     getAccessesByHour, getAllAccesses,
-    getAccessesByDateRange, getRecentAccesses
+    getAccessesByDateRange, getRecentAccesses,
+    getAccessesByAuthenticationMethod,
 } from '../controllers/acesses.controller.js';
 
 const accessesRoutes = Router();
@@ -15,13 +16,13 @@ accessesRoutes.post('/create', createAccess);
 accessesRoutes.get('/user/:userId', getAccessesByUser);
 
 // Rota para buscar acessos por data
-accessesRoutes.get('/:date', getAccessesByDate);
+accessesRoutes.get('/date/:date', getAccessesByDate);
 
 // Rota para buscar acessos por hora
-accessesRoutes.get('/:hour', getAccessesByHour);
+accessesRoutes.get('/hour/:hour', getAccessesByHour);
 
 // Rota para buscar acessos por área
-accessesRoutes.get('/:startDate/:endDate', getAccessesByDateRange);
+accessesRoutes.get('dateRange/:startDate/:endDate', getAccessesByDateRange);
 
 // Rota para buscar acessos por área
 accessesRoutes.get('/area/:areaId', getAccessesByArea);
@@ -31,6 +32,9 @@ accessesRoutes.get('/recent', getRecentAccesses);
 
 // Rota para buscar todos os acessos
 accessesRoutes.get('/', getAllAccesses);
+
+accessesRoutes.get('/Method', getAccessesByAuthenticationMethod);
+
 
 
 export { accessesRoutes };
