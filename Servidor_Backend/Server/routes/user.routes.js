@@ -11,6 +11,7 @@ import {
   updateUserFingerprint,
   updateAllUsersFingerprints,
   changePassword,
+  authenticateUserNFC,
 } from "../controllers/user.controller.js";
 
 const usersRoutes = Router();
@@ -52,5 +53,8 @@ usersRoutes.put("/updateAllFingerprints", updateAllUsersFingerprints);
 
 // http://localhost:4242/api/user/updateAllFingerprints
 usersRoutes.post('/change-password', changePassword);
+
+// http://localhost:4242/api/user/authenticatenfc
+usersRoutes.post("/authenticatenfc", authenticateUserNFC);
 
 export { usersRoutes };

@@ -1,5 +1,6 @@
 
 
+const ip = "192.168.170.94" 
 
 document.addEventListener("DOMContentLoaded", (e) => {
     var currentPage = window.location.pathname.split('/').pop();
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
 
 let getAllRecentAccesses = () => {
-    const url = 'http://192.168.1.189:4242/api/acesses/';
+    const url = `http://${ip}:4242/api/acesses/`;
 
     fetch(url)
     .then(response => {
