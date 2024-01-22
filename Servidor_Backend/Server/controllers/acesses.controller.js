@@ -3,21 +3,26 @@ import { Op } from "sequelize";
 
 
 export const createAccess = async (req, res) => {
-    try {
-      console.log(req.body);
-        const { id_area, id_user,  metodo_auth, acesso_permitido } = JSON.parse(Object.keys(req.body)[0]);
-      
+  try {
+      // Extracting relevant information from the request body
+      const { id_area, id_user,  metodo_auth, acesso_permitido } = JSON.parse(Object.keys(req.body)[0]);
+    
+      // Creating a timestamp for the entry time
       const entryTimestamp = new Date();
       const data_hora_entrada = entryTimestamp;
 
-        const access = await AcessesModel.create({ id_area, id_user, data_hora_entrada, metodo_auth, acesso_permitido })
-        
-    return res.json(access);
+      // Creating a new access record using Sequelize
+      const access = await AcessesModel.create({ id_area, id_user, data_hora_entrada, metodo_auth, acesso_permitido })
+      
+      // Returning the created access record as a JSON response
+      return res.json(access);
   } catch (error) {
-    console.error("Error registering access:", error);
-    return res.status(500).json({ message: "Failed to register access" });
+      // Handling errors and returning an appropriate response
+      console.error("Error registering access:", error);
+      return res.status(500).json({ message: "Failed to register access" });
   }
 }
+
 export const getAccessesByUser = async (req, res) => {
   try {
     const userId = req.params.userId; // Assumindo que você está passando o ID do utilizador como parâmetro
@@ -31,74 +36,36 @@ export const getAccessesByUser = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch accesses by user" });
   }
 };
-export const getAccessesByDate = async (req, res) => {
-  try {
-    const date = req.params.date; // Assumindo que você está passando a data como parâmetro
-
-    const accesses = await AcessesModel.findAll({
-      where: { data_hora_entrada: { [Op.startsWith]: date } }, // Usando Operador Sequelize para buscar datas que começam com a data fornecida
-    });
-
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching accesses by date:", error);
-    return res.status(500).json({ message: "Failed to fetch accesses by date" });
-  }
-};
-export const getAccessesByDateRange = async (req, res) => {
-  try {
-    const startDate = req.params.startDate; // Assumindo que você está passando a data de início como parâmetro
-    const endDate = req.params.endDate; // Assumindo que você está passando a data de término como parâmetro
-
-    const accesses = await AcessesModel.findAll({
-      where: {
-        data_hora_entrada: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-    });
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching accesses by date range:", error);
-    return res.status(500).json({ message: "Failed to fetch accesses by date range" });
-  }
-};
-export const getAccessesByHour = async (req, res) => {
-  try {
-    const hour = req.params.hour; // Assumindo que você está passando a hora como parâmetro
-
-    const accesses = await AcessesModel.findAll({
-      where: { data_hora_entrada: { [Op.like]: `%${hour}:%` } }, // Usando Operador Sequelize para buscar horas que contenham a hora fornecida
-    });
-
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching accesses by hour:", error);
-    return res.status(500).json({ message: "Failed to fetch accesses by hour" });
-  }
-};
-export const getAccessesByArea = async (req, res) => {
-  try {
-    const areaId = req.params.areaId; // Assumindo que você está passando o ID da área como parâmetro
-
-    const accesses = await AcessesModel.findAll({
-      where: { id_area: areaId },
-    });
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching accesses by area:", error);
-    return res.status(500).json({ message: "Failed to fetch accesses by area" });
-  }
-};
 export const getAllAccesses = async (req, res) => {
-  try {
-    const accesses = await AcessesModel.findAll();
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching all accesses:", error);
-    return res.status(500).json({ message: "Failed to fetch all accesses" });
-  }
+    try {
+        // Obtenha parâmetros de consulta
+        const { userId, date, authenticationMethod, areaId, accessState, sortColumn, sortOrder } = req.query;
+
+        // Construa o objeto de condição com base nos parâmetros de consulta
+        const condition = {};
+
+        if (userId) condition.id_user = userId;
+        if (date) condition.data_hora_entrada = { [Op.startsWith]: date };
+        if (authenticationMethod) condition.metodo_auth = authenticationMethod;
+        if (areaId) condition.id_area = areaId;
+        if (accessState) condition.acesso_permitido = accessState;
+
+        // Adicione opções de ordenação
+        const order = sortColumn ? [[sortColumn, sortOrder || 'ASC']] : [];
+
+        // Consulte o banco de dados com base nos parâmetros de consulta
+        const accesses = await AcessesModel.findAll({
+            where: condition,
+            order: order,
+        });
+
+        return res.json(accesses);
+    } catch (error) {
+        console.error("Error fetching all accesses:", error);
+        return res.status(500).json({ message: "Failed to fetch all accesses" });
+    }
 };
+
 export const getRecentAccesses = async (req, res) => {
   try {
     const recentAccesses = await AcessesModel.findAll({
@@ -112,17 +79,3 @@ export const getRecentAccesses = async (req, res) => {
   }
 };
 
-export const getAccessesByAuthenticationMethod = async (req, res) => {
-  try {
-    const authenticationMethod = req.params.authenticationMethod; // Assuming you pass the authentication method as a parameter
-
-    const accesses = await AcessesModel.findAll({
-      where: { metodo_auth: authenticationMethod },
-    });
-
-    return res.json(accesses);
-  } catch (error) {
-    console.error("Error fetching accesses by authentication method:", error);
-    return res.status(500).json({ message: "Failed to fetch accesses by authentication method" });
-  }
-};

@@ -530,5 +530,184 @@ input:focus {
 }
 
 
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --text-color: #ffffff;
+}
 
 
+.filter-container {
+  display: flex;
+  flex-wrap: wrap; /* Permitir que os filtros quebrem para a próxima linha */
+  align-items: center;
+  
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #1d2b37;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.filter-item {
+  
+  align-items: center;
+  margin-right: 20px; 
+  margin-bottom: 10px; 
+  margin-top: 10px; 
+
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: color 0.3s;
+  vertical-align: middle; /* Centralizar verticalmente os ícones em relação aos campos de entrada */
+
+
+}
+
+.filter-item:hover {
+  color: var(--accent-color);
+  
+}
+
+
+.filter-more {
+  margin-left: auto;
+}
+
+.show-more-button {
+  border: none;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 20px;
+  margin-right: 20px;
+  transition: transform 0.3s;
+  background-color: transparent;
+}
+
+.show-more-button:hover {
+  transform: rotate(180deg);
+}
+
+.filter-button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter-button:hover {
+  background-color: var(--accent-color);
+}
+
+.filter-item i {
+  font-size: 1.5em; /* Ajuste o tamanho da fonte conforme necessário */
+  vertical-align: middle; /* Centralizar verticalmente os ícones em relação aos campos de entrada */
+}
+
+.filter-input {
+  margin-left: 8px;
+  padding: 8px;
+  border: none;
+
+}
+
+.filter-button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter-button:hover {
+  background-color: var(--accent-color);
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+/* Estilo para os inputs e selects */
+.filter-input,
+.filter-item select {
+  height: 40px;
+  
+  padding: 10px;
+  border-bottom: 1px solid #0080ff; /* Azul marinho escuro */
+
+  font-size: 14px;
+  width: 100%;
+  vertical-align: middle; /* Centralizar verticalmente os ícones em relação aos campos de entrada */
+  color: #0088ff; /* Cor do texto para contraste */
+  background-color: transparent; /* Cor de fundo para os inputs e selects */
+}
+
+
+
+/* Estilo para as opções dentro dos selects */
+.filter-item select option {
+  font-size: 14px;
+  color: #ecf0f1;
+  background-color: #34495e; /* Cor de fundo para as opções */
+  padding: 8px;
+}
+
+
+/* Estilo para o botão de filtro */
+.filter-button {
+  background-color: #3498db; /* Azul */
+  color: #ecf0f1;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter-button:hover {
+  background-color: #2980b9; /* Azul escuro no hover */
+}
+
+/* Estilo para os ícones nos filtros */
+.filter-item i {
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+/* Estilo para o título dos filtros */
+.filter-title {
+  font-size: 24px;
+  color: #ecf0f1;
+  margin-bottom: 15px;
+}
+
+/* Adiciona um pouco de sombra nos itens de filtro para destacar */
+.filter-item {
+  display: flex;
+  flex-grow: 1;
+align-items: center;
+  vertical-align: middle;
+  flex-grow: 1; 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  
+  background-color: #192028;
+  padding: 10px;
+  border: 1px solid #007dfa; 
+  border-radius: 8px;
+  margin-bottom: 15px;
+
+ 
+  
+}
+
+.filter-item:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

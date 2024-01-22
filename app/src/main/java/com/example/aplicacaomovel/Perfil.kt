@@ -8,4 +8,5 @@ class Perfil : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
     }
+
 }

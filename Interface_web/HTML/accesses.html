@@ -52,6 +52,116 @@
         </div>
     </header>
         <main>
+
+
+    <div class="filter-container">
+        <div class="filter-item ">
+            <i class="fas fa-sort"  onclick="toggleFilter('sortColumn')"></i>
+            <select id="sortColumn" class="filter-input hidden">
+                <option value="id">ID</option>
+                <option value="id_user">User ID</option>
+                <option value="id_area">Area ID</option>
+                <option value="data_hora_entrada">Date and Time</option>
+                <option value="acesso_permitido">Access State</option>
+                <option value="metodo_auth">Method</option>
+            </select>
+        </div>
+        <div class="filter-item " >
+            <i class="fas fa-sort-amount-up" onclick="toggleFilter('sortOrder')"></i>
+            <select id="sortOrder" class="filter-input hidden">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
+        <div class="filter-item" >
+            <i class="fas fa-user" onclick="toggleFilter('userFilter')"></i>
+            <input type="text" id="userFilter" class="filter-input hidden" placeholder="User ID">
+        </div>
+    
+        <div class="filter-item" >
+            <i class="far fa-calendar-alt" onclick="toggleFilter('dateFilter')"></i>
+            <input type="date" id="dateFilter" class="filter-input hidden" placeholder="Date">
+        </div>
+    
+        <div class="filter-item" >
+            <i class="fas fa-fingerprint" onclick="toggleFilter('methodFilter')"></i>
+            <select id="methodFilter" class="filter-input hidden">
+                <option value="">All Methods</option>
+                <option value="NFC">NFC</option>
+                <option value="FINGER">FINGER</option>
+            </select>
+        </div>
+    
+        <div class="filter-item " >
+            <i class="fas fa-lock" onclick="toggleFilter('accessStateFilter')"></i>
+            <select id="accessStateFilter" class="filter-input hidden">
+                <option value="">All States</option>
+                <option value="1">Allowed</option>
+                <option value="0">Not Allowed</option>
+            </select>
+        </div>
+    
+
+      
+        <!-- Os filtros adicionais agora têm bordas coloridas para uma aparência mais atraente -->
+        <div class="filter-item " >
+            <i class="fas fa-map-marker-alt" onclick="toggleFilter('areaFilter')"></i>
+            <input type="text" id="areaFilter" class="filter-input hidden" placeholder="Area ID">
+        </div>
+    
+      
+    
+       
+    
+        
+        <div class="filter-more">
+            <button id="showMoreFilters" class="show-more-button" >
+                <i class="fas fa-chevron-down" onclick="showallFilter()"></i>
+            </button>
+        </div>
+        <button onclick="applyFilters()" class="filter-button">
+            <i class="fas fa-filter"></i>  APLLY FILTERS
+        </button>
+    </div>
+
+
+
+
+<script>
+        function toggleFilter(filterId) {
+            const filterInput = document.getElementById(filterId);
+            filterInput.classList.toggle('hidden');
+            console.log(filterInput);
+        }
+
+
+        function showallFilter() {
+    var inputs = document.querySelectorAll('.filter-input');
+    var shouldShow = true;
+
+    // Verifica se pelo menos um dos inputs está visível
+    inputs.forEach(function(input) {
+        if (!input.classList.contains('hidden')) {
+            shouldShow = false;
+        }
+    });
+
+    // Se todos estiverem ocultos, mostra todos. Caso contrário, oculta todos.
+    inputs.forEach(function(input) {
+        if (shouldShow) {
+            input.classList.remove('hidden');
+        } else {
+            input.classList.add('hidden');
+        }
+    });
+}
+
+        
+
+</script>
+
+
+
             <div class="accesses_container">
                 <table id="accesses_table">
                     <thead>
@@ -80,7 +190,8 @@
 
 
 
-
+   
+    
 
 
 
