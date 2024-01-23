@@ -46,6 +46,8 @@ export const loginAdmin = async (req, res) => {
       username: admin.username,  
     });
 
+    //excluir password do admin
+    admin.password = undefined;
     return res.json({ admin, token });
   } catch (error) {
     console.error('Error during admin login:', error);

@@ -27,6 +27,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+
+// http://localhost:4242/api/user/:id
+usersRoutes.put("/update/:id", upload.none(), updateUser);
+
 // http://localhost:4242/api/user/register
 usersRoutes.post('/register', upload.single('photo'), register);
 
@@ -36,8 +40,8 @@ usersRoutes.get("/:id", getUserProfile);
 // http://localhost:4242/api/user/
 usersRoutes.get("/", getAllUsers);
 
-// http://localhost:4242/api/user/:id
-usersRoutes.put("/update/:id", updateUser);
+
+
 
 // http://localhost:4242/api/user/:id
 usersRoutes.delete("/:id", deleteUser);

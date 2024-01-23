@@ -26,7 +26,7 @@
             </ul>            
             <div class="sidebar-footer">
                 <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
-                <button class="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
+                <button class="logout-button" id="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
             </div>
         </aside>
     </div>
@@ -54,6 +54,13 @@
 
     <main>
         <button id="create_user_button">Creat new user</button>
+        <div class="filter-item " >
+            <i class="fas fa-sort-amount-up" ></i>
+            <select id="sortOrder" class="filter-input ">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
         <div class="users_container">
            
             <table id="users_table">
@@ -96,7 +103,7 @@
                     <img src="../img/perfil.jpg" alt="" id="preview-image">
                 </div>
             
-                <input hidden type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*" onchange="previewImage(this)">
+                <input hidden type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*">
                 <label for="new_user_profile_img" class="upload-label">
                     <i class="fas fa-cloud-upload-alt"></i>
                     Upload
@@ -155,6 +162,7 @@
     
 
 </body>
-<script src="../JS/user.js"></script>
+<script type="module" src="../JS/user.js"></script>
+
 
 </html>

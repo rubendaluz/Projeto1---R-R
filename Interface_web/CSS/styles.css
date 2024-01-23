@@ -514,7 +514,7 @@ align-items: center;
 }
 .new_admin_form{
  
-  max-height: 250px;
+  max-height: 50%;
 }
 #roomForm {
   margin: 40px auto;
@@ -710,4 +710,52 @@ align-items: center;
 
 .filter-item:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Add some styling to the password generation button */
+/* Style for the password group */
+.password-group {
+  position: relative;
+}
+
+
+/* Style for the generate password button */
+#generate_password_button,
+#toggle_password_visibility {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  cursor: pointer;
+}
+
+#generate_password_button {
+  right: 10px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+#generate_password_button:hover {
+  background-color: #45a049;
+}
+
+#generate_password_button i {
+  color: white;
+}
+
+/* Style for the toggle password visibility button */
+#toggle_password_visibility {
+  right: 40px;
+  background-color: transparent;
+}
+
+#toggle_password_visibility i {
+  color: #555;
+}
+
+#toggle_password_visibility:hover i {
+  color: #333;
 }

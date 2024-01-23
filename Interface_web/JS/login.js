@@ -1,10 +1,17 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const login_submit_button = document.querySelector("#login");
+import {ip} from './config/config.js';
 
-  //Adicionar aync a função quando descomentar o codigo de ligação a api
-  login_submit_button.addEventListener("submit", (e) => {
-    e.preventDefault();
+
+document.addEventListener("DOMContentLoaded", () => {
+
+const token = localStorage.getItem("token");
+if (token) {
+  window.location.href = "../HTML/dashboard.html";
+}
+
+  const btnLogin = document.getElementById("btnLogin");
+  btnLogin.addEventListener("click", () => {
+
 
     const username = document.querySelector("#username").value;
     const password = document.querySelector("#password").value;
@@ -12,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log(username, password)
     // Replace with the URL of the login endpoint
-    const url = "http://localhost:4242/api/admin/login";
+    const url = `http://${ip}:4242/api/admin/login`;
     const data = { username, password };
 
   fetch(url, {
@@ -30,11 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   .then((data) => {
     const token = data.token;
+
     localStorage.setItem("token", token);
+    //save user info
+    localStorage.setItem("user", JSON.stringify(data.admin));  
     console.log(token);  
     error_message.style.display = "none";
     // Redirect to the restricted access page
   window.location.href = "../HTML/dashboard.html";
+  
   })
   .catch((error) => {
     console.error(error.message);

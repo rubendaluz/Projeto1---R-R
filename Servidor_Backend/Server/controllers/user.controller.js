@@ -184,17 +184,30 @@ export const register = async (req, res) => {
     
   
 
-    // Update the filename using the username and user ID
-    const username = user.firstName.toLowerCase();
-    const newFilename = `${username}_${user.id}${path.extname(req.file.originalname)}`;
+  // Verificar se o upload foi feito
+if (req.file) {
+  // Se o upload foi feito, execute a lógica de processamento da imagem
 
-    // Move the file to the desired directory and update the user's photopath
-    const oldPath = `../../Interface_web/img/User/${req.file.filename}`;
-    const newPath = `../../Interface_web/img/User/${newFilename}`;
-    fs.renameSync(oldPath, newPath);
+  // Update the filename using the username and user ID
+  const username = user.firstName.toLowerCase();
+  const newFilename = `${username}_${user.id}${path.extname(req.file.originalname)}`;
 
-    // Update the user's photopath in the database
-    await user.update({ photopath: newFilename }); 
+  // Move the file to the desired directory and update the user's photopath
+  const oldPath = `../../Interface_web/img/User/${req.file.filename}`;
+  const newPath = `../../Interface_web/img/User/${newFilename}`;
+  fs.renameSync(oldPath, newPath);
+
+  // Update the user's photopath in the database
+  await user.update({ photopath: newFilename });
+
+} else {
+  // Se nenhum upload foi feito, use a imagem padrão
+  const defaultImagePath = 'perfil.jpg';
+  
+  // Atualize o user's photopath com o caminho da imagem padrão
+  await user.update({ photopath: defaultImagePath });
+}
+
 
 
     
@@ -206,23 +219,36 @@ export const register = async (req, res) => {
 };
 
 
-  export const getAllUsers = async (req, res) => {
-    try {
-      const users = await UserModel.findAll({
-        attributes: { exclude: ["fingerPrint", "nfcTag"] }
-      });
+export const getAllUsers = async (req, res) => {
+  try {
+    const { sortOrder } = req.query;
 
-      return res.json(users);
-    } catch (error) {
-      console.error("Error retrieving users:", error);
-      return res.status(500).json({ message: "Failed to retrieve users" });
-    }
-  };
+    // Adicione opções de ordenação
+    const order = [['firstName', sortOrder || 'ASC']]; // Substitua 'name' pelo nome real da coluna de nome
+
+    const users = await UserModel.findAll({
+      order: order,
+      attributes: { exclude: ["fingerPrint", "nfcTag"] }
+    });
+
+    return res.json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    return res.status(500).json({ message: "Failed to retrieve users" });
+  }
+};
+
 
   export const updateUser = async (req, res) => {
     try {
       const { id } = req.params;
+      console.log("req.body: ", req.body.firstName);
       const { firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active } = req.body;
+ 
+      console.log("req.body: ", req.body.Date);
+      // Update the user
+      console.log("id: ", id);
+      console.log("firstName: ", firstName);
       await UserModel.update({ firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active }, { where: { id } });
       return res.json({ message: "User updated successfully" });
     } catch (error) {

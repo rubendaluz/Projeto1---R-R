@@ -27,7 +27,7 @@
             </ul>            
             <div class="sidebar-footer">
                 <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
-                <button class="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
+                <button class="logout-button" id="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
             </div>
         </aside>
     </div>
@@ -44,7 +44,7 @@
         <div class="header">
             <h1 class="title">Dashboard</h1>
             <div class="user-profile">
-                <img class="user-avatar" src="../Interface_web/auth_page/img/background.png" alt="User Avatar">
+                <img class="user-avatar" src="../img/User/perfil.jpg" alt="User Avatar">
                 <span class="user-name">John Doe</span>
             </div>
            
@@ -55,6 +55,9 @@
 
 
     <main>
+        <a href="#accessesContainer" class="view-accesses-button">
+            <i class="fas fa-eye"></i> View Accesses
+        </a>
         <div class="user-details-container">
     
             <div class="user-details">
@@ -65,42 +68,132 @@
                 </div>
                 <div class="details">
                     <div class="detail">
-                        <label for="id">ID:</label>
-                        <span id="id">123</span>
+                        <label for="id">ID</label>
+                        <span id="id"></span>
                     </div>
                     <div class="detail">
-                        <label for="firstName">First Name:</label>
+                        <label for="firstName">First Name</label>
                         <span id="firstName"></span>
                     </div>
                     <div class="detail">
-                        <label for="lastName">Last Name:</label>
+                        <label for="lastName">Last Name</label>
                         <span id="lastName"></span>
                     </div>
                     <div class="detail">
-                        <label for="nfctag">NFCTag:</label>
+                        <label for="nfctag">NFCTag</label>
                         <span id="nfctag"></span>
                     </div>
+             
                     <div class="detail">
-                        <label for="fingerprint">Fingerprint:</label>
-                        <span id="fingerprint"></span>
-                    </div>
-                    <div class="detail">
-                        <label for="email">Email:</label>
+                        <label for="email">Email</label>
                         <span id="email"></span>
                     </div>
                     <div class="detail">
-                        <label for="phone">Phone:</label>
-                        <span id="phone">1</span>
+                        <label for="phone">Phone</label>
+                        <span id="phone"></span>
                     </div>
                     <div class="detail">
-                        <label for="accessLevel">Access Level:</label>
+                        <label for="accessLevel">Access Level</label>
                         <span id="accessLevel"></span>
                     </div>
                     <div class="detail">
-                        <label for="active">Active:</label>
+                        <label for="active">Active</label>
                         <span id="active"></span>
                     </div>
                 </div>
+            </div>
+
+             <div class="accesses_container useracess-container"  id="accessesContainer">
+                <h2 class="accesses-title">Accesses</h2>
+                <div class="filter-container">
+                    <div class="filter-item ">
+                        <i class="fas fa-sort" onclick="toggleFilter('sortColumn')"></i>
+                        <select id="sortColumn" class="filter-input hidden">
+                            <option value="id">ID</option>
+                            <option value="id_user">User ID</option>
+                            <option value="id_area">Area ID</option>
+                            <option value="data_hora_entrada">Date and Time</option>
+                            <option value="acesso_permitido">Access State</option>
+                            <option value="metodo_auth">Method</option>
+                        </select>
+                    </div>
+                    <div class="filter-item ">
+                        <i class="fas fa-sort-amount-up" onclick="toggleFilter('sortOrder')"></i>
+                        <select id="sortOrder" class="filter-input hidden">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </div>
+                 
+    
+                    <div class="filter-item">
+                        <i class="far fa-calendar-alt" onclick="toggleFilter('dateFilter')"></i>
+                        <input type="date" id="dateFilter" class="filter-input hidden" placeholder="Date">
+                    </div>
+    
+                    <div class="filter-item">
+                        <i class="fas fa-fingerprint" onclick="toggleFilter('methodFilter')"></i>
+                        <select id="methodFilter" class="filter-input hidden">
+                            <option value="">All Methods</option>
+                            <option value="NFC">NFC</option>
+                            <option value="FINGER">FINGER</option>
+                        </select>
+                    </div>
+    
+                    <div class="filter-item ">
+                        <i class="fas fa-lock" onclick="toggleFilter('accessStateFilter')"></i>
+                        <select id="accessStateFilter" class="filter-input hidden">
+                            <option value="">All States</option>
+                            <option value="1">Allowed</option>
+                            <option value="0">Not Allowed</option>
+                        </select>
+                    </div>
+    
+    
+    
+                    <!-- Os filtros adicionais agora têm bordas coloridas para uma aparência mais atraente -->
+                    <div class="filter-item ">
+                        <i class="fas fa-map-marker-alt" onclick="toggleFilter('areaFilter')"></i>
+                        <input type="text" id="areaFilter" class="filter-input hidden" placeholder="Area ID">
+                    </div>
+    
+    
+    
+    
+    
+    
+                    <div class="filter-more">
+                        <button id="showMoreFilters" class="show-more-button">
+                            <i class="fas fa-chevron-down" onclick="showallFilter()"></i>
+                        </button>
+                    </div>
+                    <button id="btnapplyFilters" class="filter-button">
+                        <i class="fas fa-filter"></i> APLLY FILTERS
+                    </button>
+    
+                </div>
+                <button id="btnClearFilters" class="filter-button hidden">
+                    <i class="fas fa-times-circle"></i> CLEAR FILTERS
+                </button>
+
+
+
+                <table id="accesses_table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>User</th>
+                            <th>Room</th>
+                            <th>Data and Time</th>
+                            <th>Access State</th>
+                            <th>Method used</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accesses_table_body">
+
+                        <!-- Add  more rows as needed -->
+                    </tbody>
+                </table>
             </div>
     </main>
 
@@ -112,7 +205,7 @@
 
 
 
-<script src="user-details.js"></script>
+<script type="module" src="../JS/user-details.js"></script>
 
 </body>
 

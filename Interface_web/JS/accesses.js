@@ -1,11 +1,118 @@
-const ip = "192.168.1.189";
+import { ip } from './config/config.js';
+
+
+
+const logoutButton = document.getElementById("logout-button");
+logoutButton.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    //limpar user
+    localStorage.removeItem("user");
+    window.location.href = "../HTML/login.html";
+
+});
+
 
 const acesses_table = document.querySelector("#accesses_table_body");
+var btnClearFilters = document.getElementById("btnClearFilters");
 
-document.addEventListener("DOMContentLoaded", (e) => {
+document.addEventListener("DOMContentLoaded", function () {
+const token = localStorage.getItem("token");
+if (!token) {
+    window.location.href = "../HTML/login.html";
+}
+
+
+const user = JSON.parse(localStorage.getItem("user"));
+const userNameElement = document.querySelector(".user-name");
+userNameElement.textContent = user.username || "Admin";
+
+
+
+    var filterIcons = document.querySelectorAll(".filter-item i");
+    filterIcons.forEach(function (icon) {
+        icon.addEventListener("click", function () {
+            var filterType = icon.getAttribute("onclick").match(/\('(.*?)'\)/)[1];
+            toggleFilter(filterType);
+        });
+    });
+
+ 
+
+
+
+    applyFilters();
+});
+function clearAllFilters() {
+
+    document.getElementById('sortColumn').value = 'id';
+    document.getElementById('sortOrder').value = 'asc';
+    document.getElementById('userFilter').value = '';
+    document.getElementById('dateFilter').value = '';
+    document.getElementById('methodFilter').value = '';
+    document.getElementById('accessStateFilter').value = '';
+    document.getElementById('areaFilter').value = '';
+    applyFilters();
+    if (!btnClearFilters.classList.contains("hidden")) {
+        btnClearFilters.classList.toggle('hidden');
+    }
+    var inputs = document.querySelectorAll('.filter-input');
+    // Se todos estiverem ocultos, mostra todos. Caso contrário, oculta todos.
+    inputs.forEach(function (input) {
+            input.classList.add('hidden');
+    });
+ 
+}
+
+
+
+function toggleFilter(filterId) {
+    const filterInput = document.getElementById(filterId);
+    filterInput.classList.toggle('hidden');
+    console.log(filterInput);
+    if (btnClearFilters.classList.contains("hidden")) {
+        btnClearFilters.classList.remove("hidden");
+    }
   
+}
+var btnShowMoreFilters = document.getElementById("showMoreFilters");
+btnShowMoreFilters.addEventListener("click", function () {
+    showallFilter();
+    if (btnClearFilters.classList.contains("hidden")) {
+        btnClearFilters.classList.remove("hidden");
+    }
+});
 
-    getAllRecentAccesses();
+
+function showallFilter() {
+    var inputs = document.querySelectorAll('.filter-input');
+    var shouldShow = true;
+
+    // Verifica se pelo menos um dos inputs está visível
+    inputs.forEach(function (input) {
+        if (!input.classList.contains('hidden')) {
+            shouldShow = false;
+        }
+    });
+
+    // Se todos estiverem ocultos, mostra todos. Caso contrário, oculta todos.
+    inputs.forEach(function (input) {
+        if (shouldShow) {
+            input.classList.remove('hidden');
+        } else {
+            input.classList.add('hidden');
+        }
+    });
+
+}
+
+// Attach the function to the button click event
+document.getElementById('btnClearFilters').addEventListener('click', clearAllFilters);
+
+
+let btnapplyFilters = document.getElementById("btnapplyFilters");
+btnapplyFilters.addEventListener("click", (e) => {
+    applyFilters();
+
 });
 
 let applyFilters = () => {
@@ -21,30 +128,11 @@ let applyFilters = () => {
     getFilteredAccesses(userFilter, dateFilter, methodFilter, areaFilter, accessStateFilter, sortColumn, sortOrder);
 };
 
-let getAllRecentAccesses = () => {
-    const url = `http://${ip}:4242/api/acesses/`;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(accesses => {
-            console.log(accesses);
-            accesses.forEach(access => {
-                add_access_table(access["id"], access["id_user"], access["id_area"], formatarData(access["data_hora_entrada"]), access["acesso_permitido"], access["metodo_auth"]);
-            });
-        })
-        .catch(error => {
-            console.error(`Error: ${error.message}`);
-        });
-};
 
 let getFilteredAccesses = (userFilter, dateFilter, methodFilter, areaFilter, accessStateFilter, sortColumn, sortOrder) => {
     const baseUrl = `http://${ip}:4242/api/acesses/`;
     const url = new URL(baseUrl);
+
 
     // Add filter parameters to the URL
     if (userFilter) url.searchParams.append("userId", userFilter);

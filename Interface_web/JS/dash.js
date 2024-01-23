@@ -1,15 +1,50 @@
-const ip = "192.168.1.189"
+import {ip} from './config/config.js';
 
+const totalUsersCountElement = document.getElementById("totalUsersCount");
+const totalAdminsCountElement = document.getElementById("totalAdminsCount");
+const totalRoomsCountElement = document.getElementById("totalRoomsCount");
 
 document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "../HTML/login.html";
+    }
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userNameElement = document.querySelector(".user-name");
+    userNameElement.textContent = user.username || "Admin";
 
-    const totalUsersCountElement = document.getElementById("totalUsersCount");
-    const totalAdminsCountElement = document.getElementById("totalAdminsCount");
-    const totalRoomsCountElement = document.getElementById("totalRoomsCount");
+
+    const totalUsersCard = document.getElementById("totalUsersCard");
+    const totalAdminsCard = document.getElementById("totalAdminsCard");
+    const totalRoomsCard = document.getElementById("totalRoomsCard");
+
+    totalUsersCard.addEventListener("click", function () {
+        // Open the page for total users
+        window.location.href = "users.html";
+    });
+
+    totalAdminsCard.addEventListener("click", function () {
+        // Open the page for total admins
+        window.location.href = "admins.html";
+    });
+
+    totalRoomsCard.addEventListener("click", function () {
+        // Open the page for total rooms
+        window.location.href = "rooms.html";
+    });
+
+
+    
+
+fetchStatistics();
+        getRecentAccesses();
+});
+
+
+function fetchStatistics() {
    
     // Use a rota configurada no seu servidor
     const apiUrl = `http://${ip}:4242/api/statistics`;
-
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -19,15 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
             totalRoomsCountElement.textContent = data.roomsCount;
         })
         .catch(error => console.error("Error fetching data:", error));
+}
 
+const logoutButton = document.getElementById("logout-button");
+logoutButton.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    //limpar user
+    localStorage.removeItem("user");
+    window.location.href = "../HTML/login.html";
 
-        getRecentAccesses();
 });
-
-
-
-
-
 
   
    

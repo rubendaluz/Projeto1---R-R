@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="../CSS/login.css" />
     <title>Auth Page</title>
   </head>
   <body>
     <div class="container">
-      <form action="POST" class="form" id="login">
+      <form >
         <h1 class="form_title">Login</h1>
         <div class="form_message form-error"></div>
         <div class="form_input_group">
@@ -31,12 +31,13 @@
             id="password"
           />
         </div>
-        <button class="form_button" type="submit">login</button>
+      </form>
+        <button class="form_button" id="btnLogin"  >login</button>
         <p class="form_text">
           <a href="#" class="form_link">Recuperar Senha</a>
         </p>
-      </form>
-    </div>a
-    <script type="text/javascript" src="main.js"></script>
+      
+    </div>
+    <script type="module" src="../JS/login.js"></script>
   </body>
 </html>
