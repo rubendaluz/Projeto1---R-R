@@ -10,5 +10,6 @@
     <color name="fundo_cartao">#3498db</color>
     <color name="background">#081018</color>
     <color name="azul_marinho">#2196F3</color>
+    <color name="red">#ff0000</color>
 
 </resources>

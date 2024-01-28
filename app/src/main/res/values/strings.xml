@@ -2,7 +2,9 @@
 <resources>
     <string name="app_name">AplicacaoMovel</string>
     <string name="aid_group_description">Descrição do Grupo AID</string>
-<string-array name="date_filter_options">
+    <string name="welcome_to_multiaccess">Welcome to MultiAccess</string>
+    <string name="resposta_login"></string>
+    <string-array name="date_filter_options">
     <item>All Dates</item>
     <item>Today</item>
     <item>Yesterday</item>

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
     createAccess, getAccessesByUser,
-  getAllAccesses,
+    getAllAccesses,
     getRecentAccesses,
     
 } from '../controllers/acesses.controller.js';

@@ -1,39 +1,58 @@
 package com.example.aplicacaomovel
 
-import android.app.PendingIntent
-import android.content.ComponentName
+//import android.nfc.NfcAdapter
+
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
-import android.nfc.Tag
-import android.nfc.cardemulation.CardEmulation
-import android.nfc.tech.Ndef
-import android.nfc.tech.NdefFormatable
-import androidx.appcompat.app.AppCompatActivity
+import android.nfc.NfcEvent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ComponentActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aplicacaomovel.Adapters.AccessListAdapter
 import com.example.aplicacaomovel.Dataclasses.AccessItem
+import com.example.aplicacaomovel.Enteties.LoggedUser
+import com.example.aplicacaomovel.db.AppDatabase
+import com.example.aplicacaomovel.db.LoggedUserRepository
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("RestrictedApi")
 class Home : ComponentActivity() {
 
     private val NFC_PERMISSION_REQUEST = 1
     private val NFC_AID = "D2760000850101"
 
+
+    private lateinit var loggedUserRepository: LoggedUserRepository
+
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+
+        // Inicializar o repositório com o DAO
+        val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
+        loggedUserRepository = LoggedUserRepository(loggedUserDao)
+
+        lifecycleScope.launch {
+            loggedUserRepository.loggedUser.collect { user ->
+                user?.let {
+                    updateUiWithLoggedUserInfo(it)
+                }
+            }
+        }
 
         // Assuming you have a list of AccessItem
         val accessList = ArrayList<AccessItem>()
@@ -65,8 +84,17 @@ class Home : ComponentActivity() {
 
         // Set up NFC HCE service
         startNfcService()
+    }
 
+    @SuppressLint("SetTextI18n")
+    private fun updateUiWithLoggedUserInfo(user: LoggedUser){
+        val userName: TextView = findViewById(R.id.textViewNome)
+        val emailTextView: TextView = findViewById(R.id.textViewEmail)
 
+        // Atualizar o nome do utilizador
+        userName.text = user.firstName + " " + user.lastName
+        // Atualizar o número de estudante
+        emailTextView.text = user.email
     }
 
     private fun checkNfcPermissions() {
@@ -113,4 +141,5 @@ class Home : ComponentActivity() {
         startService(intent)
     }
 }
+
 
