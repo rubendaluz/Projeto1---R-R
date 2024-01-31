@@ -122,16 +122,23 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
-
+export const login = async (req, res
+  ) => {
+console.log("req.body: ", req.body);
   const { email, password } = req.body;
-  const user = await UserModel.findOne({
-    where: {
-      email: email,
-      password: password,
-    },
-    attributes: { exclude: ["password"] },
-  });
+  console.log("email: ", email);  
+  console.log("password: ", password);
+// encriptar a password e comparar com a da base de dados
+const hashedPassword = await bcrypt.hash(password, 10);
+const user = await UserModel.findOne({
+  where: {
+    email: email,
+    password: hashedPassword,
+  },
+  attributes: { exclude: ["password"] },
+});
+
+ 
   if (!user) {
     return res.status(401).json({ message: "User nao existe" });
   }

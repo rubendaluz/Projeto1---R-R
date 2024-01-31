@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.aplicacaomovel.Enteties.LoggedUser
 import com.example.aplicacaomovel.api.EndPoints
@@ -25,8 +26,7 @@ import retrofit2.Response
 
 class MainActivity :  ComponentActivity() {
     private lateinit var  btnLogin: Button
-    private lateinit var emailTextEdit: EditText
-    private lateinit var passwordTextEdit: EditText
+
     private lateinit var loginMessage: TextView
 
 
@@ -36,13 +36,14 @@ class MainActivity :  ComponentActivity() {
 
 
         btnLogin = findViewById(R.id.btnLogin)
-        emailTextEdit = findViewById(R.id.input_email)
-        val email = emailTextEdit.text.toString()
-        passwordTextEdit = findViewById(R.id.input_password)
-        // Configura o tipo de entrada como senha
-        passwordTextEdit.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+        val email = findViewById<EditText>(R.id.input_email).text.toString()
+        Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
+       
+
+        val  passwordEditTex = findViewById<EditText>(R.id.input_password)
+        passwordEditTex.inputType = android.text.InputType.TYPE_CLASS_TEXT or
                 android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-        val password = passwordTextEdit.text.toString()
+        val password =  passwordEditTex.text.toString()
         loginMessage = findViewById(R.id.loginMessage)
 
 
@@ -51,7 +52,12 @@ class MainActivity :  ComponentActivity() {
             loginMessage.text = " "
             loginMessage.visibility = View.GONE
             val request = ServiceBuilder.buildService(EndPoints::class.java)
-            val loginRequest = LoginRequest("user@example.com", "password123")
+            val loginRequest = LoginRequest(email, password)
+
+
+            Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, password, Toast.LENGTH_SHORT).show()
+
             val call = request.loginUser(loginRequest)
             val intent = Intent(this, Home::class.java)
             call.enqueue(object : Callback<LoginResponse> {
