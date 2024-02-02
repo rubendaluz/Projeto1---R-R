@@ -11,11 +11,11 @@
 
 
 // WiFi Connection
-// const char *ssid = "Wifise";
-// const char *password = "12345678";
+const char *ssid = "Wifise";
+const char *password = "12345678";
 
-const char* ssid = "MEO-564B00";      
-const char* password = "6ad9ca442b";
+// const char* ssid = "MEO-564B00";      
+// const char* password = "6ad9ca442b";
 
 AsyncWebServer server(80);
 
@@ -37,8 +37,7 @@ void loop() {
   String uid = readNFCUID();
   delay(1000);
   if (!uid.isEmpty()) {
-    // Handle the received data
-    // checkUserExistenceNFC(uid, roomID);
+    checkUserExistenceNFC(uid, roomID);
   }
 }
 
@@ -132,7 +131,7 @@ void printNfcData(uint8_t *uid, uint8_t uidLength) {
 String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   HTTPClient http;
 
-  String verifyEndpoint = "http://192.168.1.216:4242/api/user/authenticateNfc";
+  String verifyEndpoint = "http://192.168.181.137:4242/api/user/authenticateNfc";
      
 
   http.begin(verifyEndpoint); 

@@ -410,4 +410,32 @@ export const authenticateUserNFC = async (req, res) => {
     }
   };
 
+  export const addNfcTag = async (req, res) => {
+    try {
+      const { userId, nfcTag } = req.body;
+      console.log('Received data:', req.body);
+      
+      /// Encontrar o usuário pelo ID
+      const user = await UserModel.findByPk(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Atualizar a tag Nfc do utilizador
+      await user.update({ nfcTag });
+  
+      // Recarregar o usuário para obter os dados atualizados
+      const updatedUser = await UserModel.findByPk(userId);
+  
+      return res.json({
+        message: 'User nfcTag updated successfully',
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error('Error updating user nfc tag:', error);
+      return res.status(500).json({ message: 'Failed to update user nfc Tag' });
+    }
+  };
+
 
