@@ -35,9 +35,9 @@ class AccessListAdapter(private val accessList: ArrayList<AccessItem>) :
         val currentAccessItem = accessList[position]
 
         // Set access icon based on the access method
-        if (currentAccessItem.accessMethod == "NFC") {
+        if (currentAccessItem.accessMethod == "nfc") {
             holder.accessIcon.setImageResource(R.drawable.nfc)
-        } else if (currentAccessItem.accessMethod == "Fingerprint") {
+        } else if (currentAccessItem.accessMethod == "fingerprint") {
             holder.accessIcon.setImageResource(R.drawable.finger)
         }
 

@@ -40,7 +40,8 @@
             android:popupBackground="@color/azul_marinho"
             android:textColor="@android:color/white"
             android:paddingStart="12dp"
-            android:paddingEnd="12dp"/>
+            android:paddingEnd="12dp"
+            android:layout_marginRight="8dp" />
 
         <!-- Botão de Aplicar Filtros -->
         <Button

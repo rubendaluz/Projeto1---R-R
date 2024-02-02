@@ -1,19 +1,31 @@
 package com.example.aplicacaomovel
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-
-
+import com.example.aplicacaomovel.Enteties.LoggedUser
+import com.example.aplicacaomovel.api.EndPoints
+import com.example.aplicacaomovel.api.LoginRequest
+import com.example.aplicacaomovel.api.LoginResponse
+import com.example.aplicacaomovel.api.ServiceBuilder
+import com.example.aplicacaomovel.db.AppDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity :  ComponentActivity() {
     private lateinit var  btnLogin: Button
-
+    private lateinit var progressBar: ProgressBar
     private lateinit var loginMessage: TextView
 
 
@@ -23,64 +35,67 @@ class MainActivity :  ComponentActivity() {
 
 
         btnLogin = findViewById(R.id.btnLogin)
-        val email = findViewById<EditText>(R.id.input_email).text.toString()
-        Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
-       
+        progressBar = findViewById(R.id.progressBar)
 
-        val  passwordEditTex = findViewById<EditText>(R.id.input_password)
-        passwordEditTex.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+        val email = findViewById<EditText>(R.id.input_email)
+        val password = findViewById<EditText>(R.id.input_password)
+
+        password.inputType = android.text.InputType.TYPE_CLASS_TEXT or
                 android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-        val password =  passwordEditTex.text.toString()
+
+        // Usa a TransformationMethod para ocultar os caracteres durante a digitação
+        password.transformationMethod = PasswordTransformationMethod.getInstance()
+
+
         loginMessage = findViewById(R.id.loginMessage)
 
 
 //        Função de Login
         btnLogin.setOnClickListener {
-<<<<<<< HEAD
-//            loginMessage.text = " "
-//            loginMessage.visibility = View.GONE
-//            val request = ServiceBuilder.buildService(EndPoints::class.java)
-//            val loginRequest = LoginRequest("user@example.com", "password123")
-//            val call = request.loginUser(loginRequest)
-=======
             loginMessage.text = " "
             loginMessage.visibility = View.GONE
+
             val request = ServiceBuilder.buildService(EndPoints::class.java)
-            val loginRequest = LoginRequest(email, password)
+            val emailText = email.text.toString()
+            val passwordText = password.text.toString()
+            val loginRequest = LoginRequest(emailText, passwordText)
 
-
-            Toast.makeText(this, email, Toast.LENGTH_SHORT).show()
-            Toast.makeText(this, password, Toast.LENGTH_SHORT).show()
 
             val call = request.loginUser(loginRequest)
->>>>>>> 8334c916c62db937002d884960407914d0cda2cc
+
             val intent = Intent(this, Home::class.java)
-//            call.enqueue(object : Callback<LoginResponse> {
-//                @SuppressLint("SetTextI18n")
-//                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-//                    if (response.isSuccessful) {
-//                        val loginResponse = response.body()
-//                        loginResponse?.let {
-//                             val currentUser = LoggedUser(it.user.id, it.user.firstName, it.user.lastName, it.user.nfcTag, it.user.email)
-//                            // Save user to Room database
-//                            val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
-//                            GlobalScope.launch {
-//                                loggedUserDao.insert(currentUser)
-//                            }
-//                        }
-//                        startActivity(intent)
-//                    } else {
-//                        loginMessage.visibility = View.VISIBLE
-//                        loginMessage.text = "Login Recusado. Verifique suas credenciais"
-//                    }
-//                }
-//
-//                @SuppressLint("SetTextI18n")
-//                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-//                    loginMessage.visibility = View.VISIBLE
-//                    loginMessage.text = "Network error"
-//                }
-//            })
+            btnLogin.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            call.enqueue(object : Callback<LoginResponse> {
+                @SuppressLint("SetTextI18n")
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    if (response.isSuccessful) {
+                        val loginResponse = response.body()
+                        loginResponse?.let {
+                             val currentUser = LoggedUser(it.user.id, it.user.firstName, it.user.lastName, it.user.nfcTag, it.user.email)
+                            // Save user to Room database
+                            val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
+                            GlobalScope.launch {
+                                loggedUserDao.insert(currentUser)
+                            }
+                        }
+                        startActivity(intent)
+                    } else {
+                        loginMessage.visibility = View.VISIBLE
+                        loginMessage.text = "Login Recusado. Verifique suas credenciais"
+                        progressBar.visibility = View.GONE
+                        btnLogin.visibility = View.VISIBLE
+                    }
+                }
+
+                @SuppressLint("SetTextI18n")
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    loginMessage.visibility = View.VISIBLE
+                    loginMessage.text = "Network error"
+                    progressBar.visibility = View.GONE
+                    btnLogin.visibility = View.VISIBLE
+                }
+            })
 
             startActivity(intent)
 

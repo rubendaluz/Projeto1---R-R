@@ -4,7 +4,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include <ESPAsyncWebServer.h>
 
 // Pins for NFC board
 #define SDA_PIN 21
@@ -31,11 +30,6 @@ void setup() {
   Wire.begin();
   setupWiFi();
   setupNFC();
-  server.on("/startRead", HTTP_GET, [](AsyncWebServerRequest *request) {
-        String nfcUid = readNFCUID();
-        request->send(200, "text/plain", nfcUid);
-    });
-
   server.begin();
 }
 
@@ -79,19 +73,15 @@ String readNFCUID() {
   uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
 
 
-  // if(card){
-  //   Serial.println("Found an NFC card!");
+  if(card){
+    Serial.println("Found an NFC card!");
 
-  //   String uidString = "";
-  //   for (uint8_t i = 0; i < uidLength; i++) {
-  //     uidString += String(uid[i], HEX);
-  //   }
+    String uidString = "";
+    for (uint8_t i = 0; i < uidLength; i++) {
+      uidString += String(uid[i], HEX);
+    }
     
-  //   printNfcData(uid, uidLength);
-  //   return uidString;
-
-  // }
-
+    printNfcData(uid, uidLength);
     // Exemplo de comando SELECT APDU para enviar
     uint8_t apdu[] = { 0x00, 0xA4, 0x04, 0x00, 0x07, 0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01 };
     uint8_t response[255];
@@ -118,6 +108,8 @@ String readNFCUID() {
     } else {
       Serial.println("Failed to send APDU command.");
     }
+    return uidString;
+  }
   return "";
 }
 
