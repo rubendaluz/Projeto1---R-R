@@ -8,7 +8,7 @@
 
 const char* ssid = "Wifise";      // name of your WiFi network
 const char* password = "12345678";  // password of the WiFi network
-const char* serverAddress = "http://192.168.1.189:4242";
+const char* serverAddress = "http://192.168.181.137:4242";
 WiFiClient wclient;  // WiFi Client Object
 
 
@@ -253,7 +253,7 @@ void handleRemoveFingerprint(AsyncWebServerRequest* request) {
 
 
 void updateFingerprint(int userId, int fingerprintId) {
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
+  const char* enrollEndpoint = "http://192.168.181.137:4242/api/user/updateFingerprint";
   String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(fingerprintId) + "\"}";
   HTTPClient http;
   http.begin(enrollEndpoint);
@@ -315,7 +315,7 @@ void clearAllFingerprints() {
 
   // Envia a solicitação HTTP para atualizar todos os IDs de impressões digitais para nulo
   HTTPClient http;
-  String url = "http://192.168.1.189:4242/api/user/updateAllFingerprints";
+  String url = "http://192.168.181.137:4242/api/user/updateAllFingerprints";
   http.begin(url);
 
   int httpResponseCode = http.PUT("null");
@@ -434,7 +434,7 @@ void processManageUserMenuInput(int op) {
 
 void  enrollFingerprint(int userId) {
 
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
+  const char* enrollEndpoint = "http://192.168.181.137:4242/api/user/updateFingerprint";
 
   int id = getNextFingerprintID();  // Obtém o próximo ID disponível
   if (id < 0) {
@@ -524,8 +524,8 @@ int getNextFingerprintID() {
 
 void verifyFingerprint() {
 
-  const char* verifyEndpoint = "http://192.168.1.189:4242/api/user/authenticate";
-  const char* AcessEndpoint = "http://192.168.1.189:4242/api/acesses/create";
+  const char* verifyEndpoint = "http://192.168.181.137:4242/api/user/authenticate";
+  const char* AcessEndpoint = "http://192.168.181.137:4242/api/acesses/create";
 
   Serial.println("Verificando....");
 

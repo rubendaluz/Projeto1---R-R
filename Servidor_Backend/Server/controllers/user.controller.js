@@ -11,7 +11,16 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import PDFDocument from 'pdfkit';
 
-const transporter = nodemailer.createTransport({
+var transport = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "3475219e83e201",
+    pass: "9f827aea19cf0f"
+  }
+});
+
+/* const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     type: 'OAuth2',
@@ -21,8 +30,7 @@ const transporter = nodemailer.createTransport({
     clientSecret: process.env.CLIENT_SECRET,
     refreshToken: process.env.REFRESH_TOKEN
   }
-});
-
+}); */
 const sendWelcomeEmail = async (user, resetLink) => {
   const emailBody = `
   <html>
@@ -73,12 +81,12 @@ const sendWelcomeEmail = async (user, resetLink) => {
     </html>
   `;
 
- /*  await transporter.sendMail({
+ await transporter.sendMail({
     from: 'not-reply@multacess.com',
     to: user.email,
     subject: 'Bem-vindo ao Sistema de Controle de Acesso e Presença',
     html: emailBody
-  }); */
+  }); 
 };
 // Funções Auxiliares
 
