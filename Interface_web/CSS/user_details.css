@@ -66,27 +66,6 @@ span {
 }
 
 
-.view-accesses-button {
-    display: inline-block;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    background-color: #3498db;
-    color: white;
-    transition: background-color 0.3s;
-}
-
-.view-accesses-button i {
-    margin-right: 8px;
-}
-
-.view-accesses-button:hover {
-    background-color: #2980b9;
-}
-
 .accesses-title {
     font-size: 28px;
     color: #3498db;

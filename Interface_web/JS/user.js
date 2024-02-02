@@ -7,7 +7,11 @@ const open_new_user_form_button = document.querySelector("#create_user_button");
 const add_edit_user_form = document.querySelector(".new_user_form");
 const new_user_form_close_button = document.querySelector("#new_user_form_close_button");
 const add_new_user_button = document.querySelector("#add_new_user_button");
+const btnRemoveUserFingerprints = document.getElementById('btn_remove_user_fingerprints');
+
 import { ip } from './config/config.js';
+import { esp32ip } from './config/config.js';
+
 
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {
@@ -16,6 +20,16 @@ logoutButton.addEventListener("click", () => {
     localStorage.removeItem("user");
     window.location.href = "../HTML/login.html";
 
+});  // Após sucesso do registro
+
+
+
+// Adicione um ouvinte de evento para o botão "Concluído"
+const btnConclude = document.getElementById('btn-conclude');
+btnConclude.addEventListener('click', function () {
+    // Ocultar a div de destaque (overlay)
+    const overlay = document.getElementById('overlay');
+    overlay.style.display = 'none';
 });
 
 // ****************************************************************************************************
@@ -33,7 +47,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
 
     getAllUsers()
- 
+
 })
 usersTableBody.addEventListener("click", handleUserClick);
 open_new_user_form_button.addEventListener("click", toggleNewUserForm);
@@ -60,11 +74,14 @@ function add_or_edit_user() {
     const user_phone_number = document.querySelector("#new_user_phone_number").value;
     const user_email = document.querySelector("#new_user_email").value;
     const user_permission_level = document.querySelector("#new_user_permission_level").value;
+    const addFingerprintCheckbox = document.getElementById('add_fingerprint');
+    const addFingerprint = addFingerprintCheckbox.checked;
+
     const password = gerarSenhaForte();
     // Check if you are in edit mode or add mode
     const isEditMode = add_edit_user_form.getAttribute("data-edit-mode") === "true";
     let userId = document.querySelector(".new_user_form").getAttribute("userId");
-    
+
     const formData = new FormData();
     const profileImgInput = document.getElementById('new_user_profile_img');
     console.log(profileImgInput.files[0]);
@@ -93,7 +110,7 @@ function add_or_edit_user() {
     const options = {
         method: method,
         body: formData,
-        
+
     };
 
     fetch(url, options)
@@ -105,9 +122,22 @@ function add_or_edit_user() {
             }
         })
         .then(data => {
-            console.log(data); // Handle the response data
+            console.log(data);
+            if (addFingerprint) {
+                if (isEditMode) {
+
+                    enrollFingerprint(userId);
+
+                } else {
+
+                    enrollFingerprint(data.id);
+                }
+            }
+
+
+
             toggleNewUserForm();
-            getAllUsers ();
+            getAllUsers();
 
         })
         .catch(error => {
@@ -177,7 +207,7 @@ let getAllUsers = () => {
             return response.json();
         })
         .then(users => {
-   
+
             const tableBody = document.getElementById("users_table_body");
             tableBody.innerHTML = "";
 
@@ -222,7 +252,7 @@ function deleteUser(userId) {
                 }
                 console.log('User deleted successfully');
                 confirmation_form.style.display = "none";
-                getAllUsers ();
+                getAllUsers();
 
             })
             .catch(error => {
@@ -235,6 +265,9 @@ function deleteUser(userId) {
 function setEditUserFormData(id) {
     document.querySelector("#add_new_user_button").textContent = "Update User";
     document.querySelector("#title_add_edit_user_form").textContent = "Edit User";
+
+
+
 
     const url = `http://${ip}:4242/api/user/${id}`;
 
@@ -257,6 +290,16 @@ function setEditUserFormData(id) {
             document.querySelector("#new_user_phone_number").value = user.phone;
             document.querySelector("#new_user_email").value = user.email;
             document.querySelector("#new_user_permission_level").value = user.accessLevel;
+            // verificar se o finger id exist to remove hidden from the button
+            if (user.fingerPrintId) {
+                document.getElementById('add_fingerprint').checked = false;
+                document.querySelector(".form-checbox").style.display = "none";
+                document.querySelector(".finger_buton").classList.remove("hidden");
+                btnRemoveUserFingerprints.setAttribute("fingerId", user.fingerPrintId);
+            }
+
+
+
 
 
         })
@@ -280,6 +323,14 @@ function toggleNewUserForm() {
         add_edit_user_form.style.display = "none";
         clear_new_user_form();
         add_edit_user_form.setAttribute("data-edit-mode", "false");
+        document.getElementById('add_fingerprint').checked = false;
+        document.querySelector(".form-checbox").style.display = "flex";
+        document.querySelector(".finger_buton").classList.add("hidden");
+        document.querySelector("#add_new_user_button").textContent = "Add User";
+        document.querySelector("#title_add_edit_user_form").textContent = "Add New User";
+        document.querySelector("#preview-image").src = "../img/perfil.jpg";
+        document.querySelector("#new_user_profile_img").value = "";
+
     }
 }
 
@@ -290,6 +341,7 @@ let clear_new_user_form = () => {
     document.getElementById('new_user_email').value = '';
     document.getElementById('new_user_phone_number').value = '';
     document.getElementById('new_user_permission_level').value = '';
+
 }
 
 
@@ -329,3 +381,77 @@ function previewImage(input) {
         preview.src = "../img/perfil.jpg"; // Default image when no file is selected
     }
 }
+
+
+
+btnRemoveUserFingerprints.addEventListener('click', function () {
+    const fingerId = btnRemoveUserFingerprints.getAttribute("fingerId");
+    const userId = document.querySelector(".new_user_form").getAttribute("userId");
+    removeFinger(fingerId,userId);
+});
+
+function removeFinger(fingerId ,userId) {
+
+    const removeFingerEndpoint = `http://${esp32ip}:8080/finger/remove?userId=${userId}&fingerId=${fingerId}`;
+    // Fazer o pedido HTTP
+    fetch(removeFingerEndpoint, {
+        method: 'GET',
+
+    }).then(response => {
+        if (response.status === 200) {
+            console.log('Impressão digital removida com sucesso!');
+            document.querySelector(".finger_buton").classList.remove("hidden");
+            document.querySelector(".form-checbox").style.display = "flex";
+            document.getElementById('add_fingerprint').checked = false;
+            document.getElementById('btn_remove_user_fingerprints').style.display = "none";
+        } else {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    }).catch(error => {
+        console.error('Erro:', error);
+    });
+
+}
+
+
+
+function enrollFingerprint(userId) {
+    // Exibir overlay com indicador de carregamento
+
+    const overlay = document.getElementById('overlay');
+    const loaderElement = document.querySelector('.loading-spinner');
+    const messageElement = document.getElementById('message');
+    const btnConclude = document.getElementById('btn-conclude');
+    const instructionsElement = document.getElementById('instructions');
+    overlay.style.display = 'flex';
+
+
+    const enrollEndpoint = `http://${esp32ip}:8080/finger/add?userId=${userId}`;
+    // Fazer o pedido HTTP
+    fetch(enrollEndpoint, {
+        method: 'GET',
+
+    }).then(response => {
+        if (response.status === 200) {
+            instructionsElement.style.display = 'none';
+            messageElement.innerHTML = 'O processo de registro foi iniciado.';
+            messageElement.style.color = '#00ff00';
+            loaderElement.style.display = 'none';
+            btnConclude.style.display = 'block';
+        } else {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    }).catch(error => {
+        console.error('Erro:', error);
+        instructionsElement.style.display = 'none';
+        messageElement.innerHTML = 'Erro ao armazenar impressão digital!: ' + error;
+        messageElement.style.color = '#ff0000';
+        loaderElement.style.display = 'none';
+        btnConclude.style.display = 'block';
+    });
+
+}
+
+
+
+

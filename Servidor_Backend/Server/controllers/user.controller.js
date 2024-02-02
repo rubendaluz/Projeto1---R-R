@@ -11,12 +11,15 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import PDFDocument from 'pdfkit';
 
-const transporter  = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
   auth: {
-    user: "aadcda0b95dfd3",
-    pass: "f09446adaeee9f"
+    type: 'OAuth2',
+    user: process.env.USER,
+    pass: process.env.PASS,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN
   }
 });
 
@@ -70,12 +73,12 @@ const sendWelcomeEmail = async (user, resetLink) => {
     </html>
   `;
 
-await transporter.sendMail({
+ /*  await transporter.sendMail({
     from: 'not-reply@multacess.com',
     to: user.email,
     subject: 'Bem-vindo ao Sistema de Controle de Acesso e Presença',
     html: emailBody
-  });
+  }); */
 };
 // Funções Auxiliares
 
@@ -89,22 +92,22 @@ const createResetToken = (userId) => {
 
 export const changePassword = async (req, res) => {
   const { token, newPassword } = req.body;
-console.log("token: ", token);
+  console.log("token: ", token);
   try {
-      const decoded = jwt.verify(token, 'seu'); // Use o mesmo segredo usado na criação do token
-      console.log("decoded: ", decoded);
-      const user = await UserModel.findOne({ where: { id: decoded.userId } });
+    const decoded = jwt.verify(token, 'seu'); // Use o mesmo segredo usado na criação do token
+    console.log("decoded: ", decoded);
+    const user = await UserModel.findOne({ where: { id: decoded.userId } });
 
-      if (!user) {
-          return res.status(404).send('Usuário não encontrado.');
-      }
-console.log("user: ", user);
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await UserModel.update({ password: hashedPassword }, { where: { id: user.id } });
+    if (!user) {
+      return res.status(404).send('Usuário não encontrado.');
+    }
+    console.log("user: ", user);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await UserModel.update({ password: hashedPassword }, { where: { id: user.id } });
 
-      res.send('Senha atualizada com sucesso.');
+    res.send('Senha atualizada com sucesso.');
   } catch (error) {
-      res.status(500).send('Erro ao mudar a senha.');
+    res.status(500).send('Erro ao mudar a senha.');
   }
 };
 
@@ -123,22 +126,22 @@ export const deleteUser = async (req, res) => {
 };
 
 export const login = async (req, res
-  ) => {
-console.log("req.body: ", req.body);
+) => {
+  console.log("req.body: ", req.body);
   const { email, password } = req.body;
-  console.log("email: ", email);  
+  console.log("email: ", email);
   console.log("password: ", password);
-// encriptar a password e comparar com a da base de dados
-const hashedPassword = await bcrypt.hash(password, 10);
-const user = await UserModel.findOne({
-  where: {
-    email: email,
-    password: hashedPassword,
-  },
-  attributes: { exclude: ["password"] },
-});
+  // encriptar a password e comparar com a da base de dados
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await UserModel.findOne({
+    where: {
+      email: email,
+      password: hashedPassword,
+    },
+    attributes: { exclude: ["password"] },
+  });
 
- 
+
   if (!user) {
     return res.status(401).json({ message: "User nao existe" });
   }
@@ -157,7 +160,7 @@ const user = await UserModel.findOne({
 
 
 export const register = async (req, res) => {
-  
+
   try {
     const { firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active, password } = req.body;
 
@@ -187,38 +190,51 @@ export const register = async (req, res) => {
     const resetToken = createResetToken(user.id);
     const resetLink = `http://${process.env.SERVER_HOST}:5500/Interface_web/HTML/changePWD.html?token=${resetToken}`;
     await sendWelcomeEmail(user, resetLink);
-   
-    
-  
-
-  // Verificar se o upload foi feito
-if (req.file) {
-  // Se o upload foi feito, execute a lógica de processamento da imagem
-
-  // Update the filename using the username and user ID
-  const username = user.firstName.toLowerCase();
-  const newFilename = `${username}_${user.id}${path.extname(req.file.originalname)}`;
-
-  // Move the file to the desired directory and update the user's photopath
-  const oldPath = `../../Interface_web/img/User/${req.file.filename}`;
-  const newPath = `../../Interface_web/img/User/${newFilename}`;
-  fs.renameSync(oldPath, newPath);
-
-  // Update the user's photopath in the database
-  await user.update({ photopath: newFilename });
-
-} else {
-  // Se nenhum upload foi feito, use a imagem padrão
-  const defaultImagePath = 'perfil.jpg';
-  
-  // Atualize o user's photopath com o caminho da imagem padrão
-  await user.update({ photopath: defaultImagePath });
-}
 
 
 
-    
-    return res.json({ message: "User created successfully" });
+
+    // Verificar se o upload foi feito
+    if (req.file) {
+      // Se o upload foi feito, execute a lógica de processamento da imagem
+
+      // Update the filename using the username and user ID
+      const username = user.firstName.toLowerCase();
+      const newFilename = `${username}_${user.id}${path.extname(req.file.originalname)}`;
+
+      // Move the file to the desired directory and update the user's photopath
+      const oldPath = `../../Interface_web/img/User/${req.file.filename}`;
+      const newPath = `../../Interface_web/img/User/${newFilename}`;
+      fs.renameSync(oldPath, newPath);
+
+      // Update the user's photopath in the database
+      await user.update({ photopath: newFilename });
+
+    } else {
+      // Se nenhum upload foi feito, use a imagem padrão
+      const defaultImagePath = 'perfil.jpg';
+
+      // Atualize o user's photopath com o caminho da imagem padrão
+      await user.update({ photopath: defaultImagePath });
+    }
+
+
+
+// return just user info esclude password
+    return res.json({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fingerPrint: user.fingerPrint,
+        nfcTag: user.nfcTag,
+        email: user.email,
+        phone: user.phone,
+        accessLevel: user.accessLevel,
+        active: user.active,
+        photopath: user.photopath,
+     
+    });
+
   } catch (error) {
     console.error('Error creating user:', error);
     return res.status(500).json({ message: 'Failed to create user', error });
@@ -246,116 +262,123 @@ export const getAllUsers = async (req, res) => {
 };
 
 
-  export const updateUser = async (req, res) => {
-    try {
-      const { id } = req.params;
-      console.log("req.body: ", req.body.firstName);
-      const { firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active } = req.body;
- 
-      console.log("req.body: ", req.body.Date);
-      // Update the user
-      console.log("id: ", id);
-      console.log("firstName: ", firstName);
-      await UserModel.update({ firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active }, { where: { id } });
-      return res.json({ message: "User updated successfully" });
-    } catch (error) {
-      console.error("Error updating user:", error);
-      return res.status(500).json({ message: "Failed to update user" });
-    }
-  };
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("req.body: ", req.body.firstName);
+    const { firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active } = req.body;
 
-  export const getUserProfile = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const user = await UserModel.findByPk(id, {
-        attributes: { exclude: ["fingerPrint", "nfcTag"] }
-      });
+    console.log("req.body: ", req.body.Date);
+    // Update the user
+    console.log("id: ", id);
+    console.log("firstName: ", firstName);
+    await UserModel.update({ firstName, lastName, fingerPrint, nfcTag, email, phone, accessLevel, active }, { where: { id } });
+    return res.json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json({ message: "Failed to update user" });
+  }
+};
 
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+export const getUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserModel.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    });
 
-      return res.json(user);
-    } catch (error) {
-      console.error("Error retrieving user:", error);
-      return res.status(500).json({ message: "Failed to retrieve user" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  };
 
-  export const authenticateUser = async (req, res) => {
-    try {
-    
-      const { roomId, fingerPrintId } = JSON.parse(Object.keys(req.body)[0]);
-  
-      
-      // Encontrar a sala pelo ID
-      const room = await RoomModel.findByPk(roomId);
-  
-      if (!room) {
-        return res.status(404).json({ message: 'Room not found' });
-      }
-  
-      // Encontrar o usuário pelo fingerPrintId
-      const user = await UserModel.findOne({ where: { fingerPrintId } });
-      console.log("User: ", user);
-  
-      // Obter o timestamp atual
-      const entryTimestamp = new Date();
-  
-      // Criar um registro de acesso
-      const access = await AcessesModel.create({
-        id_user: user ? user.id : null,
-        id_area: roomId,
-        metodo_auth: 'fingerprint',
-        acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
-        data_hora_entrada: entryTimestamp,
-      });
-  
-      // Check authorization status and respond accordingly
-      if (!user) {
-        return res.status(401).json({ message: 'Unknown' });
-      }
-  
-      if (user.accessLevel < room.access_level_required) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-  
-      return res.json({ message: 'Authorized' });
-    } catch (error) {
-      console.error('Error authenticating user:', error);
-      return res.status(500).json({ message: 'Failed to authenticate user' });
+    return res.json(user);
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    return res.status(500).json({ message: "Failed to retrieve user" });
+  }
+};
+
+export const authenticateUser = async (req, res) => {
+  try {
+
+    const { roomId, fingerPrintId } = JSON.parse(Object.keys(req.body)[0]);
+
+
+
+    // Encontrar a sala pelo ID
+    const room = await RoomModel.findByPk(roomId);
+
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
     }
-  };
-  
-  
-  export const updateUserFingerprint = async (req, res) => {
-    try {
-      const { userId, fingerPrintId } = JSON.parse(Object.keys(req.body)[0]);
-     
-      // Encontrar o usuário pelo ID
-      const user = await UserModel.findByPk(userId);
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      // Atualizar a impressão digital do usuário
-      await user.update({ fingerPrintId });
-  
-      // Recarregar o usuário para obter os dados atualizados
-      const updatedUser = await UserModel.findByPk(userId);
-  
-      return res.json({
-        message: 'User fingerPrintId updated successfully',
-        user: updatedUser,
-      });
-    } catch (error) {
-      console.error('Error updating user fingerPrintId:', error);
-      return res.status(500).json({ message: 'Failed to update user fingerPrintId' });
+
+    // Encontrar o usuário pelo fingerPrintId
+    const user = await UserModel.findOne({ where: { fingerPrintId } });
+    console.log("User: ", user);
+
+    // Obter o timestamp atual
+    const entryTimestamp = new Date();
+
+    // Criar um registro de acesso
+    const access = await AcessesModel.create({
+      id_user: user ? user.id : null,
+      id_area: roomId,
+      metodo_auth: 'FINGER',
+      acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
+      data_hora_entrada: entryTimestamp,
+    });
+
+    // Check authorization status and respond accordingly
+    if (!user) {
+      return res.status(401).json({ message: 'Unknown' });
     }
-  };
-  
-  
+
+    if (user.accessLevel < room.access_level_required) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    return res.json({ message: 'Authorized' });
+  } catch (error) {
+    console.error('Error authenticating user:', error);
+    return res.status(500).json({ message: 'Failed to authenticate user' });
+  }
+};
+
+
+export const updateUserFingerprint = async (req, res) => {
+  try {
+    const { userId, fingerPrintId } = JSON.parse(Object.keys(req.body)[0]);
+
+    console.log("userId: ", userId);
+    console.log("fingerPrintId: ", fingerPrintId);
+
+    // Encontrar o usuário pelo ID
+    const user = await UserModel.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if fingerPrintId is less than zero, and set it to null
+    const updatedFingerPrintId = fingerPrintId < 0 ? null : fingerPrintId;
+
+    // Atualizar a impressão digital do usuário
+    await user.update({ fingerPrintId: updatedFingerPrintId });
+
+    // Recarregar o usuário para obter os dados atualizados
+    const updatedUser = await UserModel.findByPk(userId);
+
+    return res.json({
+      message: 'User fingerPrintId updated successfully',
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error('Error updating user fingerPrintId:', error);
+    return res.status(500).json({ message: 'Failed to update user fingerPrintId' });
+  }
+};
+
+
 export const updateAllUsersFingerprints = async (req, res) => {
   try {
     // Atualizar a impressão digital de todos os usuários para null
@@ -369,45 +392,45 @@ export const updateAllUsersFingerprints = async (req, res) => {
 };
 
 export const authenticateUserNFC = async (req, res) => {
-    try {
-      // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
-      const { roomId, nfcTag } = req.body;
-  
-      
-      // Encontrar a sala pelo ID
-      const room = await RoomModel.findByPk(roomId);
-  
-      if (!room) {
-        return res.status(404).json({ message: 'Room not found' });
-      }
-  
-      // Encontrar o usuário pelo fingerPrintId
-      const user = await UserModel.findOne({ where: { nfcTag } });
-      console.log("User: ", user);
-  
-      // Obter o timestamp atual
-      const entryTimestamp = new Date();
-  
-      // Criar um registro de acesso
-      const access = await AcessesModel.create({
-        id_user: user ? user.id : null,
-        id_area: roomId,
-        metodo_auth: 'nfc',
-        acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
-        data_hora_entrada: entryTimestamp,
-      });
-  
-      // Check authorization status and respond accordingly
-      if (!user) {
-        return res.status(401).json({ message: 'Unknown' });
-      }
-  
-      if (user.accessLevel < room.access_level_required) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-      return res.json({authorized: true, name: user.firstName + " " + user.lastName });
-    } catch (error) {
-      console.error('Error authenticating user:', error);
-      return res.status(500).json({ message: 'Failed to authenticate user' });
+  try {
+    // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
+    const { roomId, nfcTag } = req.body;
+
+
+    // Encontrar a sala pelo ID
+    const room = await RoomModel.findByPk(roomId);
+
+    if (!room) {
+      return res.status(404).json({ message: 'Room not found' });
     }
-  };
+
+    // Encontrar o usuário pelo fingerPrintId
+    const user = await UserModel.findOne({ where: { nfcTag } });
+    console.log("User: ", user);
+
+    // Obter o timestamp atual
+    const entryTimestamp = new Date();
+
+    // Criar um registro de acesso
+    const access = await AcessesModel.create({
+      id_user: user ? user.id : null,
+      id_area: roomId,
+      metodo_auth: 'NFC',
+      acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
+      data_hora_entrada: entryTimestamp,
+    });
+
+    // Check authorization status and respond accordingly
+    if (!user) {
+      return res.status(401).json({ message: 'Unknown' });
+    }
+
+    if (user.accessLevel < room.access_level_required) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    return res.json({ authorized: true, name: user.firstName + " " + user.lastName });
+  } catch (error) {
+    console.error('Error authenticating user:', error);
+    return res.status(500).json({ message: 'Failed to authenticate user' });
+  }
+};

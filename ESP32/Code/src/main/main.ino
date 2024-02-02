@@ -4,28 +4,262 @@
 #include <Preferences.h>
 #include <Adafruit_Fingerprint.h>
 #include <HTTPClient.h>
+#include <ESPAsyncWebServer.h>
 
-
-const char* ssid = "MEO-564B00";      // name of your WiFi network
-const char* password = "6ad9ca442b";  // password of the WiFi network
-
-
-
+const char* ssid = "Wifise";      // name of your WiFi network
+const char* password = "12345678";  // password of the WiFi network
+const char* serverAddress = "http://192.168.1.189:4242";
 WiFiClient wclient;  // WiFi Client Object
 
 
-const char* serverAddress = "http://192.168.1.189:4242";
+AsyncWebServer server(8080);
+
+
+
+
+
+
+HardwareSerial mySerial(2);
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+
+enum MenuState {
+  MAIN_MENU,
+  SETTINGS_MENU,
+  MANAGE_USER_MENU
+};
+enum OperationMode {
+  NORMAL_MODE,
+  EDIT_MODE,
+  WEB_ADD_FINGER_MODE,
+  WEB_REMOVE_FINGER_MODE
+};
+
+OperationMode currentMode = NORMAL_MODE;
+
+Preferences preferences;
+MenuState currentMenu = MAIN_MENU;
+bool isEditmode = false;
+unsigned int counterID = 0;
+int userIdWeb = -1;
+int fingerIdWeb = -1;
+
+// Protótipos das funções
+void registerDevice();
+void authenticateEditmode();
+bool isDeviceRegistered();
+void processUserInput();
+void processMainMenuInput();
+void processSettingsMenuInput();
+void processManageUserMenuInput(int op);
+void enrollFingerprint(int userId);
+void verifyFingerprint();
+
+void removeFingerprint(int fingerprintID);
+void changeRoomID();
+void changeMasterPIN();
+bool authenticateMasterPIN();
+int showMainMenu();
+int showSettingsMenu();
+int showManageUserMenu();
+
+// Function prototypes
+void handleRegisterFingerprint(AsyncWebServerRequest* request);
+void handleRemoveFingerprint(AsyncWebServerRequest* request);
+void updateFingerprint(int userId, int fingerprintId);
+bool authenticateUser(int fingerprintId, int roomId);
+
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(12, INPUT_PULLUP);                  // Botão conectado ao pino 12
+  mySerial.begin(57600, SERIAL_8N1, 17, 16);  // Inicializa o sensor de impressão digital
+  preferences.begin("registration", false);   // Nome do espaço de preferências
+
+
+  ///////////////////////////////////////////////////////
+  // Connect to WiFi
+  ///////////////////////////////////////////////////////
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);              // Connects to WiFi Network
+  while (WiFi.status() != WL_CONNECTED) {  // Waits for WiFi connection
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("ESP connected to WiFi with IP address: ");
+  Serial.println(WiFi.localIP());
+
+  ///////////////////////////////////////////////////////
+  // running server
+  ///////////////////////////////////////////////////////
+  server.on("/finger/add", HTTP_GET, handleRegisterFingerprint);
+  server.on("/finger/remove", HTTP_GET, handleRemoveFingerprint);
+  server.begin();
+  Serial.print("Server is running at http://");
+  Serial.print(WiFi.localIP());
+  Serial.print(":8080");
+
+
+
+
+  if (finger.verifyPassword()) {
+    Serial.println("Sensor de impressão digital encontrado!");
+  } else {
+    Serial.println("Sensor de impressão digital não encontrado :(");
+    while (1) { delay(1); }
+  }
+  if (!isDeviceRegistered()) {
+    registerDevice();
+  }
+  preferences.end();
+  Serial.println("Esperando por impressão digital válida...");
+
+
+  preferences.begin("my-app", false);
+  counterID = preferences.getUInt("counterID", 0);
+
+  preferences.end();
+}
+
+
+
+
+
+
+
+
+
+
+
+void loop() {
+  switch (currentMode) {
+    case NORMAL_MODE:
+      handleNormalMode();
+      break;
+
+    case EDIT_MODE:
+      handleEditMode();
+      break;
+
+    case WEB_ADD_FINGER_MODE:
+      handleWebAddFingerMode();
+      break;
+
+    case WEB_REMOVE_FINGER_MODE:
+      handleWebRemoveFingerMode();
+      break;
+  }
+
+  delay(1000);
+}
+
+void handleNormalMode() {
+  Serial.println("Coloque o dedo no sensor...");
+
+  if (digitalRead(12) == LOW) {
+    if (confirmMasterPIN()) {
+      currentMode = EDIT_MODE;
+    
+    } else {
+      Serial.println("Pin incorreto");
+    }
+  }
+
+  if (finger.getImage() == FINGERPRINT_OK) {
+    verifyFingerprint();
+  }
+
+  delay(50);  // Pequena pausa para evitar sobrecarga do CPU
+}
+
+void handleEditMode() {
+  int op = -1;
+  switch (currentMenu) {
+    case MAIN_MENU:
+      op = showMainMenu();
+      processMainMenuInput(op);
+      break;
+
+    case SETTINGS_MENU:
+      op = showSettingsMenu();
+      processSettingsMenuInput(op);
+      break;
+
+    case MANAGE_USER_MENU:
+      op = showManageUserMenu();
+      processManageUserMenuInput(op);
+      break;
+  }
+}
+
+void handleWebAddFingerMode() {
+  enrollFingerprint(userIdWeb);
+  
+  currentMode = NORMAL_MODE; 
+  userIdWeb = -1;
+}
+
+void handleWebRemoveFingerMode() {
+  
+    removeFingerprint(fingerIdWeb);
+    int num = -1;
+     updateFingerprint( userIdWeb, num);
+    currentMode = NORMAL_MODE; 
+    fingerIdWeb = -1;
+    userIdWeb = -1;
+
+}
+
+
+
+
+
+
+///////////////////////////////////////////////////////
+//  server controlers
+///////////////////////////////////////////////////////
+
+void handleRegisterFingerprint(AsyncWebServerRequest* request) {
+  userIdWeb = request->arg("userId").toInt();
+  currentMode = WEB_ADD_FINGER_MODE;
+
+  // Cria um objeto AsyncWebServerResponse
+  AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Fingerprint registration started successfully.");
+  
+  // Adiciona o cabeçalho CORS ao objeto de resposta
+  response->addHeader("Access-Control-Allow-Origin", "*");
+
+  // Envia a resposta
+  request->send(response);
+}
+void handleRemoveFingerprint(AsyncWebServerRequest* request) {
+  fingerIdWeb  = request->arg("fingerprintID").toInt();
+  userIdWeb =  request->arg("userId").toInt();
+  currentMode = WEB_REMOVE_FINGER_MODE;
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Fingerprkkkkkkint registration started successfully.");
+  
+  // Adiciona o cabeçalho CORS ao objeto de resposta
+  response->addHeader("Access-Control-Allow-Origin", "*");
+
+  // Envia a resposta
+  request->send(response);
+
+
+  
+}
+
+
 
 
 void updateFingerprint(int userId, int fingerprintId) {
-  String url = String(serverAddress) + "/api/user/updateFingerprint";
-  String jsonPayload = "{\"userId\":" + String(userId) + ", \"fingerprintId\":" + String(fingerprintId) + "}";
-
+  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
+  String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(fingerprintId) + "\"}";
   HTTPClient http;
-  http.begin(url);
-  http.addHeader("Content-Type", "application/json");
+  http.begin(enrollEndpoint);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  int httpResponseCode = http.PUT(payload);
 
-  int httpResponseCode = http.POST(jsonPayload);
 
   if (httpResponseCode == 200) {
     Serial.println("Fingerprint updated successfully");
@@ -57,120 +291,6 @@ bool authenticateUser(int fingerprintId, int roomId) {
   http.end();
 }
 
-HardwareSerial mySerial(2);
-Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
-
-enum MenuState {
-  MAIN_MENU,
-  SETTINGS_MENU,
-  MANAGE_USER_MENU
-};
-
-Preferences preferences;
-MenuState currentMenu = MAIN_MENU;
-bool isEditmode = false;
-unsigned int counterID = 0;
-
-// Protótipos das funções
-void registerDevice();
-void authenticateEditmode();
-bool isDeviceRegistered();
-void processUserInput();
-void processMainMenuInput();
-void processSettingsMenuInput();
-void processManageUserMenuInput(int op);
-void enrollFingerprint();
-void verifyFingerprint();
-
-void removeFingerprintFromUser(int userID);
-void changeRoomID();
-void changeMasterPIN();
-bool authenticateMasterPIN();
-int showMainMenu();
-int showSettingsMenu();
-int showManageUserMenu();
-
-
-void setup() {
-  Serial.begin(115200);
-  pinMode(12, INPUT_PULLUP);                  // Botão conectado ao pino 12
-  mySerial.begin(57600, SERIAL_8N1, 17, 16);  // Inicializa o sensor de impressão digital
-  preferences.begin("registration", false);   // Nome do espaço de preferências
-
-
-  ///////////////////////////////////////////////////////
-  // Connect to WiFi
-  ///////////////////////////////////////////////////////
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);              // Connects to WiFi Network
-  while (WiFi.status() != WL_CONNECTED) {  // Waits for WiFi connection
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("ESP connected to WiFi with IP address: ");
-  Serial.println(WiFi.localIP());
-
-  if (finger.verifyPassword()) {
-    Serial.println("Sensor de impressão digital encontrado!");
-  } else {
-    Serial.println("Sensor de impressão digital não encontrado :(");
-    while (1) { delay(1); }
-  }
-  if (!isDeviceRegistered()) {
-    registerDevice();
-  }
-  preferences.end();
-  Serial.println("Esperando por impressão digital válida...");
-
-
-  preferences.begin("my-app", false);
-  counterID = preferences.getUInt("counterID", 0);
-
-  preferences.end();
-}
-
-
-void loop() {
-  if (!isEditmode) {
-    Serial.println("Coloque o dedo no sensor...");
-    if (digitalRead(12) == LOW) {
-
-      if (confirmMasterPIN()){
-         isEditmode = true;
-      } else{
-        Serial.println("Pin incoreto");
-      }
-   
-    }
-
-    if (finger.getImage() == FINGERPRINT_OK) {
-      verifyFingerprint();
-    }
-
-    delay(50);  // Pequena pausa para evitar sobrecarga do CPU
-
-  } else {
-    int op = -1;
-    switch (currentMenu) {
-      case MAIN_MENU:
-        op = showMainMenu();
-        processMainMenuInput(op);
-        break;
-      case SETTINGS_MENU:
-        op = showSettingsMenu();
-        processSettingsMenuInput(op);
-        break;
-      case MANAGE_USER_MENU:
-        op = showManageUserMenu();
-        processManageUserMenuInput(op);
-        break;
-    }
-  }
-
-  delay(1000);
-}
 
 
 void clearAllFingerprints() {
@@ -240,7 +360,7 @@ void processMainMenuInput(int userInput) {
 
 void processSettingsMenuInput(int op) {
 
-  char confirmation = '\0'; 
+  char confirmation = '\0';
   switch (op) {
     case 1:
       changeRoomID();
@@ -250,7 +370,7 @@ void processSettingsMenuInput(int op) {
       break;
     case 3:
       Serial.println("Tem certeza de que deseja apagar todas as impressões digitais? (y/n)");
-  while (confirmation != 'y' && confirmation != 'Y' && confirmation != 'n' && confirmation != 'N') {
+      while (confirmation != 'y' && confirmation != 'Y' && confirmation != 'n' && confirmation != 'N') {
         if (Serial.available() > 0) {
           confirmation = Serial.read();
         }
@@ -312,7 +432,7 @@ void processManageUserMenuInput(int op) {
   }
 }
 
-void enrollFingerprint(int userId) {
+void  enrollFingerprint(int userId) {
 
   const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
 
@@ -345,8 +465,8 @@ void enrollFingerprint(int userId) {
     return;
   }
 
- String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(id) + "\"}";           
-      
+  String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(id) + "\"}";
+
 
   // Make the HTTP request
   HTTPClient http;
@@ -359,24 +479,27 @@ void enrollFingerprint(int userId) {
       Serial.println("Impressão digital armazenada com sucesso!");
       Serial.print("ID: ");
       Serial.println(id);
+  
     } else {
       Serial.println("Erro ao armazenar impressão digital");
-        counterID--;
-    preferences.begin("my-app", false);
-    preferences.putUInt("counterID", counterID);
-    preferences.end();
+      counterID--;
+      preferences.begin("my-app", false);
+      preferences.putUInt("counterID", counterID);
+      preferences.end();
     }
   } else {
     Serial.println("Failed to enroll fingerprint");
     Serial.print("HTTP response code: ");
     Serial.println(httpResponseCode);
-     counterID--;
-  preferences.begin("my-app", false);
+    counterID--;
+    preferences.begin("my-app", false);
     preferences.putUInt("counterID", counterID);
     preferences.end();
   }
+   http.end();
 
-  http.end();
+
+
 }
 
 
@@ -423,17 +546,17 @@ void verifyFingerprint() {
     http.begin(AcessEndpoint);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     int httpResponseCode = http.POST(payload);
- 
-if (httpResponseCode != 200) {
+
+    if (httpResponseCode != 200) {
       Serial.println("Error to save access");
     }
 
-     http.end();
+    http.end();
     return;
   }
-  
-// Prepare the payload for the HTTP request
-String payload = "{\"roomId\":\"" + String(roomId) + "\",\"fingerPrintId\":\"" + String(finger.fingerID) + "\"}";
+
+  // Prepare the payload for the HTTP request
+  String payload = "{\"roomId\":\"" + String(roomId) + "\",\"fingerPrintId\":\"" + String(finger.fingerID) + "\"}";
 
 
   // Make the HTTP request
@@ -452,28 +575,30 @@ String payload = "{\"roomId\":\"" + String(roomId) + "\",\"fingerPrintId\":\"" +
     Serial.println("Unauthorized access");
   } else {
     Serial.println("Failed to verify fingerprint");
-    Serial.print("HTTP response code: "); Serial.println(httpResponseCode);
+    Serial.print("HTTP response code: ");
+    Serial.println(httpResponseCode);
   }
 
   http.end();
-
 }
 
 void removeFingerprint(int fingerprintID) {
   if (fingerprintID <= 0 || fingerprintID > 270) {
-    Serial.println("ID de impressão digital inválido.");
-    return;
+    Serial.println("Invalid fingerprint ID.");
+    return ;
   }
 
   uint8_t deleteStatus = finger.deleteModel(fingerprintID);
   if (deleteStatus == FINGERPRINT_OK) {
-    Serial.print("Impressão digital ID ");
+    Serial.print("Fingerprint ID ");
     Serial.print(fingerprintID);
-    Serial.println(" removida com sucesso.");
-    // Aqui você pode adicionar lógica para atualizar as preferências, se necessário
+    Serial.println(" removed successfully.");
+    // Add logic to update preferences if necessary
+    return;
   } else {
-    Serial.print("Erro ao remover impressão digital ID ");
+    Serial.print("Error removing fingerprint ID ");
     Serial.println(fingerprintID);
+    return;
   }
 }
 
@@ -625,7 +750,7 @@ bool confirmMasterPIN() {
   }
 
   preferences.begin("registration", false);
-    int masterPIN = preferences.getInt("masterPIN", 0);
+  int masterPIN = preferences.getInt("masterPIN", 0);
 
   preferences.end();
 

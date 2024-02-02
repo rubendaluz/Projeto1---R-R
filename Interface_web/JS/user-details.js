@@ -60,6 +60,9 @@ const getUserDetails = (userId) => {
         })
         .then(userDetails => {
             // Preenche os detalhes do usuário na página
+            // foto
+            const imagePath = userDetails.photopath ? `../img/User/${userDetails.photopath}` : '../img/perfil.jpg';
+            document.getElementById('userImage').src = imagePath;
             document.getElementById('id').textContent = userDetails.id;
             document.getElementById('firstName').textContent = userDetails.firstName;
             document.getElementById('lastName').textContent = userDetails.lastName;

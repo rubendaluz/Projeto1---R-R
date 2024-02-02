@@ -18,12 +18,16 @@
                 <span class="title">MultiAccess</span>
             </div>
             <ul class="menu">
-                <li class="menu_buttons" id="li_dashboard"><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li class="menu_buttons" id="li_admins"><a href="admins.html"><i class="fas fa-users"></i> Admins</a></li>
+                <li class="menu_buttons" id="li_dashboard"><a href="dashboard.html"><i
+                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="menu_buttons" id="li_admins"><a href="admins.html"><i class="fas fa-users"></i> Admins</a>
+                </li>
                 <li class="menu_buttons" id="li_users"><a href="users.html"><i class="fas fa-user"></i> Users</a></li>
-                <li class="menu_buttons" id="li_rooms"><a href="rooms.html"><i class="fas fa-door-open"></i> Rooms</a></li>
-                <li class="menu_buttons" id="li_accesses"><a href="accesses.html"><i class="fas fa-fingerprint"></i> Accesses</a></li>
-            </ul>            
+                <li class="menu_buttons" id="li_rooms"><a href="rooms.html"><i class="fas fa-door-open"></i> Rooms</a>
+                </li>
+                <li class="menu_buttons" id="li_accesses"><a href="accesses.html"><i class="fas fa-fingerprint"></i>
+                        Accesses</a></li>
+            </ul>
             <div class="sidebar-footer">
                 <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
                 <button class="logout-button" id="logout-button">Logout <i class="fas fa-sign-out-alt"></i></button>
@@ -31,135 +35,170 @@
         </aside>
     </div>
 
-    
+
     <div class="right_container">
 
-    
 
 
 
-    <header>
-       
-        <div class="header">
-            <h1 class="title"> Users</h1>
-            <div class="user-profile">
-                <img class="user-avatar" src="../img/perfil.jpg" alt="User Avatar">
-                <span class="user-name">John Doe</span>
-            </div>
-           
-            
-          
-        </div>
-    </header>
 
-    <main>
-        <button id="create_user_button">Creat new user</button>
-        <div class="filter-item " >
-            <i class="fas fa-sort-amount-up" ></i>
-            <select id="sortOrder" class="filter-input ">
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-            </select>
-        </div>
-        <div class="users_container">
-           
-            <table id="users_table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Photo</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Permission Level</th>
-                        <th>Actions</th>
-                    
-                    </tr>
-                </thead>
-                <tbody id="users_table_body" >
-                                      
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-        </div>
+        <header>
 
-       
-    </main>
-
-</div>
-  
-    
-
-
-
-<div class="new_user_form" userId="" data-edit-mode="false">
-    <span class="close-button" id="new_user_form_close_button" >&times;</span>
-    <h2 class="form_h2" id="title_add_edit_user_form">Add a New User</h2>
-   
-    <form enctype="multipart/form-data" >
-        <div class="form-group img_form-group">
-            <div class="image-upload-container">
-                <div class="image-preview" id="image-preview">
-                    <img src="../img/perfil.jpg" alt="" id="preview-image">
+            <div class="header">
+                <h1 class="title"> Users</h1>
+                <div class="user-profile">
+                    <img class="user-avatar" src="../img/perfil.jpg" alt="User Avatar">
+                    <span class="user-name">John Doe</span>
                 </div>
-            
-                <input hidden type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*">
-                <label for="new_user_profile_img" class="upload-label">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    Upload
-                </label>
+
+
+
             </div>
-         </div>
-        
-        
+        </header>
 
-        <div class="form-group">
-            <label for="name">First name:</label>
-            <input type="text" id="new_user_first_name" required>
-           
-        </div>
-        <div class="form-group">
-            <label for="name">Last name:</label>
-            <input type="text" id="new_user_last_name" required>
-           
-        </div>
+        <main>
+            <button id="create_user_button">Creat new user</button>
+            <div class="filter-item ">
+                <i class="fas fa-sort-amount-up"></i>
+                <select id="sortOrder" class="filter-input ">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+            <div class="users_container">
 
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="new_user_email" required>
-        </div>
+                <table id="users_table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Permission Level</th>
+                            <th>Actions</th>
 
-         <div class="form-group">
-            <label for="permissions">Phone number:</label>
-            <input type="number" id="new_user_phone_number" required>
-        </div>
+                        </tr>
+                    </thead>
+                    <tbody id="users_table_body">
 
-        <div class="form-group">
-            <label for="permissions">Permission Level:</label>
-            <input type="number" id="new_user_permission_level"  placeholder="1-5" min="1" max="5" required>
-        </div>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+
+
+        </main>
+
+    </div>
+
+
+
+
+
+    <div class="new_user_form" userId="" data-edit-mode="false">
+        <span class="close-button" id="new_user_form_close_button">&times;</span>
+        <h2 class="form_h2" id="title_add_edit_user_form">Add a New User</h2>
+
+        <form enctype="multipart/form-data">
+            <div class="form-group img_form-group">
+                <div class="image-upload-container">
+                    <div class="image-preview" id="image-preview">
+                        <img src="../img/perfil.jpg" alt="" id="preview-image">
+                    </div>
+
+                    <input hidden type="file" name="new_user_profile_img" id="new_user_profile_img" accept="image/*">
+                    <label for="new_user_profile_img" class="upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload
+                    </label>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="name">First name:</label>
+                <input type="text" id="new_user_first_name" required>
+
+            </div>
+            <div class="form-group">
+                <label for="name">Last name:</label>
+                <input type="text" id="new_user_last_name" required>
+
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="new_user_email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="permissions">Phone number:</label>
+                <input type="number" id="new_user_phone_number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="permissions">Permission Level:</label>
+                <input type="number" id="new_user_permission_level" placeholder="1-5" min="1" max="5" required>
+            </div>
+            <div class="form-checbox">
+                <input type="checkbox" id="add_fingerprint" class="add_fingerprint_checkbox">
 
                
-        
-    </form>
-    <div class="button-container">
-            <button  id="add_new_user_button">Add User</button>
-        </div>
-</div>
+                <label for="add_fingerprint">Deseja adicionar impressões digitais agora?</label>
+            </div>
+            
+            
+            <div class="form-group finger_buton hidden remove_finger ">
+                <label >Fingerprint:</label>        
+                <button id="btn_remove_user_fingerprints" fingerId=""> <i class="fas fa-fingerprint" ></i>Remove Fimgerprint</button>
+            </div>
 
+        </form>
+        <div class="button-container">
+           
+            <button id="add_new_user_button">Add User</button>
+            
+            
+            
 
-
-
-<div class="delete_user_form delete_form">
-    <p>Are you sure you want to delete this user?</p>
-    <div class="delete_form_buttons">
-        <button id="cancel_btn">Cancel</button>
-        <button id="confirm_btn">Confirm</button>
-    </div>
-</div>
-
-
+      
     
+        </div>
+    </div>
+
+
+
+
+    <div class="delete_user_form delete_form">
+        <p>Are you sure you want to delete this user?</p>
+        <div class="delete_form_buttons">
+            <button id="cancel_btn">Cancel</button>
+            <button id="confirm_btn">Confirm</button>
+        </div>
+    </div>
+
+    <div id="overlay">
+        <div class="overlay-content">
+            <h2>Registre sua Impressão Digital</h2>
+            <div id="instructions">
+                
+                <p>Por favor, siga as instruções abaixo para registrar sua impressão digital no dispositivo.</p>
+                <ol>
+                    <li>Coloque o dedo no sensor de impressão digital.</li>
+                    <li>Remova o dedo quando solicitado.</li>
+                    <li>Repita o processo para garantir uma leitura precisa.</li>
+                </ol>
+                <p>Aguarde enquanto processamos seu registro.</p>
+            </div>
+        
+            <div class="loading-spinner"></div>
+            <div id="message" ></div>
+            <button id="btn-conclude" style="display: none;" >Concluído</button>
+        </div>
+    </div>
+
 
 </body>
 <script type="module" src="../JS/user.js"></script>
