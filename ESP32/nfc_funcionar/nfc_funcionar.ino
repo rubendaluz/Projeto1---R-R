@@ -4,45 +4,47 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <ESPAsyncWebServer.h>
 
 // Pins for NFC board
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-// Endereço I2C padrão para o módulo GeeekPi I2C 1602
-#define I2C_ADDR 0x27
-
-// Definir o número de colunas e linhas do LCD
-#define LCD_COLUMNS 16
-#define LCD_ROWS 2
 
 // WiFi Connection
-const char *ssid = "Wifise";
-const char *password = "12345678";
+// const char *ssid = "Wifise";
+// const char *password = "12345678";
+
+const char* ssid = "MEO-564B00";      
+const char* password = "6ad9ca442b";
+
+AsyncWebServer server(80);
 
 
+String roomID = "1";
 
 Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
-
-int lcdAddress = 0x27;
-LiquidCrystal_I2C lcd(I2C_ADDR, LCD_COLUMNS, LCD_ROWS);
 
 void setup() {
   Serial.begin(115200);
   // Inicializar a comunicação I2C
   Wire.begin();
-  // setupWiFi();
+  setupWiFi();
   setupNFC();
-  // setupLCD();
+  server.on("/startRead", HTTP_GET, [](AsyncWebServerRequest *request) {
+        String nfcUid = readNFCUID();
+        request->send(200, "text/plain", nfcUid);
+    });
+
+  server.begin();
 }
 
 void loop() {
-    String uid = readNFCUID();
-    delay(1000);
+  String uid = readNFCUID();
+  delay(1000);
   if (!uid.isEmpty()) {
     // Handle the received data
-    
-    // nfcAuth(uid);
+    // checkUserExistenceNFC(uid, roomID);
   }
 }
 
@@ -53,55 +55,73 @@ void setupWiFi() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  // Imprimir o endereço IP local do ESP32
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void setupNFC() {
   nfc.begin();
-  nfc.SAMConfig();
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata) {
     Serial.print("Didn't find PN53x board");
+    while(1);  // Parar a execução se o leitor NFC não for encontrado
   }else{
     Serial.println("Waiting for an NFC card...");
+    nfc.SAMConfig();
   }
   
 }
-
-
 
 String readNFCUID() {
   uint8_t uidLength;
   uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
   uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
 
-  if(card){
-    Serial.println("Found an NFC card!");
-    Serial.print("UID Value: ");
-    for (uint8_t i=0; i < uidLength; i++) {
-      Serial.print(" 0x");Serial.print(uid[i], HEX);
-    }
-    Serial.println("");
 
-    String uidString = "";
-    for (uint8_t i = 0; i < uidLength; i++) {
-      uidString += String(uid[i], HEX);
-    }
-    
-    
-    Serial.print("UID Value: ");
-    Serial.println(uidString);
-    handleNfcData(uid, uidLength);
-    return uidString;
+  // if(card){
+  //   Serial.println("Found an NFC card!");
 
-  }
+  //   String uidString = "";
+  //   for (uint8_t i = 0; i < uidLength; i++) {
+  //     uidString += String(uid[i], HEX);
+  //   }
+    
+  //   printNfcData(uid, uidLength);
+  //   return uidString;
+
+  // }
+
+    // Exemplo de comando SELECT APDU para enviar
+    uint8_t apdu[] = { 0x00, 0xA4, 0x04, 0x00, 0x07, 0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01 };
+    uint8_t response[255];
+    uint8_t responseLength = sizeof(response);
+    uint8_t success;
+
+    success = nfc.inDataExchange(apdu, sizeof(apdu), response, &responseLength);
+
+    if(success) {
+      Serial.println("APDU command sent!");
+      // Processar a resposta
+      if (responseLength >= 2) {
+          // Verificar os dois últimos bytes da resposta para o status word
+          uint8_t sw1 = response[responseLength - 2];
+          uint8_t sw2 = response[responseLength - 1];
+          if (sw1 == 0x90 && sw2 == 0x00) {
+              Serial.println("Comando executado com sucesso.");
+          } else {
+              Serial.print("Falha na execução do comando: SW=");
+              Serial.print(sw1, HEX);
+              Serial.println(sw2, HEX);
+          }
+      }
+    } else {
+      Serial.println("Failed to send APDU command.");
+    }
   return "";
 }
 
-void handleNfcData(uint8_t *uid, uint8_t uidLength) {
-  // Your logic to handle the received NFC data goes here
-  // Extract the UID, USER_ID, and USERNAME from the received data
-
-  // Assuming the received data is formatted as "UID;USER_ID;USERNAME"
+void printNfcData(uint8_t *uid, uint8_t uidLength) {
   String receivedData = "UID;";
   for (int i = 0; i < uidLength; i++) {
     receivedData += String(uid[i], HEX);
@@ -112,49 +132,26 @@ void handleNfcData(uint8_t *uid, uint8_t uidLength) {
   while (Serial.available() && Serial.peek() != '\n') {
     receivedData += char(Serial.read());
   }
-
   // Print the received data
   Serial.println("Received Data: " + receivedData);
 }
 
-void nfcAuth(const String &uid,const String &roomId) {
-  String apiResponse = checkUserExistenceNFC(uid, roomId);
-
-  DynamicJsonDocument jsonDoc(1024);
-  deserializeJson(jsonDoc, apiResponse);
-
-  String userName = jsonDoc["name"].as<String>();
-  bool accessGranted = jsonDoc["accessGranted"];
-
-  Serial.print("User Name: ");
-  Serial.println(userName);
-  Serial.print("Access Granted: ");
-  Serial.println(accessGranted ? "Yes" : "No");
-
-  if (accessGranted) {
-    Serial.println("Access Granted!");
-    // Imprimir no Display
-  } else {
-    Serial.println("Access Denied!");
-    //Imprimir no display
-  }
-}
 
 String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   HTTPClient http;
 
-  String verifyEndpoint = "https://192.168.170.94/api/user/authenticatenfc";
-    
-  // Substitua com o endereço do seu servidor e o endpoint
+  String verifyEndpoint = "http://192.168.1.216:4242/api/user/authenticateNfc";
+     
+
   http.begin(verifyEndpoint); 
   http.addHeader("Content-Type", "application/json");
-  
-  // Substitua com os valores reais
+
   String postData = "{\"roomId\":\"" + roomId + "\",\"nfcTag\":\"" + nfcTag + "\"}";
-  
+  Serial.println(postData);
+
   int httpResponseCode = http.POST(postData);
   
-  if (httpResponseCode > 0) {
+  if (httpResponseCode == 200) {
       String response = http.getString();
       Serial.println(httpResponseCode);
       Serial.println(response);
@@ -181,32 +178,3 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   http.end();
 }
 
-void setupLCD() {
-  // Inicializar o LCD
-  lcd.begin(LCD_COLUMNS, LCD_ROWS);
-  // Limpar o LCD
-  lcd.clear();
-  lcd.print("Multiaccess");
-}
-
-
-void displayMessage(const char* message, int duration) {
-  // Clear the LCD
-  lcd.clear();
-  // Display the message
-  lcd.print(message);
-  // Wait for the specified duration
-  delay(duration);
-  // Clear the LCD again
-  lcd.clear();
-}
-
-void connect_wifi(){
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Conectando ao WiFi...");
-  }
-
-  Serial.println("Conectado ao WiFi");
-}

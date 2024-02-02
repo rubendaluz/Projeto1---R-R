@@ -1,6 +1,7 @@
 import { UserModel } from "../models/user.model.js";
 import { RoomModel } from '../models/room.model.js';
 import { AcessesModel } from "../models/access.model.js";
+const axios = require('axios');
 
 import { createToken } from "../utils/jwt.js";
 import path from 'path';
@@ -78,9 +79,6 @@ await transporter.sendMail({
   });
 };
 // Funções Auxiliares
-
-
-
 const createResetToken = (userId) => {
   return jwt.sign({ userId }, 'seu', { expiresIn: '1h' });
 };
@@ -365,7 +363,7 @@ export const authenticateUserNFC = async (req, res) => {
     try {
       // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
       const { roomId, nfcTag } = req.body;
-  
+      console.log('Received data:', req.body);
       
       // Encontrar a sala pelo ID
       const room = await RoomModel.findByPk(roomId);
@@ -404,3 +402,16 @@ export const authenticateUserNFC = async (req, res) => {
       return res.status(500).json({ message: 'Failed to authenticate user' });
     }
   };
+
+
+  const nfcTagRequest = {
+    startNfcRead: async (req, res) => {
+        try {
+            const espResponse = await axios.get('http://ESP32_IP/startRead');
+            res.send(espResponse.data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error communicating with ESP32');
+        }
+    }
+};

@@ -36,6 +36,47 @@ void updateFingerprint(int userId, int fingerprintId) {
   http.end();
 }
 
+String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
+  HTTPClient http;
+
+  String verifyEndpoint = "http://192.168.1.216:4242/api/user/authenticateNfc";
+     
+
+  http.begin(verifyEndpoint); 
+  http.addHeader("Content-Type", "application/json");
+
+  String postData = "{\"roomId\":\"" + roomId + "\",\"nfcTag\":\"" + nfcTag + "\"}";
+  Serial.println(postData);
+
+  int httpResponseCode = http.POST(postData);
+  
+  if (httpResponseCode == 200) {
+      String response = http.getString();
+      Serial.println(httpResponseCode);
+      Serial.println(response);
+
+      // Analisar a resposta para verificar autorização e nome
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, response);
+      bool authorized = doc["authorized"]; // Valor booleano de autorização
+      const char* name = doc["name"]; // Nome do usuário
+
+      if (authorized) {
+        Serial.println("Acesso autorizado");
+        Serial.print("Nome: ");
+        Serial.println(name);
+      } else {
+        Serial.println("Acesso não autorizado");
+      }
+    } else {
+      Serial.print("Erro ao enviar POST: ");
+      Serial.println(httpResponseCode);
+    }
+
+
+  http.end();
+}
+
 bool authenticateUser(int fingerprintId, int roomId) {
   String url = String(serverAddress) + "/api/user/authenticate";
   String jsonPayload = "{\"fingerprintId\":" + String(fingerprintId) + ", \"roomId\":" + String(roomId) + "}";

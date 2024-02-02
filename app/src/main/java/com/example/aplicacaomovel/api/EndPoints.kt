@@ -5,4 +5,7 @@ import retrofit2.http.*
 interface EndPoints {
     @POST("user/login")
     fun loginUser(@Body loginRequest: LoginRequest): Call<LoginResponse>
+
+    @GET("api/acesses/recent")
+    fun recentAccess()
 }

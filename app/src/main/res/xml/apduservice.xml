@@ -1,9 +1,12 @@
 <host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
-android:description="@string/aid_group_description"
-android:requireDeviceUnlock="false">
-<aid-group android:category="other">
-    <aid-filter android:name="A000000247101" />
-</aid-group>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:requireDeviceUnlock="false"
+    tools:targetApi="kitkat">
+    <aid-group android:category="other">
+        <aid-filter android:name="A0000002471001"/>
+    </aid-group>
 </host-apdu-service>
+
+
 
 

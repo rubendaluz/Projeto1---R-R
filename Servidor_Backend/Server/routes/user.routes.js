@@ -59,6 +59,6 @@ usersRoutes.put("/updateAllFingerprints", updateAllUsersFingerprints);
 usersRoutes.post('/change-password', changePassword);
 
 // http://localhost:4242/api/user/authenticatenfc
-usersRoutes.post("/authenticatenfc", authenticateUserNFC);
+usersRoutes.post("/authenticateNfc", authenticateUserNFC);
 
 export { usersRoutes };
