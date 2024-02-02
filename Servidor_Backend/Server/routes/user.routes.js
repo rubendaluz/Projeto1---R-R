@@ -12,6 +12,7 @@ import {
   updateAllUsersFingerprints,
   changePassword,
   authenticateUserNFC,
+  login,
 } from "../controllers/user.controller.js";
 
 const usersRoutes = Router();
@@ -48,6 +49,9 @@ usersRoutes.delete("/:id", deleteUser);
 
 // http://localhost:4242/api/user/authenticate
 usersRoutes.post("/authenticate", authenticateUser);
+
+// http://localhost:4242/api/user/authenticate
+usersRoutes.post("/userlogin", login);
 
 // http://localhost:4242/api/user/updateFingerprint
 usersRoutes.put("/updateFingerprint", updateUserFingerprint);

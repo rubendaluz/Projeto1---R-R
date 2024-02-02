@@ -127,11 +127,10 @@
         android:id="@+id/editProfileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/actionButtonsLayout"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="79dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_above="@id/logautButton"
+        android:layout_marginHorizontal="15dp"
+
+        android:layout_marginBottom="15dp"
         android:background="#2196F3"
         android:text="Edit Profile"
         android:textColor="@android:color/white" />
@@ -140,11 +139,10 @@
         android:id="@+id/logautButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editProfileButton"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+
+        android:layout_alignParentBottom="true"
+       android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="10dp"
         android:background="#FF0000"
         android:text="Logaut"
         android:textColor="@android:color/white" />
