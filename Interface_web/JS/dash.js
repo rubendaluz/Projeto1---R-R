@@ -4,6 +4,8 @@ const totalUsersCountElement = document.getElementById("totalUsersCount");
 const totalAdminsCountElement = document.getElementById("totalAdminsCount");
 const totalRoomsCountElement = document.getElementById("totalRoomsCount");
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -12,8 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userNameElement = document.querySelector(".user-name");
     userNameElement.textContent = user.username || "Admin";
-
-
     const totalUsersCard = document.getElementById("totalUsersCard");
     const totalAdminsCard = document.getElementById("totalAdminsCard");
     const totalRoomsCard = document.getElementById("totalRoomsCard");
@@ -36,7 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
 
-fetchStatistics();
+    fetchStatistics()
+     
+    getRecentAccesses();
         getRecentAccesses();
 });
 
@@ -52,6 +54,8 @@ function fetchStatistics() {
             totalUsersCountElement.textContent = data.usersCount;
             totalAdminsCountElement.textContent = data.adminsCount;
             totalRoomsCountElement.textContent = data.roomsCount;
+            updateAccessStatePieChart(data.allowedAccessesCount, data.deniedAccessesCount);
+            updateMethodUsedPieChart( data.fingerprintAccessesCount,data.nfcAccessesCount);
         })
         .catch(error => console.error("Error fetching data:", error));
 }
@@ -147,4 +151,55 @@ function formatarData(dataOriginal) {
         // Resultado final
         const resultadoFinal = `${dataFormatada}/${horaFormatada}`;
         return resultadoFinal
+    }
+
+
+
+    
+
+    function updateAccessStatePieChart(allowedCount, deniedCount) {
+        const accessStateData = {
+            labels: ['Allowed', 'Not Allowed'],
+            datasets: [{
+                data: [allowedCount, deniedCount], 
+                backgroundColor: ['#4CAF50', '#FF5733'],
+                
+            }],
+        };
+
+        const accessStateChart = new Chart(document.getElementById('accessStateChart').getContext('2d'), {
+            type: 'pie',
+            data: accessStateData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: {
+                    position: 'bottom',
+                },
+            },
+        });
+
+        
+    }
+
+    function updateMethodUsedPieChart(finger,nfc) {
+        const methodUsedData = {
+            labels: ['Fingerprint', 'NFC'], // Add other methods as needed
+            datasets: [{
+                data: [finger, nfc], // Replace with actual percentages
+                backgroundColor: ['#3498db', '#fbff01'],
+            }],
+        };
+
+       const methodUsedChart = new Chart(document.getElementById('methodUsedChart').getContext('2d'), {
+            type: 'pie',
+            data: methodUsedData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: {
+                    position: 'bottom',
+                },
+            },
+        });
     }

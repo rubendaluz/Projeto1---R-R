@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiAccess Dashboard</title>
     <link rel="stylesheet" href="../CSS/styles.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 </head>
 
@@ -82,11 +85,36 @@
                     <p id="totalRoomsCount">Loading...</p>
                 </div>
             </div>
+
+            
         </section>
         
     
             <section class="recent-access-section">
-                <h2>Recent Access</h2>
+                
+<div class="charts">
+    <div class="chart-container" id="accessStateChartContainer">
+    <h2>Access State Pie Chart</h2>
+    <canvas id="accessStateChart"></canvas>
+</div>
+
+
+<div class="chart-container" id="methodUsedChartContainer">
+    <h2>Method Used Pie Chart</h2>
+    <canvas id="methodUsedChart"></canvas>
+</div>
+</div>
+
+              
+                
+                <div class="header">
+                    <h2>Recent Access</h2>
+                
+                <a href="./accesses.html" class="view-accesses-button">
+                    <i class="fas fa-eye"></i> View all Accesses    
+                </a>
+                </div>
+
                
                 <div class="accesses_container">
                     <table id="accesses_table">
@@ -104,6 +132,8 @@
                     </table>
                 </div>
             </section>
+
+
         
     </main>
 

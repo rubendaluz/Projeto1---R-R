@@ -338,9 +338,8 @@ table button:hover {
 .new_room_form {
   max-width: 500px;
   margin: 0 auto;
-  padding: 15px;
+  padding: 35px;
   margin: 10px;
-  height: 90%;
 width: 60%;
   border-radius: 5px;
   display: none;
@@ -395,20 +394,109 @@ width: 60%;
   padding: 10px;
   border: 1px solid #10b3db;
   border-radius: 5px;
+  transition: border-color 0.3s;
+
+
+}
+
+.form-group input:focus {
+  border-color: #005ff8;
 }
 
 .button-container {
   text-align: center;
+  margin-top: 20px;
+
+
 }
 
 .button-container button {
+ 
+
+  width: 100%;
   padding: 10px 20px;
   background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
+
 }
+
+
+
+.button-container button:hover {
+  background-color: #0069D9;
+}
+
+
+
+/* Estilo para o botão de adicionar ou remover impressões digitais */
+.form-group.add_finger button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+}
+
+.form-group.add_finger button:hover {
+  background-color: #2980b9;
+}
+
+/* Estilo para o botão de adicionar ou remover impressões digitais */
+.form-group.remove_finger button {
+  background-color: #e74c3c;
+  width: 100%;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+
+}
+
+.form-group.remove_finger button:hover {
+  background-color: #c0392b;
+}
+
+
+.form-checbox {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  align-self: center;
+
+}
+
+.add_fingerprint_checkbox {
+  
+  margin-right: 10px;
+  cursor: pointer;
+  transition: color 0.3s;
+  vertical-align: middle; /* Centralizar verticalmente os ícones em relação aos campos de entrada */
+
+}
+
+/* Style the label if needed */
+.form-checbox label {
+  
+  margin-bottom: 0; /* Adjust the margin as needed */
+  cursor: pointer; /* Add a pointer on hover */
+
+}
+
+
 
 
 
@@ -759,3 +847,136 @@ align-items: center;
 #toggle_password_visibility:hover i {
   color: #333;
 }
+
+#overlay {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+  z-index: 1000;
+}
+
+.overlay-content {
+  background-color: #1b2830; /* Dark background color */
+  color: #fff; /* Light text color */
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Light box shadow */
+}
+
+#overlay h2,
+#overlay p,
+#overlay li,
+#success-message {
+  margin-bottom: 10px;
+}
+
+#overlay h2 {
+  color: #fff; /* Light text color for heading */
+}
+
+#overlay p,
+#overlay ol {
+  color: #bbb; /* Lighter text color for paragraphs and list items */
+}
+
+#overlay ol {
+  text-align: left;
+  margin-left: 20px;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3); /* Light border color */
+  border-radius: 50%;
+  border-top: 4px solid #3498db; /* Accent color for spinner */
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#success-message {
+  color: #2ecc71; /* Success message color */
+  font-weight: bold;
+}
+
+#btn-conclude {
+  background-color: #3498db; /* Accent color for button */
+  width: 100%;
+  color: #fff; /* Light text color for button */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+#btn-conclude:hover {
+  background-color: #2980b9; /* Darker accent color on hover */
+}
+
+
+
+
+.view-accesses-button {
+  display: inline-block;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  background-color: #3498db;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.view-accesses-button i {
+  margin-right: 8px;
+}
+
+.view-accesses-button:hover {
+  background-color: #2980b9;
+}
+
+
+.charts {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content:space-around;
+}
+/* Adicione mais estilos conforme necessário */
+/* Estilos para os gráficos */
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  width: 40%; /* Ajuste conforme necessário para o espaçamento desejado */
+  height: 40%;
+  align-items: center;
+  background-color: #333d47; /* Cor de fundo para os gráficos */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+
+
+
+ 
+}
+
+
+
