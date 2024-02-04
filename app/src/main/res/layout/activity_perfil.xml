@@ -35,15 +35,6 @@
             android:layout_marginTop="8dp" />
 
         <TextView
-            android:id="@+id/userOccupationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="UI/UX Designer"
-            android:textColor="#DDDDDD"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp" />
-
-        <TextView
             android:id="@+id/userIdTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +118,7 @@
         android:id="@+id/editProfileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/logautButton"
+        android:layout_above="@id/logoutButton"
         android:layout_marginHorizontal="15dp"
 
         android:layout_marginBottom="15dp"
@@ -136,7 +127,7 @@
         android:textColor="@android:color/white" />
 
     <Button
-        android:id="@+id/logautButton"
+        android:id="@+id/logoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -144,7 +135,7 @@
        android:layout_marginHorizontal="15dp"
         android:layout_marginBottom="10dp"
         android:background="#FF0000"
-        android:text="Logaut"
+        android:text="Logout"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>

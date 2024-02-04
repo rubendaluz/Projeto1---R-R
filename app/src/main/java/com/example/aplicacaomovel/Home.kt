@@ -50,16 +50,19 @@ class Home : ComponentActivity() {
         val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
         loggedUserRepository = LoggedUserRepository(loggedUserDao)
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    override fun onResume() {
+        super.onResume()
         lifecycleScope.launch {
             loggedUserRepository.loggedUser.collect { user ->
                 user?.let {
                     updateUiWithLoggedUserInfo(it)
+                    setupAccessListRecyclerView(it.id)
                 }
             }
         }
-
-        // Configurar RecyclerView e adaptador para a lista de acessos
-        setupAccessListRecyclerView()
 
         // Configurar botões e outros elementos de UI
         setupUiElements()
@@ -67,10 +70,10 @@ class Home : ComponentActivity() {
         initializeNfc()
     }
 
-    private fun setupAccessListRecyclerView() {
+    private fun setupAccessListRecyclerView(id: Int) {
         val request = ServiceBuilder.buildService(EndPoints::class.java)
         // Substitua "1" pelo ID do usuário desejado ou passe como parâmetro
-        val call = request.getAccessesByUser(1)
+        val call = request.getAccessesByUser(id)
         val accessList = ArrayList<AccessItem>()
         val adapter = AccessListAdapter(accessList) // Certifique-se que este adapter está correto.
         val recyclerView = findViewById<RecyclerView>(R.id.recView)
@@ -134,8 +137,10 @@ class Home : ComponentActivity() {
     private fun updateUiWithLoggedUserInfo(user: LoggedUser) {
         val userName: TextView = findViewById(R.id.textViewNome)
         val emailTextView: TextView = findViewById(R.id.textViewEmail)
+        val accessLevel: TextView = findViewById(R.id.textViewClasse)
         userName.text = "${user.firstName} ${user.lastName}"
         emailTextView.text = user.email
+        accessLevel.text = user.accessLevel.toString() + "/5"
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)

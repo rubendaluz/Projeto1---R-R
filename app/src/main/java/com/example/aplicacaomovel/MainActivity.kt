@@ -1,6 +1,7 @@
 package com.example.aplicacaomovel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
@@ -49,6 +50,12 @@ class MainActivity :  ComponentActivity() {
 
         loginMessage = findViewById(R.id.loginMessage)
 
+        if (tokenDeSessaoExiste(this)) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
 //        Função de Login
         btnLogin.setOnClickListener {
@@ -72,13 +79,16 @@ class MainActivity :  ComponentActivity() {
                     if (response.isSuccessful) {
                         val loginResponse = response.body()
                         loginResponse?.let {
-                             val currentUser = LoggedUser(it.user.id, it.user.firstName, it.user.lastName, it.user.nfcTag, it.user.email)
+                             val currentUser = LoggedUser(it.user.id, it.user.firstName, it.user.lastName, it.user.nfcTag, it.user.email, it.user.phone, it.user.accessLevel)
+                            guardarTokenDeSessao(this@MainActivity,it.token)
                             // Save user to Room database
                             val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
                             GlobalScope.launch {
                                 loggedUserDao.insert(currentUser)
                             }
                         }
+                        progressBar.visibility = View.GONE
+                        btnLogin.visibility = View.VISIBLE
                         startActivity(intent)
                     } else {
                         loginMessage.visibility = View.VISIBLE
@@ -101,6 +111,27 @@ class MainActivity :  ComponentActivity() {
 
         }
     }
+
+    fun guardarTokenDeSessao(context: Context, token: String) {
+        val sharedPreferences = context.getSharedPreferences("userSession", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val currentTime = System.currentTimeMillis()
+        // Supondo que o token seja válido por 7 dias (7 * 24 * 60 * 60 * 1000 milissegundos)
+        val expiryTime = currentTime + (7 * 24 * 60 * 60 * 1000)
+
+        editor.putString("userToken", token)
+        editor.putLong("expiryTime", expiryTime)
+        editor.apply()
+    }
+    fun tokenDeSessaoExiste(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("userSession", Context.MODE_PRIVATE)
+        val expiryTime = sharedPreferences.getLong("expiryTime", 0)
+        val currentTime = System.currentTimeMillis()
+
+        return currentTime < expiryTime
+    }
+
+
 }
 
 

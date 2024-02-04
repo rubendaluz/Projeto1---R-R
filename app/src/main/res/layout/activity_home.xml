@@ -65,7 +65,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/img_4"
+                android:background="@drawable/img_4"
                 android:scaleType="centerCrop" />
 
             <TextView
@@ -141,9 +141,7 @@
         android:layout_below="@+id/cartao"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_nfc"
-        android:tint="@color/white"
-
-        />
+        app:backgroundTint="@color/white" />
     <TextView
         android:id="@+id/nfttxt"
         android:layout_below="@+id/iconnfc"

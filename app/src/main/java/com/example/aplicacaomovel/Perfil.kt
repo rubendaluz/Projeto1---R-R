@@ -1,7 +1,10 @@
 package com.example.aplicacaomovel
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class Perfil : ComponentActivity() {
     private lateinit var loggedUserRepository: LoggedUserRepository
+    private lateinit var loginBtn: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
@@ -27,18 +31,34 @@ class Perfil : ComponentActivity() {
                 }
             }
         }
+
+        loginBtn.setOnClickListener {
+            fazerLogout(this)
+        }
     }
+
+
 
     @SuppressLint("SetTextI18n")
     private fun updateUiWithLoggedUserInfo(user: LoggedUser){
         val userName: TextView = findViewById(R.id.userNameTextView)
         val idTextView: TextView = findViewById(R.id.userIdTextView)
-        val emailTextView: TextView = findViewById(R.id.textViewEmail)
-
-        // Atualizar o nome do utilizador
+        val emailTextView: TextView = findViewById(R.id.userEmailTextView)
+        val phoneTextView: TextView = findViewById(R.id.userIdTextView)
         userName.text = user.firstName + " " + user.lastName
         emailTextView.text = user.email
-        idTextView.text = user.id.toString()
+        idTextView.text = "ID: " + user.id.toString()
+        phoneTextView.text = user.phone.toString()
+    }
+
+    fun fazerLogout(context: Context) {
+        val sharedPreferences = context.getSharedPreferences("PreferenciasDoApp", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("TokenDeSessao")
+        editor.apply()
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        // Redireciona o utilizador para a tela de login
     }
 
 }

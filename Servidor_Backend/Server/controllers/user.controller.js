@@ -186,7 +186,7 @@ export const register = async (req, res) => {
 
     // Geração e envio do link temporário para mudança de senha
     const resetToken = createResetToken(user.id);
-    const resetLink = `http://${process.env.SERVER_HOST}:5500/Interface_web/HTML/changePWD.html?token=${resetToken}`;
+    const resetLink = `http://${process.env.SERVER_HOST}:5501/Interface_web/HTML/changePWD.html?token=${resetToken}`;
     await sendWelcomeEmail(user, resetLink);
 
 

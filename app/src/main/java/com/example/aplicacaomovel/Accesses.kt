@@ -13,6 +13,8 @@ import com.example.aplicacaomovel.Dataclasses.AccessItem
 import com.example.aplicacaomovel.api.Access
 import com.example.aplicacaomovel.api.EndPoints
 import com.example.aplicacaomovel.api.ServiceBuilder
+import com.example.aplicacaomovel.db.AppDatabase
+import com.example.aplicacaomovel.db.LoggedUserRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +24,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 class Accesses : ComponentActivity() {
+    private lateinit var loggedUserRepository: LoggedUserRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accesses)
@@ -46,13 +49,17 @@ class Accesses : ComponentActivity() {
         accessTypeFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         accessTypeFilterSpinner.adapter = accessTypeFilterAdapter
 
-        setupAccessListRecyclerView()
+        // Inicializar o repositório com o DAO
+        val loggedUserDao = AppDatabase.getInstance(applicationContext).loggedUserDao()
+        loggedUserRepository = LoggedUserRepository(loggedUserDao)
     }
 
-    private fun setupAccessListRecyclerView() {
+
+
+    private fun setupAccessListRecyclerView(id: Int) {
         val request = ServiceBuilder.buildService(EndPoints::class.java)
         // Substitua "1" pelo ID do usuário desejado ou passe como parâmetro
-        val call = request.getAccessesByUser(1)
+        val call = request.getAccessesByUser(id)
         val accessList = ArrayList<AccessItem>()
         val adapter = AccessListAdapter(accessList) // Certifique-se que este adapter está correto.
         val recyclerView = findViewById<RecyclerView>(R.id.accessRecyclerView)
