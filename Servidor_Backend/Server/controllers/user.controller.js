@@ -3,6 +3,7 @@ import { RoomModel } from '../models/room.model.js';
 import { AcessesModel } from "../models/access.model.js";
  // npm install googleapis
 import { google } from 'googleapis';
+
 import { createToken } from "../utils/jwt.js";
 import path from 'path';
 import bcrypt from 'bcrypt';
@@ -196,9 +197,6 @@ const sendWelcomeEmail = async (user, resetLink) => {
     html: emailBody
   });
 };
-
-
-
 const createResetToken = (userId) => {
   return jwt.sign({ userId }, 'seu', { expiresIn: '1h' });
 };
@@ -518,6 +516,80 @@ export const updateAllUsersFingerprints = async (req, res) => {
 };
 
 export const authenticateUserNFC = async (req, res) => {
+<<<<<<< HEAD
+    try {
+      // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
+      const { roomId, nfcTag } = req.body;
+      console.log('Received data:', req.body);
+      
+      // Encontrar a sala pelo ID
+      const room = await RoomModel.findByPk(roomId);
+  
+      if (!room) {
+        return res.status(404).json({ message: 'Room not found' });
+      }
+  
+      // Encontrar o usuário pelo fingerPrintId
+      const user = await UserModel.findOne({ where: { nfcTag } });
+      console.log("User: ", user);
+  
+      // Obter o timestamp atual
+      const entryTimestamp = new Date();
+  
+      // Criar um registro de acesso
+      const access = await AcessesModel.create({
+        id_user: user ? user.id : null,
+        id_area: roomId,
+        metodo_auth: 'nfc',
+        acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
+        data_hora_entrada: entryTimestamp,
+      });
+  
+      // Check authorization status and respond accordingly
+      if (!user) {
+        return res.status(401).json({ message: 'Unknown' });
+      }
+  
+      if (user.accessLevel < room.access_level_required) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      return res.json({authorized: true, name: user.firstName + " " + user.lastName });
+    } catch (error) {
+      console.error('Error authenticating user:', error);
+      return res.status(500).json({ message: 'Failed to authenticate user' });
+    }
+  };
+
+  export const addNfcTag = async (req, res) => {
+    try {
+      const { userId, nfcTag } = req.body;
+      console.log('Received data:', req.body);
+      
+      /// Encontrar o usuário pelo ID
+      const user = await UserModel.findByPk(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Atualizar a tag Nfc do utilizador
+      await user.update({ nfcTag });
+  
+      // Recarregar o usuário para obter os dados atualizados
+      const updatedUser = await UserModel.findByPk(userId);
+  
+      return res.json({
+        message: 'User nfcTag updated successfully',
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error('Error updating user nfc tag:', error);
+      return res.status(500).json({ message: 'Failed to update user nfc Tag' });
+    }
+  };
+
+
+=======
   try {
     // const { roomId, nfcTag } = JSON.parse(Object.keys(req.body)[0]);
     const { roomId, nfcTag } = req.body;
@@ -560,3 +632,4 @@ export const authenticateUserNFC = async (req, res) => {
     return res.status(500).json({ message: 'Failed to authenticate user' });
   }
 };
+>>>>>>> 64ebafd592874926979990f2b61a47617ea75e6e

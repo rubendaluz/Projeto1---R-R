@@ -1,19 +1,32 @@
 #include <Wire.h>
-#include <WiFi.h>  // Biblioteca WiFi do ESP32
+#include <WiFi.h>  // Include WiFi library
 #include <Arduino.h>
 #include <Preferences.h>
 #include <Adafruit_Fingerprint.h>
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
+#include <LiquidCrystal_I2C.h>
+#include <Adafruit_PN532.h>
+#include <ArduinoJson.h>
 
-const char* ssid = "Wifise";      // name of your WiFi network
-const char* password = "12345678";  // password of the WiFi network
-const char* serverAddress = "http://172.16.201.150:4242";
-WiFiClient wclient;  // WiFi Client Object
+// WiFi Credentials
+const char* ssid = "Wifise";  // WiFi network name
+const char* password = "12345678";  // WiFi network password
 
+// Server address for HTTP client
+const char* serverAddress = "http://192.168.1.189:4242";
 
-AsyncWebServer server(8080);
+// NFC Pins
+#define SDA_PIN 21
+#define SCL_PIN 22
 
+// Server setup
+AsyncWebServer server(80);  // Use port 80 for the web server
+
+// NFC Reader setup
+Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
+
+// Fingerprint scanner setup
 HardwareSerial mySerial(2);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
@@ -26,7 +39,9 @@ enum OperationMode {
   NORMAL_MODE,
   EDIT_MODE,
   WEB_ADD_FINGER_MODE,
-  WEB_REMOVE_FINGER_MODE
+  WEB_REMOVE_FINGER_MODE,
+  WEB_ADD_NFCTAG_MODE,
+  WEB_REMOVE_NFCTAG_MODE
 };
 
 OperationMode currentMode = NORMAL_MODE;
@@ -37,6 +52,7 @@ bool isEditmode = false;
 unsigned int counterID = 0;
 int userIdWeb = -1;
 int fingerIdWeb = -1;
+int nfcTagIdWeb = -1;
 
 // Protótipos das funções
 void registerDevice();
@@ -57,11 +73,19 @@ int showMainMenu();
 int showSettingsMenu();
 int showManageUserMenu();
 
-// Function prototypes
-void handleRegisterFingerprint(AsyncWebServerRequest* request);
+String readNFCUID();
+void printNfcData();
+String checkUserExistenceNFC();
+
+void handleRegisterFingerprint(AsyncWebServerRequest *request);
 void handleRemoveFingerprint(AsyncWebServerRequest* request);
 void updateFingerprint(int userId, int fingerprintId);
 bool authenticateUser(int fingerprintId, int roomId);
+
+void handleRegisterNfcTag(AsyncWebServerRequest* request);
+void handleRemoveNfcTag(AsyncWebServerRequest* request);
+void updateNfcTag(int userId, int fingerprintId);
+bool authenticateUserNfc(int fingerprintId, int roomId);
 
 
 void setup() {
@@ -70,36 +94,12 @@ void setup() {
   mySerial.begin(57600, SERIAL_8N1, 17, 16);  // Inicializa o sensor de impressão digital
   preferences.begin("registration", false);   // Nome do espaço de preferências
 
+  setupWiFiAndServer();
+  setupNFC();
 
-  ///////////////////////////////////////////////////////
-  // Connect to WiFi
-  ///////////////////////////////////////////////////////
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);              // Connects to WiFi Network
-  while (WiFi.status() != WL_CONNECTED) {  // Waits for WiFi connection
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("ESP connected to WiFi with IP address: ");
-  Serial.println(WiFi.localIP());
-
-  ///////////////////////////////////////////////////////
-  // running server
-  ///////////////////////////////////////////////////////
-  server.on("/finger/add", HTTP_GET, handleRegisterFingerprint);
-  server.on("/finger/remove", HTTP_GET, handleRemoveFingerprint);
-  server.begin();
-  Serial.print("Server is running at http://");
-  Serial.print(WiFi.localIP());
-  Serial.print(":8080");
-
-
-
-
-  if (finger.verifyPassword()) {
-    Serial.println("Sensor de impressão digital encontrado!");
+  if (finger.verifyPassword())
+  {
+      Serial.println("Sensor de impressão digital encontrado!");
   } else {
     Serial.println("Sensor de impressão digital não encontrado :(");
     while (1) { delay(1); }
@@ -109,8 +109,6 @@ void setup() {
   }
   preferences.end();
   Serial.println("Esperando por impressão digital válida...");
-
-
   preferences.begin("my-app", false);
   counterID = preferences.getUInt("counterID", 0);
 
@@ -139,23 +137,51 @@ void loop() {
   delay(1000);
 }
 
+void setupWiFiAndServer() {
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConnected to WiFi");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/finger/add", HTTP_GET, handleRegisterFingerprint);
+  server.on("/finger/remove", HTTP_GET, handleRemoveFingerprint);
+  server.on("/nfcTag/add", HTTP_GET, handleRegisterNfcTag);
+  server.on("/nfcTag/remove", HTTP_GET, handleRemoveNfcTag);
+  server.begin();
+  Serial.println("HTTP server started");
+}
+
+
+void setupNFC() {
+  nfc.begin();
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (!versiondata) {
+    Serial.print("Didn't find PN53x board");
+    while(1);  // Parar a execução se o leitor NFC não for encontrado
+  }else{
+    Serial.println("Waiting for an NFC card...");
+    nfc.SAMConfig();
+  }
+}
+
 void handleNormalMode() {
   Serial.println("Coloque o dedo no sensor...");
 
   if (digitalRead(12) == LOW) {
     if (confirmMasterPIN()) {
       currentMode = EDIT_MODE;
-    
     } else {
       Serial.println("Pin incorreto");
     }
-  } else {
-    if (finger.getImage() == FINGERPRINT_OK) {
-        verifyFingerprint();
-      }
   }
 
-  
+  if (finger.getImage() == FINGERPRINT_OK) {
+    verifyFingerprint();
+  }
 
   delay(50);  // Pequena pausa para evitar sobrecarga do CPU
 }
@@ -188,19 +214,14 @@ void handleWebAddFingerMode() {
 }
 
 void handleWebRemoveFingerMode() {
-  
     removeFingerprint(fingerIdWeb);
     int num = -1;
-     updateFingerprint( userIdWeb, num);
+    updateFingerprint( userIdWeb, num);
     currentMode = NORMAL_MODE; 
     fingerIdWeb = -1;
     userIdWeb = -1;
 
 }
-
-
-
-
 
 
 ///////////////////////////////////////////////////////
@@ -230,17 +251,56 @@ void handleRemoveFingerprint(AsyncWebServerRequest* request) {
   response->addHeader("Access-Control-Allow-Origin", "*");
 
   // Envia a resposta
-  request->send(response);
-
-
-  
+  request->send(response);  
 }
 
 
+void handleRegisterNfcTag(AsyncWebServerRequest* request) {
+  userIdWeb = request->arg("userId").toInt();
+  currentMode = WEB_ADD_NFCTAG_MODE;
 
+  // Cria um objeto AsyncWebServerResponse
+  AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "NFC Tag registration started successfully.");
+  
+  // Adiciona o cabeçalho CORS ao objeto de resposta
+  response->addHeader("Access-Control-Allow-Origin", "*");
+
+  // Envia a resposta
+  request->send(response);
+}
+
+void handleRemoveNfcTag(AsyncWebServerRequest* request) {
+  fingerIdWeb  = request->arg("nfcTag").toInt();
+  userIdWeb =  request->arg("userId").toInt();
+  currentMode = WEB_REMOVE_NFCTAG_MODE;
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "NFC Tag removal started successfully.");
+  
+  // Adiciona o cabeçalho CORS ao objeto de resposta
+  response->addHeader("Access-Control-Allow-Origin", "*");
+
+  // Envia a resposta
+  request->send(response);
+}
+void updateNfcTag(int userId, String nfcTag) {
+  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateNfcTag";
+  String payload = "{\"userId\":\"" + String(userId) + "\",\"nfcTag\":\"" + nfcTag + "\"}";
+  HTTPClient http;
+  http.begin(enrollEndpoint);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  int httpResponseCode = http.PUT(payload);
+
+
+  if (httpResponseCode == 200) {
+    Serial.println("Fingerprint updated successfully");
+  } else {
+    Serial.println("Failed to update fingerprint");
+  }
+
+  http.end();
+}
 
 void updateFingerprint(int userId, int fingerprintId) {
-  const char* enrollEndpoint = "http://172.16.201.150:4242/api/user/updateFingerprint";
+  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
   String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(fingerprintId) + "\"}";
   HTTPClient http;
   http.begin(enrollEndpoint);
@@ -257,10 +317,76 @@ void updateFingerprint(int userId, int fingerprintId) {
   http.end();
 }
 
+// ////////////////////////////////////////
+// NFC Functions
+//////////////////////////////////////////
+
+String readNFCUID() {
+  uint8_t uidLength;
+  uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
+  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+
+
+  if(card){
+    Serial.println("Found an NFC card!");
+
+    String uidString = "";
+    for (uint8_t i = 0; i < uidLength; i++) {
+      uidString += String(uid[i], HEX);
+    }
+    
+    printNfcData(uid, uidLength);
+    // Exemplo de comando SELECT APDU para enviar
+    uint8_t apdu[] = { 0x00, 0xA4, 0x04, 0x00, 0x07, 0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01 };
+    uint8_t response[255];
+    uint8_t responseLength = sizeof(response);
+    uint8_t success;
+
+    success = nfc.inDataExchange(apdu, sizeof(apdu), response, &responseLength);
+
+    if(success) {
+      Serial.println("APDU command sent!");
+      // Processar a resposta
+      if (responseLength >= 2) {
+          // Verificar os dois últimos bytes da resposta para o status word
+          uint8_t sw1 = response[responseLength - 2];
+          uint8_t sw2 = response[responseLength - 1];
+          if (sw1 == 0x90 && sw2 == 0x00) {
+              Serial.println("Comando executado com sucesso.");
+          } else {
+              Serial.print("Falha na execução do comando: SW=");
+              Serial.print(sw1, HEX);
+              Serial.println(sw2, HEX);
+          }
+      }
+    } else {
+      Serial.println("Failed to send APDU command.");
+    }
+    return uidString;
+  }
+  return "";
+}
+
+void printNfcData(uint8_t *uid, uint8_t uidLength) {
+  String receivedData = "UID;";
+  for (int i = 0; i < uidLength; i++) {
+    receivedData += String(uid[i], HEX);
+  }
+  receivedData += ";";
+
+  // Read the rest of the message until a newline character
+  while (Serial.available() && Serial.peek() != '\n') {
+    receivedData += char(Serial.read());
+  }
+  // Print the received data
+  Serial.println("Received Data: " + receivedData);
+}
+
+
 String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   HTTPClient http;
 
-  String verifyEndpoint = "http://192.168.1.216:4242/api/user/authenticateNfc";
+  String verifyEndpoint = "http://192.168.181.137:4242/api/user/authenticateNfc";
      
 
   http.begin(verifyEndpoint); 
@@ -293,10 +419,12 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
       Serial.print("Erro ao enviar POST: ");
       Serial.println(httpResponseCode);
     }
-
-
   http.end();
 }
+
+/////////////////////////////////////////////
+// Fingerprint Auth Functions
+////////////////////////////////////////////
 
 bool authenticateUser(int fingerprintId, int roomId) {
   String url = String(serverAddress) + "/api/user/authenticate";
@@ -318,8 +446,6 @@ bool authenticateUser(int fingerprintId, int roomId) {
 
   http.end();
 }
-
-
 
 void clearAllFingerprints() {
   const int capacity = 270;  // Capacidade do sensor
@@ -343,7 +469,7 @@ void clearAllFingerprints() {
 
   // Envia a solicitação HTTP para atualizar todos os IDs de impressões digitais para nulo
   HTTPClient http;
-  String url = "http://172.16.201.150:4242/api/user/updateAllFingerprints";
+  String url = "http://192.168.1.189:4242/api/user/updateAllFingerprints";
   http.begin(url);
 
   int httpResponseCode = http.PUT("null");
@@ -462,7 +588,7 @@ void processManageUserMenuInput(int op) {
 
 void  enrollFingerprint(int userId) {
 
-  const char* enrollEndpoint = "http://172.16.201.150:4242/api/user/updateFingerprint";
+  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
 
   int id = getNextFingerprintID();  // Obtém o próximo ID disponível
   if (id < 0) {
@@ -552,8 +678,8 @@ int getNextFingerprintID() {
 
 void verifyFingerprint() {
 
-  const char* verifyEndpoint = "http://172.16.201.150:4242/api/user/authenticate";
-  const char* AcessEndpoint = "http://172.16.201.150:4242/api/acesses/create";
+  const char* verifyEndpoint = "http://192.168.1.189:4242/api/user/authenticate";
+  const char* AcessEndpoint = "http://192.168.1.189:4242/api/acesses/create";
 
   Serial.println("Verificando....");
 
@@ -764,10 +890,6 @@ void changeMasterPIN() {
 
 // Função para confirmar o PIN mestre atual
 bool confirmMasterPIN() {
-
-
-
-
   Serial.println("Digite o PIN mestre  para confirmar:");
 
   int enteredPIN = 0;

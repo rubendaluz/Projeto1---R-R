@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.aplicacaomovel.DAO.LoggedUserDao
 import com.example.aplicacaomovel.Enteties.LoggedUser
 
-@Database(entities = [LoggedUser::class], version = 1)
+@Database(entities = [LoggedUser::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun loggedUserDao(): LoggedUserDao
 
