@@ -10,8 +10,11 @@
 #include <ArduinoJson.h>
 
 // WiFi Credentials
-const char* ssid = "Wifise";  // WiFi network name
-const char* password = "12345678";  // WiFi network password
+//const char* ssid = "Wifise";  // WiFi network name
+//const char* password = "12345678";  // WiFi network password
+
+const char* ssid = "MEO-564B00";      
+const char* password = "6ad9ca442b";
 
 // Server address for HTTP client
 const char* serverAddress = "http://192.168.1.189:4242";
