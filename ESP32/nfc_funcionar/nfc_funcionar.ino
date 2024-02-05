@@ -17,7 +17,6 @@ const char *password = "12345678";
 // const char* ssid = "MEO-564B00";      
 // const char* password = "6ad9ca442b";
 
-AsyncWebServer server(8080);
 
 
 String roomID = "1";
@@ -30,15 +29,15 @@ void setup() {
   Wire.begin();
   setupWiFi();
   setupNFC();
-  server.begin();
 }
 
 void loop() {
   String uid = readNFCUID();
   delay(1000);
   if (!uid.isEmpty()) {
-    checkUserExistenceNFC(uid, roomID);
+    // checkUserExistenceNFC(uid, roomID);
   }
+  Serial.println("Connected to WiFi");
 }
 
 void setupWiFi() {
@@ -51,11 +50,6 @@ void setupWiFi() {
   // Imprimir o endereço IP local do ESP32
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
-
-
-  server.on("/nfcTag/add", HTTP_GET, handleRegisterNfcTag);
-  server.on("/nfcTag/remove", HTTP_GET, handleRemoveNfcTag);
-  server.begin();
 }
 
 
@@ -75,7 +69,7 @@ void setupNFC() {
 String readNFCUID() {
   uint8_t uidLength;
   uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
-  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength,30);
 
 
   if(card){
@@ -172,49 +166,4 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
     }
   http.end();
 }
-
-void handleRegisterNfcTag(AsyncWebServerRequest* request) {
-  userIdWeb = request->arg("userId").toInt();
-  currentMode = WEB_ADD_NFCTAG_MODE;
-
-  // Cria um objeto AsyncWebServerResponse
-  AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "NFC Tag registration started successfully.");
-  
-  // Adiciona o cabeçalho CORS ao objeto de resposta
-  response->addHeader("Access-Control-Allow-Origin", "*");
-
-  // Envia a resposta
-  request->send(response);
-}
-
-void handleRemoveNfcTag(AsyncWebServerRequest* request) {
-  fingerIdWeb  = request->arg("nfcTag").toInt();
-  userIdWeb =  request->arg("userId").toInt();
-  currentMode = WEB_REMOVE_NFCTAG_MODE;
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "NFC Tag removal started successfully.");
-  
-  // Adiciona o cabeçalho CORS ao objeto de resposta
-  response->addHeader("Access-Control-Allow-Origin", "*");
-
-  // Envia a resposta
-  request->send(response);
-}
-void updateNfcTag(int userId, String nfcTag) {
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateNfcTag";
-  String payload = "{\"userId\":\"" + String(userId) + "\",\"nfcTag\":\"" + nfcTag + "\"}";
-  HTTPClient http;
-  http.begin(enrollEndpoint);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  int httpResponseCode = http.PUT(payload);
-
-
-  if (httpResponseCode == 200) {
-    Serial.println("Fingerprint updated successfully");
-  } else {
-    Serial.println("Failed to update fingerprint");
-  }
-
-  http.end();
-}
-
 
