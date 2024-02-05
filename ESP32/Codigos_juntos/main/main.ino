@@ -1,40 +1,46 @@
-#include <Wire.h>
-#include <WiFi.h>  // Include WiFi library
+
+#include <WiFi.h>  
 #include <Arduino.h>
 #include <Preferences.h>
+//Biblioteca para os leitores (NFC e Impressão digital)
 #include <Adafruit_Fingerprint.h>
+#include <Adafruit_PN532.h>
+//Bibliotecas para comunicação Web
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
-#include <Adafruit_PN532.h>
 #include <ArduinoJson.h>
+// Bibliotecas para Display
+#include <Wire.h>
 #include <hd44780.h>                       // Principal biblioteca HD44780
 #include <hd44780ioClass/hd44780_I2Cexp.h> // Adaptador I2C
 
-// WiFi Credentials
+
+// Credenciais Wifi
 String ssid = "Wifise";  // WiFi network name
 String password = "12345678";  // WiFi network password
 
-// Server address for HTTP client
+// Endereço do servidor HTTP 
 const char* serverAddress = "http://192.168.1.189:4242";
 String roomID = "1";
 
-// NFC Pins
+//Pinos NFC 
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-// Server setup
+//Setup Servidor Assincrono
 AsyncWebServer server(8080);  // Use port 80 for the web server
 
-// NFC Reader setup
+// Setup do leitor NFC
 Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
 
-// Fingerprint scanner setup
+// Steup do leitor de impressão digital
 HardwareSerial mySerial(2);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 // Inicializa o objeto LCD
 hd44780_I2Cexp lcd;
 
+// Estados de operação do sistema
 enum MenuState {
   MAIN_MENU,
   SETTINGS_MENU,
@@ -108,7 +114,7 @@ void setup() {
       Serial.println("Sensor de impressão digital encontrado!");
   } else {
     Serial.println("Sensor de impressão digital não encontrado :(");
-    // while (1) { delay(1); }
+    while (1) { delay(1); }
   }
   if (!isDeviceRegistered()) {
     registerDevice();
@@ -167,7 +173,7 @@ void setupNFC() {
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata) {
     Serial.print("Didn't find PN53x board");
-    // while(1);  // Parar a execução se o leitor NFC não for encontrado
+    while(1);  // Parar a execução se o leitor NFC não for encontrado
   }else{
     Serial.println("Waiting for an NFC card...");
     nfc.SAMConfig();
@@ -190,7 +196,7 @@ void setupDisplay(){
 
 void handleNormalMode() {
   limparDisplay();
-  escreverNoDisplay("Aguardando...",91);
+  escreverNoDisplay("Aguardando...",1);
   Serial.println("Coloque o dedo no sensor...");
 
   if (digitalRead(12) == LOW) {
@@ -252,7 +258,7 @@ void handleWebRemoveFingerMode() {
 
 
 ///////////////////////////////////////////////////////
-//  server controlers
+//  Controllers do servidor Assincrono
 ///////////////////////////////////////////////////////
 
 void handleRegisterFingerprint(AsyncWebServerRequest* request) {
@@ -345,7 +351,7 @@ void updateFingerprint(int userId, int fingerprintId) {
 }
 
 // ////////////////////////////////////////
-// NFC Functions
+// Funções NFC
 //////////////////////////////////////////
 
 String readNFCUID(){
@@ -363,7 +369,7 @@ String readNFCUID(){
     }
     
     printNfcData(uid, uidLength);
-    // Exemplo de comando SELECT APDU para enviar
+    // Enviar comando SELECT APDU 
     uint8_t apdu[] = { 0x00, 0xA4, 0x04, 0x00, 0x07, 0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01 };
     uint8_t response[255];
     uint8_t responseLength = sizeof(response);
@@ -387,7 +393,7 @@ String readNFCUID(){
           }
       }
     } else {
-      Serial.println("Failed to send APDU command.");
+      Serial.println("Falha ao enviar comando APDU.");
     }
     return uidString;
   }
@@ -406,7 +412,7 @@ void printNfcData(uint8_t *uid, uint8_t uidLength) {
     receivedData += char(Serial.read());
   }
   // Print the received data
-  Serial.println("Received Data: " + receivedData);
+  Serial.println("Dados recebidos: " + receivedData);
 }
 
 
@@ -420,7 +426,6 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   http.addHeader("Content-Type", "application/json");
 
   String postData = "{\"roomId\":\"" + roomId + "\",\"nfcTag\":\"" + nfcTag + "\"}";
-  Serial.println(postData);
 
   int httpResponseCode = http.POST(postData);
   
@@ -433,7 +438,7 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
       DynamicJsonDocument doc(1024);
       deserializeJson(doc, response);
       bool authorized = doc["authorized"]; // Valor booleano de autorização
-      String name = doc["name"]; // Nome do usuário
+      String name = doc["name"]; // Nome do utilizador
 
       if (authorized) {
         Serial.println("Acesso autorizado");
@@ -456,7 +461,7 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
 }
 
 /////////////////////////////////////////////
-// Fingerprint Auth Functions
+// Funções da leitura de impressões digitais
 ////////////////////////////////////////////
 
 bool authenticateUser(int fingerprintId, int roomId) {
@@ -582,7 +587,7 @@ void processManageUserMenuInput(int op) {
   int userID = 0;
   switch (op) {
     case 1:
-      Serial.println("Digite o ID do usuário:");
+      Serial.println("Digite o ID do utilizador:");
       while (userID == 0) {
         while (!Serial.available())
           ;
@@ -591,13 +596,13 @@ void processManageUserMenuInput(int op) {
       if (userID > 0) {
         enrollFingerprint(userID);
       } else {
-        Serial.println("ID do usuário inválido!");
+        Serial.println("ID do utilizador inválido!");
       }
 
       break;
     case 2:
 
-      Serial.println("Digite o ID da impresao digital:");
+      Serial.println("Digite o ID da impressao digital:");
       while (userID == 0) {
         while (!Serial.available())
           ;
@@ -688,9 +693,6 @@ void  enrollFingerprint(int userId) {
 
 
 }
-
-
-
 
 int getNextFingerprintID() {
 
@@ -792,7 +794,7 @@ void removeFingerprint(int fingerprintID) {
 int showMainMenu() {
   Serial.println("======= MENU PRINCIPAL =======");
   Serial.println("  1. Acessar Configurações");
-  Serial.println("  2. Gerenciar Usuários");
+  Serial.println("  2. Gerenciar utilizadors");
   Serial.println("  7. sair");
   Serial.println("==============================");
   int num = 0;
@@ -821,7 +823,7 @@ int showSettingsMenu() {
 }
 
 int showManageUserMenu() {
-  Serial.println("====== GERENCIAR USUÁRIOS E IMPRESSÕES ======");
+  Serial.println("====== GERENCIAR utilizadorS E IMPRESSÕES ======");
   Serial.println("  1. Adicionar Impressão Digital");
   Serial.println("  2. Remover Impressão Digital");
   Serial.println("  7. voltar");
