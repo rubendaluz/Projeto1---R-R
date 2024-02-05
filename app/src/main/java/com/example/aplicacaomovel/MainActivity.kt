@@ -60,6 +60,7 @@ class MainActivity :  ComponentActivity() {
 
             val call = request.loginUser(loginRequest)
             val intent = Intent(this, Home::class.java)
+            startActivity(intent)
             call.enqueue(object : Callback<LoginResponse> {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

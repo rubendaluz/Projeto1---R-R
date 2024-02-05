@@ -164,11 +164,13 @@ void handleNormalMode() {
     } else {
       Serial.println("Pin incorreto");
     }
+  } else {
+    if (finger.getImage() == FINGERPRINT_OK) {
+        verifyFingerprint();
+      }
   }
 
-  if (finger.getImage() == FINGERPRINT_OK) {
-    verifyFingerprint();
-  }
+  
 
   delay(50);  // Pequena pausa para evitar sobrecarga do CPU
 }

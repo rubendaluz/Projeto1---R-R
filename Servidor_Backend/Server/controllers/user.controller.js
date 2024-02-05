@@ -456,7 +456,11 @@ export const authenticateUser = async (req, res) => {
     }
 
     if (user.accessLevel < room.access_level_required) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      //user name and id
+
+
+      return res.status(401).json({ message: 'Unauthorized'
+      , name: user.firstName , id: user.id});
     }
 
     return res.json({ message: 'Authorized' });
