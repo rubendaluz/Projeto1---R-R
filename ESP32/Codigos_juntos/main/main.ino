@@ -1,38 +1,46 @@
-#include <Wire.h>
-#include <WiFi.h>  // Include WiFi library
+
+#include <WiFi.h>  
 #include <Arduino.h>
 #include <Preferences.h>
+//Biblioteca para os leitores (NFC e Impressão digital)
 #include <Adafruit_Fingerprint.h>
+#include <Adafruit_PN532.h>
+//Bibliotecas para comunicação Web
 #include <HTTPClient.h>
 #include <ESPAsyncWebServer.h>
-#include <LiquidCrystal_I2C.h>
-#include <Adafruit_PN532.h>
 #include <ArduinoJson.h>
+// Bibliotecas para Display
+#include <Wire.h>
+#include <hd44780.h>                       // Principal biblioteca HD44780
+#include <hd44780ioClass/hd44780_I2Cexp.h> // Adaptador I2C
 
-// WiFi Credentials
-//const char* ssid = "Wifise";  // WiFi network name
-//const char* password = "12345678";  // WiFi network password
 
-const char* ssid = "MEO-564B00";      
-const char* password = "6ad9ca442b";
+// Credenciais Wifi
+String ssid = "Wifise";  // WiFi network name
+String password = "12345678";  // WiFi network password
 
-// Server address for HTTP client
+// Endereço do servidor HTTP 
 const char* serverAddress = "http://192.168.1.189:4242";
+String roomID = "1";
 
-// NFC Pins
+//Pinos NFC 
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-// Server setup
-AsyncWebServer server(80);  // Use port 80 for the web server
+//Setup Servidor Assincrono
+AsyncWebServer server(8080);  // Use port 80 for the web server
 
-// NFC Reader setup
+// Setup do leitor NFC
 Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
 
-// Fingerprint scanner setup
+// Steup do leitor de impressão digital
 HardwareSerial mySerial(2);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
+// Inicializa o objeto LCD
+hd44780_I2Cexp lcd;
+
+// Estados de operação do sistema
 enum MenuState {
   MAIN_MENU,
   SETTINGS_MENU,
@@ -99,6 +107,7 @@ void setup() {
 
   setupWiFiAndServer();
   setupNFC();
+  setupDisplay();
 
   if (finger.verifyPassword())
   {
@@ -171,7 +180,23 @@ void setupNFC() {
   }
 }
 
+void setupDisplay(){
+  // Inicializa o LCD e verifica se houve sucesso
+  int status = lcd.begin(16, 2);
+  if(status) { // Se houve um erro na inicialização, exibe o erro e para
+    Serial.print("Erro na inicializacao do LCD: ");
+    Serial.println(status, HEX);
+    hd44780::fatalError(status); // Exibe o erro no LCD (se possível) e trava
+  } else {
+    Serial.println("LCD inicializado com sucesso!");
+  }
+
+  limparDisplay(); // Limpa o display
+}
+
 void handleNormalMode() {
+  limparDisplay();
+  escreverNoDisplay("Aguardando...",1);
   Serial.println("Coloque o dedo no sensor...");
 
   if (digitalRead(12) == LOW) {
@@ -184,6 +209,11 @@ void handleNormalMode() {
 
   if (finger.getImage() == FINGERPRINT_OK) {
     verifyFingerprint();
+  }
+  
+  String uid = readNFCUID();
+  if (!uid.isEmpty()) {
+    checkUserExistenceNFC(uid, roomID);
   }
 
   delay(50);  // Pequena pausa para evitar sobrecarga do CPU
@@ -228,7 +258,7 @@ void handleWebRemoveFingerMode() {
 
 
 ///////////////////////////////////////////////////////
-//  server controlers
+//  Controllers do servidor Assincrono
 ///////////////////////////////////////////////////////
 
 void handleRegisterFingerprint(AsyncWebServerRequest* request) {
@@ -285,7 +315,7 @@ void handleRemoveNfcTag(AsyncWebServerRequest* request) {
   request->send(response);
 }
 void updateNfcTag(int userId, String nfcTag) {
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateNfcTag";
+  String enrollEndpoint = String(serverAddress) + "/api/user/updateNfcTag";
   String payload = "{\"userId\":\"" + String(userId) + "\",\"nfcTag\":\"" + nfcTag + "\"}";
   HTTPClient http;
   http.begin(enrollEndpoint);
@@ -303,7 +333,7 @@ void updateNfcTag(int userId, String nfcTag) {
 }
 
 void updateFingerprint(int userId, int fingerprintId) {
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
+  String enrollEndpoint = String(serverAddress) + "/api/user/updateFingerprint";
   String payload = "{\"userId\":\"" + String(userId) + "\",\"fingerPrintId\":\"" + String(fingerprintId) + "\"}";
   HTTPClient http;
   http.begin(enrollEndpoint);
@@ -321,13 +351,13 @@ void updateFingerprint(int userId, int fingerprintId) {
 }
 
 // ////////////////////////////////////////
-// NFC Functions
+// Funções NFC
 //////////////////////////////////////////
 
-String readNFCUID() {
+String readNFCUID(){
   uint8_t uidLength;
   uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
-  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+  uint8_t card = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength,30);
 
 
   if(card){
@@ -339,7 +369,7 @@ String readNFCUID() {
     }
     
     printNfcData(uid, uidLength);
-    // Exemplo de comando SELECT APDU para enviar
+    // Enviar comando SELECT APDU 
     uint8_t apdu[] = { 0x00, 0xA4, 0x04, 0x00, 0x07, 0xA0, 0x00, 0x00, 0x02, 0x47, 0x10, 0x01 };
     uint8_t response[255];
     uint8_t responseLength = sizeof(response);
@@ -363,7 +393,7 @@ String readNFCUID() {
           }
       }
     } else {
-      Serial.println("Failed to send APDU command.");
+      Serial.println("Falha ao enviar comando APDU.");
     }
     return uidString;
   }
@@ -382,21 +412,20 @@ void printNfcData(uint8_t *uid, uint8_t uidLength) {
     receivedData += char(Serial.read());
   }
   // Print the received data
-  Serial.println("Received Data: " + receivedData);
+  Serial.println("Dados recebidos: " + receivedData);
 }
 
 
 String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
   HTTPClient http;
 
-  String verifyEndpoint = "http://192.168.181.137:4242/api/user/authenticateNfc";
+  String verifyEndpoint = String(serverAddress) + "/api/user/authenticateNfc";
      
 
   http.begin(verifyEndpoint); 
   http.addHeader("Content-Type", "application/json");
 
   String postData = "{\"roomId\":\"" + roomId + "\",\"nfcTag\":\"" + nfcTag + "\"}";
-  Serial.println(postData);
 
   int httpResponseCode = http.POST(postData);
   
@@ -409,13 +438,19 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
       DynamicJsonDocument doc(1024);
       deserializeJson(doc, response);
       bool authorized = doc["authorized"]; // Valor booleano de autorização
-      const char* name = doc["name"]; // Nome do usuário
+      String name = doc["name"]; // Nome do utilizador
 
       if (authorized) {
         Serial.println("Acesso autorizado");
         Serial.print("Nome: ");
         Serial.println(name);
+        limparDisplay();
+        escreverNoDisplay(name, 1);
+        escreverNoDisplay("Autorizado", 2);
       } else {
+        limparDisplay();
+        escreverNoDisplay("Desconhecido",1);
+        escreverNoDisplay("Acesso Negado",2);
         Serial.println("Acesso não autorizado");
       }
     } else {
@@ -426,7 +461,7 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
 }
 
 /////////////////////////////////////////////
-// Fingerprint Auth Functions
+// Funções da leitura de impressões digitais
 ////////////////////////////////////////////
 
 bool authenticateUser(int fingerprintId, int roomId) {
@@ -472,7 +507,7 @@ void clearAllFingerprints() {
 
   // Envia a solicitação HTTP para atualizar todos os IDs de impressões digitais para nulo
   HTTPClient http;
-  String url = "http://192.168.1.189:4242/api/user/updateAllFingerprints";
+  String url = String(serverAddress) +  "/api/user/updateAllFingerprints";
   http.begin(url);
 
   int httpResponseCode = http.PUT("null");
@@ -552,7 +587,7 @@ void processManageUserMenuInput(int op) {
   int userID = 0;
   switch (op) {
     case 1:
-      Serial.println("Digite o ID do usuário:");
+      Serial.println("Digite o ID do utilizador:");
       while (userID == 0) {
         while (!Serial.available())
           ;
@@ -561,13 +596,13 @@ void processManageUserMenuInput(int op) {
       if (userID > 0) {
         enrollFingerprint(userID);
       } else {
-        Serial.println("ID do usuário inválido!");
+        Serial.println("ID do utilizador inválido!");
       }
 
       break;
     case 2:
 
-      Serial.println("Digite o ID da impresao digital:");
+      Serial.println("Digite o ID da impressao digital:");
       while (userID == 0) {
         while (!Serial.available())
           ;
@@ -591,7 +626,7 @@ void processManageUserMenuInput(int op) {
 
 void  enrollFingerprint(int userId) {
 
-  const char* enrollEndpoint = "http://192.168.1.189:4242/api/user/updateFingerprint";
+  String enrollEndpoint =String(serverAddress) + "/api/user/updateFingerprint";
 
   int id = getNextFingerprintID();  // Obtém o próximo ID disponível
   if (id < 0) {
@@ -659,9 +694,6 @@ void  enrollFingerprint(int userId) {
 
 }
 
-
-
-
 int getNextFingerprintID() {
 
   const int capacity = 270;  // Capacidade do sensor
@@ -681,8 +713,8 @@ int getNextFingerprintID() {
 
 void verifyFingerprint() {
 
-  const char* verifyEndpoint = "http://192.168.1.189:4242/api/user/authenticate";
-  const char* AcessEndpoint = "http://192.168.1.189:4242/api/acesses/create";
+  String verifyEndpoint = String(serverAddress) + "/api/user/authenticate";
+  String AcessEndpoint = String(serverAddress) + "/api/acesses/create";
 
   Serial.println("Verificando....");
 
@@ -762,7 +794,7 @@ void removeFingerprint(int fingerprintID) {
 int showMainMenu() {
   Serial.println("======= MENU PRINCIPAL =======");
   Serial.println("  1. Acessar Configurações");
-  Serial.println("  2. Gerenciar Usuários");
+  Serial.println("  2. Gerenciar utilizadors");
   Serial.println("  7. sair");
   Serial.println("==============================");
   int num = 0;
@@ -791,7 +823,7 @@ int showSettingsMenu() {
 }
 
 int showManageUserMenu() {
-  Serial.println("====== GERENCIAR USUÁRIOS E IMPRESSÕES ======");
+  Serial.println("====== GERENCIAR utilizadorS E IMPRESSÕES ======");
   Serial.println("  1. Adicionar Impressão Digital");
   Serial.println("  2. Remover Impressão Digital");
   Serial.println("  7. voltar");
@@ -908,4 +940,18 @@ bool confirmMasterPIN() {
   preferences.end();
 
   return enteredPIN == masterPIN;
+}
+
+// Função para escrever uma mensagem em uma linha específica do display
+void escreverNoDisplay(String mensagem, int numeroLinha) {
+  lcd.setCursor(0, numeroLinha); // Define a posição do cursor para o início da linha desejada
+  lcd.print(mensagem); // Escreve a mensagem na linha especificada
+  Serial.print("Escrevendo no display: ");
+  Serial.println(mensagem);
+}
+
+// Função para limpar o display
+void limparDisplay() {
+  lcd.clear(); // Limpa o display
+  Serial.println("Display limpo.");
 }
