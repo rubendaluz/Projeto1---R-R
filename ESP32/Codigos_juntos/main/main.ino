@@ -16,22 +16,31 @@
 
 
 // Credenciais Wifi
-String ssid = "Wifise";  // WiFi network name
-String password = "12345678";  // WiFi network password
+//String ssid = "Wifise";  // WiFi network name
+//String password = "12345678";  // WiFi network password
+
+const char* ssid = "MEO-564B00";      
+const char* password = "6ad9ca442b";
 
 // Endereço do servidor HTTP 
 const char* serverAddress = "http://192.168.1.189:4242";
 String roomID = "1";
 
 //Pinos NFC 
+#define SDA_PIN1 18
+#define SCL_PIN1 19
+
+//Pinos NFC 
 #define SDA_PIN 21
 #define SCL_PIN 22
 
+TwoWire I2C_NFC = TwoWire(0);
+TwoWire I2C_LCD = TwoWire(1);
 //Setup Servidor Assincrono
 AsyncWebServer server(8080);  // Use port 80 for the web server
 
 // Setup do leitor NFC
-Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
+Adafruit_PN532 nfc(SDA_PIN1,SCL_PIN1);
 
 // Steup do leitor de impressão digital
 HardwareSerial mySerial(2);
@@ -105,10 +114,11 @@ void setup() {
   mySerial.begin(57600, SERIAL_8N1, 17, 16);  // Inicializa o sensor de impressão digital
   preferences.begin("registration", false);   // Nome do espaço de preferências
 
+  I2C_NFC.begin(SDA_PIN1, SCL_PIN1,100000);
+  I2C_LCD.begin(SDA_PIN1, SCL_PIN1,100000);
   setupWiFiAndServer();
   setupNFC();
   setupDisplay();
-
   if (finger.verifyPassword())
   {
       Serial.println("Sensor de impressão digital encontrado!");
@@ -146,7 +156,7 @@ void loop() {
       break;
   }
 
-  delay(1000);
+  delay(50);
 }
 
 void setupWiFiAndServer() {
@@ -173,7 +183,7 @@ void setupNFC() {
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata) {
     Serial.print("Didn't find PN53x board");
-    while(1);  // Parar a execução se o leitor NFC não for encontrado
+    //while(1);  // Parar a execução se o leitor NFC não for encontrado
   }else{
     Serial.println("Waiting for an NFC card...");
     nfc.SAMConfig();
@@ -182,7 +192,7 @@ void setupNFC() {
 
 void setupDisplay(){
   // Inicializa o LCD e verifica se houve sucesso
-  int status = lcd.begin(16, 2);
+  int status = lcd.begin(16, 2, 0x27);  // Adjust 0x27 to the actual I2C address of your LCD
   if(status) { // Se houve um erro na inicialização, exibe o erro e para
     Serial.print("Erro na inicializacao do LCD: ");
     Serial.println(status, HEX);
@@ -190,7 +200,8 @@ void setupDisplay(){
   } else {
     Serial.println("LCD inicializado com sucesso!");
   }
-
+  // Set SDA and SCL pins if supported by the library (check documentation)
+  //lcd.setLCDSpecialChars(); // Set special characters
   limparDisplay(); // Limpa o display
 }
 
@@ -216,7 +227,6 @@ void handleNormalMode() {
     checkUserExistenceNFC(uid, roomID);
   }
 
-  delay(50);  // Pequena pausa para evitar sobrecarga do CPU
 }
 
 void handleEditMode() {
@@ -642,7 +652,7 @@ void  enrollFingerprint(int userId) {
   finger.image2Tz(1);
 
   Serial.println("Remova o dedo");
-  delay(2000);
+  delay(1000);
   Serial.println("Coloque o mesmo dedo novamente");
   while (finger.getImage() != FINGERPRINT_OK) {
     delay(50);
@@ -717,16 +727,23 @@ void verifyFingerprint() {
   String AcessEndpoint = String(serverAddress) + "/api/acesses/create";
 
   Serial.println("Verificando....");
-
+ limparDisplay();
+  escreverNoDisplay("Verificando....", 1);
+  escreverNoDisplay("Met:Fingerprint", 2);
   // Converte a imagem de impressão digital para características e armazena no buffer 1
   if (finger.image2Tz(1) != FINGERPRINT_OK) {
     Serial.println("Erro ao converter imagem");
+    limparDisplay();
+  escreverNoDisplay("Erro!!!", 1);
+ 
     return;
   }
   int roomId = 1;
 
   // Procura por uma impressão digital correspondente
   if (finger.fingerFastSearch() != FINGERPRINT_OK) {
+    limparDisplay();
+    escreverNoDisplay("Unauthorized access", 1);
     Serial.println("Impressão digital não encontrada");
     String payload = "{\"id_area\":\"" + String(roomId) + "\",\"metodo_auth\":\"fingerprint\",\"acesso_permitido\":\"false\"}";
 
@@ -753,16 +770,40 @@ void verifyFingerprint() {
   http.begin(verifyEndpoint);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   int httpResponseCode = http.POST(payload);
-
+String response = http.getString();
   if (httpResponseCode == 200) {
     Serial.println("User authenticated successfully!");
     Serial.print("ID: ");
     Serial.println(finger.fingerID);
     Serial.print("Confiança: ");
     Serial.println(finger.confidence);
+     DynamicJsonDocument doc(1024);
+      deserializeJson(doc, response);
+      bool authorized = doc["authorized"]; // Valor booleano de autorização
+      String name = doc["name"]; // Nome do utilizador
+
+      if (authorized) {
+        Serial.println("Acesso autorizado");
+        Serial.print("Nome: ");
+        Serial.println(name);
+        limparDisplay();
+        escreverNoDisplay(name, 1);
+        escreverNoDisplay("Autorizado", 2);
+      } else {
+        limparDisplay();
+        escreverNoDisplay("Desconhecido",1);
+        escreverNoDisplay("Acesso Negado",2);
+        Serial.println("Acesso não autorizado");
+      }
   } else if (httpResponseCode == 401) {
-    Serial.println("Unauthorized access");
+        limparDisplay();
+        escreverNoDisplay("Desconhecido",1);
+        escreverNoDisplay("Acesso Negado",2);
+        Serial.println("Acesso não autorizado");
   } else {
+    limparDisplay();
+        escreverNoDisplay("http error",1);
+        
     Serial.println("Failed to verify fingerprint");
     Serial.print("HTTP response code: ");
     Serial.println(httpResponseCode);
@@ -779,7 +820,10 @@ void removeFingerprint(int fingerprintID) {
 
   uint8_t deleteStatus = finger.deleteModel(fingerprintID);
   if (deleteStatus == FINGERPRINT_OK) {
-    Serial.print("Fingerprint ID ");
+     limparDisplay();
+      escreverNoDisplay("Finger removed.",1);
+        
+    Serial.print("FingerID ");
     Serial.print(fingerprintID);
     Serial.println(" removed successfully.");
     // Add logic to update preferences if necessary
@@ -946,12 +990,10 @@ bool confirmMasterPIN() {
 void escreverNoDisplay(String mensagem, int numeroLinha) {
   lcd.setCursor(0, numeroLinha); // Define a posição do cursor para o início da linha desejada
   lcd.print(mensagem); // Escreve a mensagem na linha especificada
-  Serial.print("Escrevendo no display: ");
-  Serial.println(mensagem);
 }
 
 // Função para limpar o display
 void limparDisplay() {
-  lcd.clear(); // Limpa o display
-  Serial.println("Display limpo.");
+  lcd.clear(); 
+
 }
