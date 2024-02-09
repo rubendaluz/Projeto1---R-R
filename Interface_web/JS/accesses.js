@@ -22,11 +22,15 @@ if (!token) {
 }
 
 
-const user = JSON.parse(localStorage.getItem("user"));
 const userNameElement = document.querySelector(".user-name");
-userNameElement.textContent = user.username || "Admin";
+const user = JSON.parse(localStorage.getItem("user"));
 
-
+// user exist
+if (user) {
+    userNameElement.textContent = user.username;
+} else {
+    window.location.href = "../HTML/login.html";
+}
 
     var filterIcons = document.querySelectorAll(".filter-item i");
     filterIcons.forEach(function (icon) {

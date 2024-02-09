@@ -11,9 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!token) {
         window.location.href = "../HTML/login.html";
     }
-    const user = JSON.parse(localStorage.getItem("user"));
     const userNameElement = document.querySelector(".user-name");
-    userNameElement.textContent = user.username || "Admin";
+    const user = JSON.parse(localStorage.getItem("user"));
+  
+    // user exist
+    if (user) {
+        userNameElement.textContent = user.username;
+    } else {
+        window.location.href = "../HTML/login.html";
+    }
     const totalUsersCard = document.getElementById("totalUsersCard");
     const totalAdminsCard = document.getElementById("totalAdminsCard");
     const totalRoomsCard = document.getElementById("totalRoomsCard");
