@@ -51,7 +51,7 @@ class MainActivity :  ComponentActivity() {
         loginMessage = findViewById(R.id.loginMessage)
 
         if (tokenDeSessaoExiste(this)) {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, Home::class.java)
             startActivity(intent)
             finish()
         }

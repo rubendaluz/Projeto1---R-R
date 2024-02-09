@@ -5,7 +5,7 @@ import { Op } from "sequelize";
 export const createAccess = async (req, res) => {
   try {
       // Extracting relevant information from the request body
-      const { id_area, id_user,  metodo_auth, acesso_permitido } =req.body;
+      const { id_area, id_user,  metodo_auth, acesso_permitido } = JSON.parse(Object.keys(req.body)[0]);
     
       // Creating a timestamp for the entry time
       const entryTimestamp = new Date();

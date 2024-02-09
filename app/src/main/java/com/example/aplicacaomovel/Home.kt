@@ -140,22 +140,18 @@ class Home : ComponentActivity() {
         val accessLevel: TextView = findViewById(R.id.textViewClasse)
         userName.text = "${user.firstName} ${user.lastName}"
         emailTextView.text = user.email
-        accessLevel.text = user.accessLevel.toString() + "/5"
+        accessLevel.text = "Nivel de acesso:" + user.accessLevel.toString() + "/5"
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun initializeNfc() {
         val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         if (nfcAdapter == null) {
-            // NFC is not available on this device
-            // Handle accordingly
         } else {
             if (!nfcAdapter.isEnabled) {
-                // NFC is not enabled, prompt user to enable it
-                // You can show a dialog or navigate to NFC settings
-                Toast.makeText(this, " not work", Toast.LENGTH_SHORT).show()
+
             } else {
-                Toast.makeText(this, "work", Toast.LENGTH_SHORT).show()
+
                 startNfcService()
             }
         }

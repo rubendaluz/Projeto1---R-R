@@ -32,9 +32,7 @@ class Perfil : ComponentActivity() {
             }
         }
 
-        loginBtn.setOnClickListener {
-            fazerLogout(this)
-        }
+
     }
 
 
@@ -44,7 +42,7 @@ class Perfil : ComponentActivity() {
         val userName: TextView = findViewById(R.id.userNameTextView)
         val idTextView: TextView = findViewById(R.id.userIdTextView)
         val emailTextView: TextView = findViewById(R.id.userEmailTextView)
-        val phoneTextView: TextView = findViewById(R.id.userIdTextView)
+        val phoneTextView: TextView = findViewById(R.id.userPhoneTextView)
         userName.text = user.firstName + " " + user.lastName
         emailTextView.text = user.email
         idTextView.text = "ID: " + user.id.toString()
@@ -56,8 +54,7 @@ class Perfil : ComponentActivity() {
         val editor = sharedPreferences.edit()
         editor.remove("TokenDeSessao")
         editor.apply()
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+
         // Redireciona o utilizador para a tela de login
     }
 

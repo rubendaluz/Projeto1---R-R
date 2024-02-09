@@ -198,29 +198,31 @@ const sendWelcomeEmail = async (user, resetLink) => {
   });
 };
 const createResetToken = (userId) => {
-  return jwt.sign({ userId }, 'seu', { expiresIn: '1h' });
+
+  return jwt.sign({ userId }, '2222', { expiresIn: '1h' });
 };
 
 
 
 export const changePassword = async (req, res) => {
   const { token, newPassword } = req.body;
-  console.log("newPsasword: ",  newPassword);
-  
-  console.log("token: ", token);
+ 
   try {
-    const decoded = jwt.verify(token, 'seu'); // Use o mesmo segredo usado na criação do token
-    console.log("decoded: ", decoded);
+
+    const decoded = jwt.verify(token, '2222');
+
+
+
     const user = await UserModel.findOne({ where: { id: decoded.userId } });
+    
 
     if (!user) {
       return res.status(404).send('Usuário não encontrado.');
     }
-    console.log("user: ", user);
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await UserModel.update({ password: hashedPassword }, { where: { id: user.id } });
 
-    res.send('Senha atualizada com sucesso.');
+    res.json({ success: true });
   } catch (error) {
     res.status(500).send('Erro ao mudar a senha.');
   }
@@ -307,7 +309,9 @@ export const register = async (req, res) => {
     });
 
     // Geração e envio do link temporário para mudança de senha
+   
     const resetToken = createResetToken(user.id);
+    console.log("resetToken: ", resetToken);
     const resetLink = `http://${process.env.SERVER_HOST}:5501/Interface_web/HTML/changePWD.html?token=${resetToken}`;
     await sendWelcomeEmail(user, resetLink);
 
@@ -434,17 +438,22 @@ export const authenticateUser = async (req, res) => {
 
     // Encontrar o usuário pelo fingerPrintId
     const user = await UserModel.findOne({ where: { fingerPrintId } });
+
+
+
     console.log("User: ", user);
 
     // Obter o timestamp atual
     const entryTimestamp = new Date();
-
+const acesso_permitido = user ? user.accessLevel >= room.access_level_required : false;
+console.log("acesso_permitido: ", acesso_permitido);
     // Criar um registro de acesso
     const access = await AcessesModel.create({
       id_user: user ? user.id : null,
       id_area: roomId,
       metodo_auth: 'FINGER',
-      acesso_permitido: user ? user.accessLevel >= room.access_level_required : false,
+      acesso_permitido,
+      
       data_hora_entrada: entryTimestamp,
     });
 
