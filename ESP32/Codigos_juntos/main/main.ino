@@ -16,29 +16,38 @@
 
 
 // Credenciais Wifi
-String ssid = "Wifise";  // WiFi network name
-String password = "12345678";  // WiFi network password
+const char* ssid = "MEO-564B00";      
+const char* password = "6ad9ca442b";
 
 // Endereço do servidor HTTP 
 const char* serverAddress = "http://192.168.1.189:4242";
 String roomID = "1";
 
 //Pinos NFC 
-#define SDA_PIN 21
-#define SCL_PIN 22
+#define SDA_PIN 18   // Substitua pelo pino SDA correto
+#define SCL_PIN 19   // Substitua pelo pino SCL correto
+#define UNUSED_PIN -1 // Valor para pinos não utilizados
+
+// Inicialização da interface Wire para o bus I2C no bus 1
+TwoWire wireInterface = TwoWire(1);
+
+// Objeto Adafruit_PN532 usando a interface I2C
+Adafruit_PN532 nfc(UNUSED_PIN, UNUSED_PIN, &wireInterface);
+
+#define I2C_LCD_ADDRESS 0x27
 
 //Setup Servidor Assincrono
 AsyncWebServer server(8080);  // Use port 80 for the web server
 
-// Setup do leitor NFC
-Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
+// // Setup do leitor NFC
+// Adafruit_PN532 nfc(SDA_PIN, SCL_PIN);
 
 // Steup do leitor de impressão digital
 HardwareSerial mySerial(2);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 // Inicializa o objeto LCD
-hd44780_I2Cexp lcd;
+hd44780_I2Cexp lcd(I2C_LCD_ADDRESS);
 
 // Estados de operação do sistema
 enum MenuState {
@@ -169,15 +178,20 @@ void setupWiFiAndServer() {
 
 
 void setupNFC() {
+  // Inicialize a interface Wire com os pinos SDA e SCL
+  wireInterface.begin(SDA_PIN, SCL_PIN);
+
+  // Inicialização do NFC
   nfc.begin();
+
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (!versiondata) {
     Serial.print("Didn't find PN53x board");
-    while(1);  // Parar a execução se o leitor NFC não for encontrado
-  }else{
-    Serial.println("Waiting for an NFC card...");
-    nfc.SAMConfig();
+    while (1); // Halt
   }
+  // Configure o PN532 para o modo I2C
+  nfc.SAMConfig();
+  Serial.println("NFC Reader iniciado!");
 }
 
 void setupDisplay(){
@@ -197,6 +211,7 @@ void setupDisplay(){
 void handleNormalMode() {
   limparDisplay();
   escreverNoDisplay("Aguardando...",1);
+  escreverNoDisplay("",0);
   Serial.println("Coloque o dedo no sensor...");
 
   if (digitalRead(12) == LOW) {
@@ -454,6 +469,8 @@ String checkUserExistenceNFC(const String &nfcTag, const String &roomId) {
         Serial.println("Acesso não autorizado");
       }
     } else {
+      escreverNoDisplay("Desconhecido",1);
+      escreverNoDisplay("Acesso Negado",2);
       Serial.print("Erro ao enviar POST: ");
       Serial.println(httpResponseCode);
     }
@@ -729,7 +746,7 @@ void verifyFingerprint() {
   if (finger.fingerFastSearch() != FINGERPRINT_OK) {
     Serial.println("Impressão digital não encontrada");
     String payload = "{\"id_area\":\"" + String(roomId) + "\",\"metodo_auth\":\"fingerprint\",\"acesso_permitido\":\"false\"}";
-
+    escreverNoDisplay("Acesso Negado", 1);
 
     HTTPClient http;
     http.begin(AcessEndpoint);
@@ -946,8 +963,6 @@ bool confirmMasterPIN() {
 void escreverNoDisplay(String mensagem, int numeroLinha) {
   lcd.setCursor(0, numeroLinha); // Define a posição do cursor para o início da linha desejada
   lcd.print(mensagem); // Escreve a mensagem na linha especificada
-  Serial.print("Escrevendo no display: ");
-  Serial.println(mensagem);
 }
 
 // Função para limpar o display
