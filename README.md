@@ -1,4 +1,4 @@
-#Multi Access
+# Multi Access
 This repository contains a robust Two-Factor Authentication (2FA) system designed to enhance security by supporting both biometric and NFC authentication methods. The system includes a comprehensive web dashboard for administration and an intuitive mobile app for user convenience.
 
 Key Features
